@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">OutGoingStudent Details</div>
+		</div>
+		<div class="portlet-body">
+			<div class="custom-div">
+				<form class="form-horizontal" action=" " method="post" id="formId">
+					<div class="row">
+						<div class="col-md-4 col-xs-4">
+							<div class="form-group">
+								<label class="control-label col-sm-4 col-xs-4" for="join">Join
+									into:</label>
+								<div class="col-sm-8 col-xs-8">
+									<select class="form-control" name="studyclassId"
+										id="joinIntoId" onchange="return joinInto(this.value); ">
+										<option value="0">All Classes</option>
+										<th:block th:each="studyClass:${classList}">
+											<option th:value="${studyClass.id}"
+												th:text="${studyClass.displayName}"></option>
+										</th:block>
+										<option value="100">Out Going</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-xs-4" id="joinYearDiv">
+							<div class="form-group">
+								<label class="control-label col-sm-4 col-xs-4" for="year">Join
+									year:</label>
+								<div class="col-sm-8 col-xs-8">
+									<select class="form-control" name="selectedAcademic"
+										id="JoinYearId" onchange="loadCourseTrack();">
+										<th:block th:each="academicYear:${currentAcademicYear}">
+											<option th:value="${academicYear.id}"
+												th:text="${academicYear.joinYear}" selected="selected"></option>
+										</th:block>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 ">
+
+							<label class="control-label  " for="batch">CourseTrack:</label> <select
+								class="form-control" name="campusTrack" id="courseId"
+								onchange="loadbatches();">
+								<option value="0">Select Course</option>
+								<th:block th:each="courseTrack:${courseTrackList}">
+									<option th:value="${courseTrack.courseTrackId}"
+										th:text="${courseTrack.courseTrackName}"></option>
+								</th:block>
+							</select>
+
+						</div>
+
+						<div class="col-md-4 ">
+
+							<label class="control-label  " for="section">Section:</label> <select
+								class="form-control" name="section" id="sectionId"
+								onchange="loadBulkStudentList();">
+								<option value="0">Select Section</option>
+								<th:block th:each="section:${sectionList}">
+									<option th:value="${section.id}"
+										th:text="${section.sectionName}"></option>
+								</th:block>
+							</select>
+
+						</div>
+
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	function campusReport() {
+			alert('hi');
+			$.ajax({
+				type : "GET",
+				url : "/scaits/studentdueshowReport",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+
+		function loadBulkStudentList() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getStudentDetailsGrid",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					loadToProgram();
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+
+		}
+
+/* 		function joinInto(joinInto) {
+			alert(joinInto);
+			$.ajax({
+				type: "GET",
+				url: "/scaits/loadJoinYear",
+				data: $("#formId").serialize(),
+				success: function (data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#JoinYearId');
+					select.find('option').remove();
+					$.each(prePopulate, function (key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+					$("select#streamId").val('0');
+					$("select#programId").val('0');
+					$("select#courseId").val('0');
+					$("select#batchId").val('0');
+					$("select#sectionId").val('0');
+				}
+			});
+		} */
+		
+		function loadsectionYear(studyclass) {// Get Courses list when Join Year(2011,2012 etc..) is selected
+			//overlay(0);
+			alert(studyclass);
+			selectedClass = studyclass;
+			$.ajax({
+			 	url : "<s:property value='%{#sectionYearList}'/>?joinInto="
+						+ selectedClass,
+				dataType : 'text',
+				success : function(data) {
+					//document.getElementById('coursesListId').value=data;
+					$('#studentCourseTrackId').html(data);
+					if(selectedClass==2 || selectedClass==100){
+					$("#trreporttype *").removeAttr('disabled');
+					}
+					else{
+						$("#trreporttype *").attr("disabled","disabled");
+					}
+					if(selectedClass==100)
+					{
+					initload('outgoing');
+					$("#studentCourseTrackId").attr("disabled","disabled");
+					$("#studentDueReportSectionId").attr("disabled","disabled");
+					}
+				else{
+					initload('body');
+					$("#studentDueReportSectionId").attr("disabled","disabled");
+					 $("#studentCourseTrackId").removeAttr('disabled');
+				}
+				//	overlay(1);
+				}
+			});
+
+			function joinInto(joinInto) {
+				alert(joinInto);
+			  if (joinInto == 100) {
+				$('#joinYearDiv').css('display', 'inline');
+				$.ajax({
+					type: "GET",
+					url: "/scaits/getOutgoingJoinYear",
+					data: $("#formId").serialize(),
+					success: function (data) {
+						var prePopulate = JSON.parse(data);
+						var select = $('#JoinYearId');		
+						select.find('option').remove();
+						$.each(prePopulate, function (key, value) {
+							$('<option>').val(key).text(value).appendTo(select);
+						});
+						$("select#streamId").val('0');
+						$("select#programId").val('0');
+						$("select#courseId").val('0');
+						$("select#batchId").val('0');
+						$("select#sectionId").val('0');
+						$("select#sponseredId").val('0');
+						
+					}
+				});	
+							
+			}
+			  
+				function loadCourseTrack() {
+					$.ajax({
+						type: "GET",
+						url: "/scaits/getCampusDueCourses",
+						data: $("#formId").serialize(),
+						dataType: 'text',
+						success: function (data) {
+							var prePopulate = JSON.parse(data);
+							var select = $('#courseId');
+							select.find('option').remove();
+							$.each(prePopulate, function (key, value) {
+								$('<option>').val(key).text(value).appendTo(select);
+							});
+												$("select#sectionId").val('0');
+													}
+					});
+
+				}  
+		</script>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee Attendance</title>
+</head>
+<body>
+<div class="row">
+         <div class="col-md-12">
+            <table class="table4">
+              <tr>
+                 <td><label class="text-center t-12 bold">Date</label></td>
+                 <td><label class="text-center t-12 bold">Employee ID</label></td>
+                 <td><label class="text-center t-12 bold">Name</label></td>
+                 <td><label class="text-center t-12 bold">Designation</label></td>
+              </tr>
+              <tr>
+                 <td><label class="text-center t-13 bold t-grey">
+                 <span th:text="${fromDateStr}"></span>
+                 </label></td>
+                 <td><label class="text-center t-13 bold t-grey">
+                <span th:text="${currentUser.payRollId}"></span>
+                </label></td>
+                 <td><label class="text-center t-13 bold t-grey"><span th:text="${currentUser.userName}"></span></label></td>
+                 <td><label class="text-center t-13 bold t-grey"><span th:text="${currentUser.designation}"></span></label></td>
+              </tr>
+              
+            </table>
+         </div>
+         <div class="col-md-12">
+            <table class="table table-bordered table-striped text-center">
+              <tr class="bold">
+                 <td style="width:25%"> <span class="text-center">Sl</span></td>
+                 <td><span class="text-center">Punch Time</span></td>
+              </tr>
+              
+              
+              <tr th:each="empWiseAtdVal,empWiseAtdStatus : ${empWiseAttendance}">
+                 <td><span th:text="${empWiseAtdStatus.index+1}"></span></td>
+                 <td><span class="text-center">
+                 <span th:text="${#dates.format(empWiseAtdVal.edatetime, 'HH:mm:ss')}"></span></span>
+                 </td>
+              </tr>
+              
+            </table>
+         </div>
+      </div>
+</body>
+</html>

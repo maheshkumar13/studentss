@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style type="text/css">
+.badge, .label {
+	margin-left: 15px;
+}
+</style>
+</head>
+<body>
+	<div class="portlet box green">
+		<div class="portlet-title">
+			<div class="caption">Bus Report</div>
+		</div>
+		<div class="portlet-body" style="width: 100%;" id="myDIV">
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN EXAMPLE TABLE PORTLET-->
+					<table class="table table-striped table-bordered table-hover"
+						id="busReportId">
+						<thead>
+							<tr>
+								<th style="width: 5%;">Bus No</th>
+								<th>Data</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="trClass"
+								th:each="row,status:${#numbers.sequence(1,2)}">
+								<td th:text="${55+(status.index+1)}"></td>
+								<td><a data-toggle="collapse" data-parent="#accordion"
+									th:href="${'#collapse'+(status.index+1)}" class="btn btn-link">View
+										<i class="fa fa-angle-down"></i>
+								</a><span style="margin-left: 20px; padding: 10px;"><span
+										class="label label-primary">Primary Label<span
+											class="badge">4</span></span><span class="label label-success">Success
+											Label<span class="badge">5</span>
+									</span> <span class="label label-info">Info Label<span
+											class="badge">7</span></span></span>
+									<div th:id="${'collapse'+(status.index+1)}" class="collapse">
+										<div class="table-responsive">
+											<table id="example" class="display busTableId" style="width: 100%">
+												<thead>
+													<tr>
+														<th>S.No</th>
+														<th>Name</th>
+														<th>Position</th>
+														<th>Office</th>
+														<th>Age</th>
+														<th>Start date</th>
+														<th>Salary</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="row,status:${#numbers.sequence(1,10)}">
+														<td th:text="${status.index+1}"></td>
+														<td th:text="'Name '+${status.index+1}"></td>
+														<td th:text="'Position '+${status.index+1}"></td>
+														<td th:text="'Office '+${status.index+1}"></td>
+														<td th:text="'Age '+${status.index+1}"></td>
+														<td th:text="'Start Date '+${status.index+1}"></td>
+														<td th:text="'Salary '+${status.index+1}"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#busReportId").DataTable();
+
+				$('.busTableId').DataTable({
+					"searching" : false,
+					"paging" : false
+				});
+			});
+
+			$(document)
+					.ready(
+							function() {
+								$("#busReportId")
+										.on(
+												"keyup",
+												function() {
+													var value = $(this).val()
+															.toLowerCase();
+													$("#busReportId .trClass")
+															.filter(
+																	function() {
+																		$(this)
+																				.toggle(
+																						$(
+																								this)
+																								.text()
+																								.toLowerCase()
+																								.indexOf(
+																										value) > -1)
+																	});
+												});
+							});
+		</script>
+	</th:block>
+</body>
+</html>

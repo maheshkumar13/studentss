@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+<script th:inline="javascript">
+
+function testWiseView(offlineExamId) {
+	pageOverlay(0);
+	$.ajax({
+		type : "GET",
+		url : "/qb/getTestWiseView",
+		data : {
+			offlineExamId : offlineExamId
+		},
+		success : function(data) {
+			$('#campusTestViewId').html(data);
+			pageOverlay(1);
+		},
+		error : function() {
+			alert('Error occured');
+			pageOverlay(1);
+		}
+	});
+}
+</script>
+
+</head>
+<body>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="portlet light card-1 portlet-fit portlet-form bordered">
+							<div class="portlet-title">
+								<div class="caption">
+									 <span class="caption-subject ">Campus Wise TestAnalysis</span>
+								</div>
+							</div>
+							<div class="portlet-body">
+							<form 	class="form-horizontal" >
+									<div class="form-body">
+										<div class="form-group">
+											
+											<div class="col-md-4">
+											<label class="control-label">Exam <span
+												class="required"> * </span>
+											</label>
+												<select class="form-control p-0" id="offlineExamId"
+													required="required" data-required="1"
+													onchange="testWiseView(this.value);"
+													>
+													<option value="0">Select Exam</option>
+													<option th:each="testVal : ${offlineExamList}"
+														th:value="${testVal.id}"
+														th:text="${testVal.testCode}"></option>
+												</select>
+											</div>
+											
+											
+										</div>
+										
+										<div class="form-group">
+										  <div class="col-md-12">
+										    <span id="campusTestViewId"></span>
+										  </div>
+										</div>
+										
+										
+									</div>
+							  </form>
+							
+							</div>
+						</div>
+					</div>
+				</div>
+	<th:block layout:fragment="scripts">
+		
+	</th:block>
+</body>
+</html>

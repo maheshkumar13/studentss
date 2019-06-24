@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<title>Online Exam</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<meta content="" name="author" />
+<link
+	th:href="@{/assets/global/plugins/font-awesome/css/font-awesome.min.css}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{/assets/global/plugins/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet" type="text/css" />
+
+<script th:src="@{/assets/global/plugins/jquery.min.js}"
+	type="text/javascript"></script>
+
+<script th:src="@{/assets/global/plugins/bootstrap/js/bootstrap.min.js}"
+	type="text/javascript"></script>
+
+<link th:href="@{/assets/global/css/components.min.css}"
+	rel="stylesheet" id="style_components" type="text/css" />
+
+<link th:href="@{/assets/global/css/magic-check.css}" type="text/css"
+	rel="stylesheet" />
+
+<link th:href="@{/assets/global/css/onlineexam.css}" rel="stylesheet"
+	type="text/css" />
+<link th:href="@{/assets/global/css/onlineexammedia.css}"
+	rel="stylesheet" type="text/css" />
+
+<!-- doesn't copy -->
+<link th:href="@{/assets/global/css/notifIt.css}" type="text/css"
+	rel="stylesheet" />
+<script th:src="@{/assets/global/scripts/notifIt.js}"
+	type="text/javascript"></script>
+<script th:src="@{/assets/global/scripts/shortcut.js}"
+	type="text/javascript"></script>
+<script th:src="@{/assets/global/scripts/stopCopying.js}"
+	type="text/javascript"></script>
+<!-- doesn't copy -->
+<style>
+#instructionsDivId {
+	height: 400px;
+	overflow: hidden;
+}
+
+#instructionsDivId:hover {
+	overflow: auto;
+}
+
+#questionPaperDivId {
+	height: 400px;
+	overflow: hidden;
+}
+
+#questionPaperDivId:hover {
+	overflow: auto;
+}
+
+#markForReviewAndNextBtnId, #clearResponseBtnId {
+	padding-top: 5px;
+	background-color: #fff;
+	color: #252525;
+}
+
+#markForReviewAndNextBtnId:hover, #clearResponseBtnId:hover {
+	background-color: #0c7cd5;
+	color: #fff;
+}
+
+#saveNextbtnId {
+	padding-top: 5px;
+	background-color: #0c7cd5;
+	color: #fff;
+}
+
+#saveNextbtnId:hover {
+	border-color: black;
+	font-weight: bold;
+}
+
+#submitbtnId, #submitbtnId2 {
+	padding-top: 5px;
+	background-color: #38aae9;
+	border-color: #38aae9;
+	color: #ffffff;
+}
+
+#submitbtnId:hover, #submitbtnId2:hover {
+	border-color: black;
+}
+
+body {
+	-webkit-user-select: none; /* Safari 3.1+ */
+	-moz-user-select: none; /* Firefox 2+ */
+	-ms-user-select: none; /* IE 10+ */
+	user-select: none; /* Standard syntax */
+}
+
+@media print {
+	body {
+		display: none;
+	}
+}
+
+.popover-header, .popover-content {
+	color: black;
+}
+
+.popover {
+	width: 320px;
+	max-width: 320px;
+}
+
+#overlay {
+	visibility: hidden;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	z-index: 1000;
+}
+
+#overlay div {
+	width: 300px;
+	margin: 100px auto;
+	background-color: #fff;
+	border: 1px solid #000;
+	padding: 15px;
+	text-align: center;
+}
+
+#loading {
+	left: 10%;
+	position: absolute;
+	top: 35%;
+	width: 65px;
+	font-size: 30px;
+}
+
+.nav>li>a {
+	padding: 4px 10px;
+	font-weight: bold;
+}
+
+.portlet>.portlet-title {
+	margin-bottom: 0px;
+}
+</style>
+</head>
+
+<!-- END HEAD -->
+
+<body class="page-container-bg-solid examOverlay"
+	style="background-color: #f7f7f7;" id="examPageId">
+
+	<div id="loading" style="display: none; width: 50%;">
+
+		<div class="progress">
+			<div id="progressBar"
+				class="progress-bar progress-bar-striped active" role="progressbar"
+				aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"
+				style="width: 0%">
+				<div id="label">0%</div>
+			</div>
+		</div>
+
+	</div>
+
+	<div id="examContentViewId">
+		<div class="page-container">
+			<div class="page-content-wrapper">
+				<!-- BEGIN CONTENT BODY -->
+				<div class="page-content" style="padding: 2px;">
+					<input type="hidden" id="timeremaingId" name="timeRemaining" />
+					<div class="row" style="margin: 2px;">
+
+						<div class="row"
+							style="background: #2d70b6; line-height: 30px; margin: 0px auto;">
+							<strong style="color: white; padding: 10px;"> <span
+								th:text="${examAttempt.schedule.examName}"></span>
+							</strong>
+						</div>
+
+						<div class="row"
+							style="background: #363636; line-height: 30px; margin: 0px auto;"
+							th:if="${!examAttempt.isCompleted}">
+							<div style="float: left;">
+								<ul class="nav nav-pills">
+									<li><span style="margin: 10px;"><span
+											style="color: white;">Question Paper</span><span
+											class="instruction_icon" id="allQueAtmSelId"></span></span>
+
+										<div th:id="${'totalQueAtmId'}" class="dropdown-menu"
+											role="menu">
+											<table>
+												<tbody>
+													<tr>
+														<td><span class="questionId"> <span
+																class="answered" th:id="${'answeredEnd1View'}">0</span>
+														</span></td>
+														<td>Answered</td>
+													</tr>
+													<tr>
+														<td><span class="questionId"> <span
+																class="not_answered" th:id="${'not_answeredEnd1View'}">0</span>
+														</span></td>
+														<td>Not Answered</td>
+													</tr>
+													<tr>
+														<td><span class="questionId"> <span
+																class="not_visited" th:id="${'not_visitedEnd1View'}">0</span>
+														</span></td>
+														<td>Not Visited</td>
+													</tr>
+													<tr>
+														<td><span class="questionId"> <span
+																class="marked_review" th:id="${'marked_reviewEnd1View'}">0</span>
+														</span></td>
+														<td>Marked For Review</td>
+													</tr>
+													<tr>
+														<td valign="top"><span class="questionId"> <span
+																class="answer_marked_review"
+																th:id="${'answer_marked_reviewEnd1View'}">0</span>
+														</span></td>
+														<td>Answered &amp; Marked for Review<br> (will
+															be considered for evaluation)
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div></li>
+								</ul>
+							</div>
+
+							<div style="float: right; margin-right: 12px;">
+								<a style="color: white;" data-toggle="modal"
+									href="#instructionPopUp"><span class="instruction_icon"
+									style="float: left;"></span><span title="Read Instructions">Instructions</span></a>
+							</div>
+							<div style="float: right; margin-right: 12px;">
+								<a style="color: white;"
+									th:onclick="${'javascript:showQuestionPaper(' + examAttempt.id +')'}"
+									href="javascript:void(0);"><span class="questionpaper_icon"
+									style="float: left;"></span><span
+									title="View Entire Question Paper">Question Paper</span></a>
+							</div>
+						</div>
+
+
+						<div class="col-md-9" style="padding: 0px;" id="leftPanelId">
+							<div class="portlet light"
+								style="border: 1px solid; border-right: none;">
+								<div class="portlet-title tabbable-line">
+									<ul class="nav nav-pills">
+										<li th:class="${(examSubjectStatus.index+1)==1} ?active:''"
+											th:each="examSubject,examSubjectStatus:${examSubjects}">
+											<a th:href="${'#portlet_tab'+((examSubjectStatus.index)+1)}"
+											th:id="'portlet_tabVal' + ${examSubjectStatus.index+1}"
+											data-toggle="pill"> <small
+												th:text=${examSubject.subject.name}></small> <i
+												class="fa fa-info-circle"
+												th:id="${'editDialog'+((examSubjectStatus.index)+1)}"> </i>
+										</a>
+
+											<ul th:id="${'dropdown-menu'+((examSubjectStatus.index)+1)}"
+												class="dropdown-menu" role="menu">
+												<li role="presentation">
+													<table>
+														<tbody>
+															<tr>
+																<td><span class="questionId"> <span
+																		class="answered"
+																		th:id="${'answered'+((examSubjectStatus.index)+1)}">0</span>
+																</span></td>
+																<td>Answered</td>
+															</tr>
+															<tr>
+																<td><span class="questionId"> <span
+																		class="not_answered"
+																		th:id="${'not_answered'+((examSubjectStatus.index)+1)}">0</span>
+																</span></td>
+																<td>Not Answered</td>
+															</tr>
+															<tr>
+																<td><span class="questionId"> <span
+																		class="not_visited"
+																		th:id="${'not_visited'+((examSubjectStatus.index)+1)}">0</span>
+																</span></td>
+																<td>Not Visited</td>
+															</tr>
+															<tr>
+																<td><span class="questionId"> <span
+																		class="marked_review"
+																		th:id="${'marked_review'+((examSubjectStatus.index)+1)}">0</span>
+																</span></td>
+																<td>Marked For Review</td>
+															</tr>
+															<tr>
+																<td valign="top"><span class="questionId"> <span
+																		class="answer_marked_review"
+																		th:id="${'answer_marked_review'+((examSubjectStatus.index)+1)}">0</span>
+																</span></td>
+																<td>Answered &amp; Marked for Review<br> (will
+																	be considered for evaluation)
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</li>
+											</ul>
+										</li>
+
+
+
+									</ul>
+									<div class="pull-right">
+										<div style="font-weight: bold;">
+											Duration :&nbsp;&nbsp;<span style="color: green;"
+												id="duration"> </span> <Strong
+												th:if="${!examAttempt.isCompleted}">Time Left
+												:&nbsp;&nbsp;<span id="timeId" style="color: red;"></span>
+											</Strong>
+										</div>
+									</div>
+								</div>
+								<div class="portlet-body">
+									<a id="downId" title="Scroll Down" style="display: inline;"><img
+										alt="Scroll Down"
+										src="/assets/global/img/online_exams/Down.png" width="20"
+										height="20" align="right"></a>
+
+									<!-- <input
+											type="checkbox" class="regular-checkbox big-checkbox"
+											name="autonext" id="autonext" value="1"
+											th:if="${examAttempt.isCompleted}==false" /><label
+											for="autonext"></label>  -->
+									<div class="tab-content" id="examQuestionContentId"
+										style="font-size: 16px;">
+										<div
+											th:class="${examSubjectStatus1.index==0} ? 'tab-pane active loadingTxt':'tab-pane loadingTxt'"
+											th:id="'portlet_tab' + ${examSubjectStatus1.index+1}"
+											th:each="examSubject,examSubjectStatus1:${examSubjects}">
+										</div>
+
+										<div
+											th:class="${examSubjectStatus1.index==0} ? 'tab-pane active':'tab-pane'"
+											th:each="examSubject,examSubjectStatus1:${examSubjects}">
+											<div
+												th:each="question,questionStatus1:${examSubject.questions}"
+												th:id="'questionData' + ${#ids.seq('Val')}"
+												style="display: none;"></div>
+										</div>
+									</div>
+									<div class="row">
+										<a title="Scroll Up" id="upId" style="display: inline;"><img
+											alt="Scroll Up" src="/assets/global/img/online_exams/Up.png"
+											align="right" width="20" height="20"></a>
+									</div>
+									<div class="row" style="margin-top: 5px;"
+										th:if="${!examAttempt.isCompleted}">
+
+										<div>
+											<button type="button" class="btn btn-default"
+												id="markForReviewAndNextBtnId" onclick="markForReview()">Mark
+												For Review & Next</button>
+										</div>
+										<div>
+											<button type="button" class="btn btn-default"
+												id="clearResponseBtnId" onclick="clearResponse()">Clear
+												Response</button>
+										</div>
+
+										<div id="saveNextdivId">
+											<button type="button" id="saveNextbtnId"
+												class="btn btn-primary"
+												onclick="saveQuestionAttempt(null,null,false)">Save
+												& Next</button>
+										</div>
+
+										<div id="submitdivId" th:if="${!examAttempt.isCompleted}">
+											<button type="button" class="btn green " id="submitbtnId2"
+												onclick="endExam();">Submit</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<span class="expand_icon" style="display: none;"
+								id="expandSpanId" onclick="toggleRightPanel(false)"></span>
+						</div>
+
+						<div class="col-md-3" style="padding: 0px;" id="rightPanelId">
+							<span class="collapse_icon" onclick="toggleRightPanel(true)"
+								id="collapseSpanId"></span>
+							<div class="well"
+								style="background-color: #ffffff; padding: 0px; border: 1px solid; margin: 0px;"
+								id="imageDivId">
+								<div style="border-bottom: 1px solid black;">
+									<img
+										src="/assets/global/img/online_exams/sample_exam_photo.jpg"
+										width="100px" height="100px;"><br> <span
+										th:text="${@currentUser.getCurrentStudent().getName()}"
+										style="font-weight: bold;"></span>
+								</div>
+								<table>
+									<tr>
+										<td><span class="questionId"> <span
+												class="answered" id="answeredSideViewId"></span>
+										</span></td>
+										<td>Answered</td>
+										<td><span class="questionId"> <span
+												class="not_answered" id="not_answeredSideViewId"></span>
+										</span></td>
+										<td>Not Answered</td>
+									</tr>
+									<tr>
+										<td><span class="questionId"> <span
+												class="not_visited" id="not_visitedSideViewId"></span>
+										</span></td>
+										<td>Not Visited</td>
+										<td><span class="questionId"> <span
+												class="marked_review" id="marked_reviewSideViewId"></span>
+										</span></td>
+										<td>Marked For Review</td>
+									</tr>
+									<tr>
+										<td><span class="questionId"> <span
+												class="answer_marked_review"
+												id="answer_marked_reviewSideViewId"></span>
+										</span></td>
+										<td colspan="3">Answered & Marked for Review<br>
+											(will be considered for evaluation)
+										</td>
+									</tr>
+								</table>
+							</div>
+
+
+							<div class="well"
+								style="background-color: #ffffff; padding: 0px; border: 1px solid; margin: 0px;">
+								<div
+									style="background: #2d70b6; color: white; text-align: center;"
+									id="selSubNameId">
+									<strong></strong>
+								</div>
+								<div id="questionsDivId">
+									<div th:replace="student/subQueTabView"></div>
+								</div>
+								<div class="row center-block" style="margin-bottom: 15px;"
+									id="submitdivId2" th:if="${!examAttempt.isCompleted}">
+									<button type="button" class="btn green " id="submitbtnId2"
+										onclick="endExam();" style="margin-left: 35%;">Submit</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="questionPaperPopUp" class="modal fade bs-modal-lg"
+			tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true" title="Close Question Paper"></button>
+						<h4 class="modal-title">Question Paper</h4>
+					</div>
+					<div class="modal-body">
+						<div id="questionPaperDivId" class="row" style="margin: 10px;">
+							<div th:replace="student/subQueTabView"></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" data-dismiss="modal"
+							class="btn dark btn-outline pull-right">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="instructionPopUp" class="modal fade bs-modal-lg"
+			tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true" title="close instructions"></button>
+						<h4 class="modal-title">Instructions</h4>
+					</div>
+					<div class="modal-body">
+						<div id="instructionsDivId" class="row" style="margin: 10px;">
+							<div>
+								<strong style="color: #2F72B7">Important Note</strong>
+								<ul>
+									<li>The purpose of this MOCK TEST is to familiarize the
+										candidates with the Computer Based Test (CBT) environment of
+										the JEE (Advanced) – 2018.</li>
+									<li>Candidates may use this MOCK TEST to get acclimatized
+										with the functionalities of CBT.</li>
+									<li>This MOCK TEST has used previous years' questions of
+										JEE (Advanced).</li>
+									<li>The type of questions and illustrative marking scheme
+										in this MOCK TEST is in NO WAY INDICATIVE of the type of
+										questions and marking scheme of JEE (Advanced) – 2018 question
+										paper.</li>
+								</ul>
+								<strong style="color: #2F72B7">Other Important
+									Instructions</strong>
+								<p>
+									<strong>Please read the instructions carefully General
+										Instructions: </strong>
+								</p>
+
+								<p>
+									<strong style="text-decoration: underline;">General
+										Instructions:</strong>
+								</p>
+								<ol>
+									<li>Total duration of examination is 180 minutes.</li>
+									<li>The clock will be set at the server. The countdown
+										timer in the top right corner of screen will display the
+										remaining time available for you to complete the examination.
+										When the timer reaches zero, the examination will end by
+										itself. You will not be required to end or submit your
+										examination.</li>
+									<li>The Question Palette displayed on the right side of
+										screen will show the status of each question using one of the
+										following symbols:
+										<ol>
+											<li><p>
+													<span class="questionId"> <span class="not_visited"></span>
+													</span>"Not Visited"- You have not visited the question yet.
+												</p></li>
+											<li><p>
+													<span class="questionId"> <span class="not_answered"></span>
+													</span>"Not Answered" - You have not answered the question.
+												</p></li>
+											<li><p>
+													<span class="questionId"> <span class="answered"></span>
+													</span>"Answered" - You have answered the question.
+												</p></li>
+											<li><p>
+													<span class="questionId"> <span
+														class="marked_review"></span>
+													</span>"Marked for Review" - You have NOT answered the question,
+													but have marked the question for review.
+												</p></li>
+											<li><p>
+													<span class="questionId"> <span
+														class="answer_marked_review"></span>
+													</span>"Answered and Marked for Review"- The question(s) "Answered
+													and Marked for Review" will be considered for evaluation.
+												</p></li>
+										</ol>
+									</li>
+									<li>The Marked for Review status for a question simply
+										indicates that you would like to look at that question again.</li>
+								</ol>
+								<ol start="4">
+									<li>You can click on the "&gt;" arrow which appears to the
+										left of question palette to collapse the question palette
+										thereby maximizing the question window. To view the question
+										palette again, you can click on "&lt; " which appears on the
+										right side of question window.</li>
+									<li>You can click on your "Profile" image on top right
+										corner of your screen to change the language during the exam
+										for entire question paper. On clicking of Profile image you
+										will get a drop-down to change the question content to the
+										desired language.</li>
+									<li>You can click on <img title="Scroll Down"
+										id="scrollBottom"
+										src="/assets/global/img/online_exams/Down.png"> to
+										navigate to the bottom and <img title="Scroll Up"
+										id="scrollTop" src="/assets/global/img/online_exams/Up.png">to
+										navigate to the top of the question area, without scrolling.
+									</li>
+								</ol>
+								<br> <strong style="text-decoration: underline;">Navigating
+									to a Question:</strong>
+								<ol start="7">
+									<li>To answer a question, do the following:
+										<ol type="a">
+											<li>Click on the question number in the Question Palette
+												at the right of your screen to go to that numbered question
+												directly. Note that using this option does NOT save your
+												answer to the current question.</li>
+											<li>Click on <strong>Save &amp; Next</strong> to save
+												your answer for the current question and then go to the next
+												question.
+											</li>
+											<li>Click on <strong>Mark for Review &amp; Next</strong>
+												to save your answer for the current question, mark it for
+												review, and then go to the next question.
+											</li>
+										</ol>
+									</li>
+								</ol>
+								<p>
+									<strong style="text-decoration: underline;">Answering
+										a Question :</strong>
+								</p>
+								<ol start="8">
+									<li>Procedure for answering a multiple choice type
+										question:
+										<ol type="a">
+											<li>To select your answer, click on the button of one of
+												the options</li>
+											<li>To deselect your chosen answer, click on the button
+												of the chosen option again or click on the <strong>Clear
+													Response</strong> button
+											</li>
+											<li>To change your chosen answer, click on the button of
+												another option</li>
+											<li>To save your answer, you MUST click on the<strong>
+													Save &amp; Next</strong> button
+											</li>
+											<li>To mark the question for review, click on the<strong>
+													Mark for Review &amp; Next</strong> button.
+											</li>
+										</ol>
+										<ol start="9">
+											<li>To change your answer to a question that has already
+												been answered, first select that question for answering and
+												then follow the procedure for answering that type of
+												question.</li>
+										</ol>
+									</li>
+								</ol>
+								<p>
+									<strong style="text-decoration: underline;">Navigating
+										through sections:</strong>
+								</p>
+								<ol start="10">
+									<li>Sections in this question paper are displayed on the
+										top bar of the screen. Questions in a section can be viewed by
+										clicking on the section name. The section you are currently
+										viewing is highlighted.</li>
+									<li>After clicking the Save &amp; Next button on the last
+										question for a section, you will automatically be taken to the
+										first question of the next section.</li>
+									<li>You can shuffle between sections and questions anytime
+										during the examination as per your convenience only during the
+										time stipulated.</li>
+									<li>Candidate can view the corresponding section summary
+										as part of the legend that appears in every section above the
+										question palette.</li>
+								</ol>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" data-dismiss="modal"
+							class="btn dark btn-outline pull-right">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="examEndContentViewId" style="display: none;">
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 pull-right" align="right">
+					<div class="col-md-6">
+						<img src="/assets/global/img/online_exams/sample_exam_photo.jpg"
+							width="150" height="160">
+					</div>
+					<div class="col-md-6">
+						<strong><small
+							th:text="${@currentUser.getCurrentStudent().getName()}"
+							style="font-weight: bold;"></small></strong>
+					</div>
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				<strong class="text-center">Exam Summary</strong> <br> <br>
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>Section Name</th>
+								<th>No.of Questions</th>
+								<th>Answered</th>
+								<th>Not Answered</th>
+								<th>Not Visited</th>
+								<th>Marked for Review</th>
+								<th>Answered & Marked For Review<br>(Will be
+									considered for evaluation)
+								</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="examSubject,examSubjectStatusVal:${examSubjects}">
+								<td th:text="${examSubject.subject.name}"></td>
+								<td th:text="${examSubject.examQuestions.size()}"></td>
+								<td
+									th:id="${'answeredEndView'+((examSubjectStatusVal.index)+1)}">0</td>
+								<td
+									th:id="${'not_answeredEndView'+((examSubjectStatusVal.index)+1)}">0</td>
+								<td
+									th:id="${'not_visitedEndView'+((examSubjectStatusVal.index)+1)}">0</td>
+								<td
+									th:id="${'marked_reviewEndView'+((examSubjectStatusVal.index)+1)}">0</td>
+								<td
+									th:id="${'answer_marked_reviewEndView'+((examSubjectStatusVal.index)+1)}">0</td>
+							</tr>
+
+						</tbody>
+					</table>
+				</div>
+				<div>
+					<button type="button" class="btn btn-primary"
+						onclick="javascript:return getEndExam();">YES</button>
+					<input onclick="showExamModule();" id="#nobtn"
+						class="btn btn-primary" value="No" type="button">
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<script th:inline="javascript">
+
+      /*<![CDATA[*/
+	    
+         var examAttemptVal = /*[[${examAttempt.id}]]*/;
+      
+         var examAttemptCompleted = /*[[${examAttempt.isCompleted}]]*/;
+      
+         var examAttemptTime = /*[[${examAttempt.timeRemaining}]]*/;
+         
+         var scheduleTime = /*[[${examAttempt.schedule.duration}]]*/;
+         
+         var examCompleted = /*[[${!examAttempt.isCompleted()}]]*/;
+
+       /*]]>*/
+</script>
+
+
+
+	<script th:inline="javascript">
+  var dataLayer1 = [];
+  var dataLayer2 = [];
+  var dataLayer3 = [];
+  var dataLayer4 = [];
+  var dataLayer5 = [];
+  var dataLayer6 = [];
+  var dataLayer7 = [];
+  
+  var dataLayerView1 = true;
+  var dataLayerView2 = false;
+  var dataLayerView3 = false;
+  var dataLayerView4 = false;
+  var dataLayerView5 = false;
+  var dataLayerView6 = false;
+  var dataLayerView7 = false;
+  
+  
+  var dataLayer1Que = "";
+  var dataLayer2Que = "";
+  var dataLayer3Que = "";
+  var dataLayer4Que = "";
+  var dataLayer5Que = "";
+  var dataLayer6Que = "";
+  var dataLayer7Que = "";
+  
+  var selQueAnswer = "";
+  
+  var queAnswersArray = {};
+  
+  
+  var examTotalQuestions = 0;
+  
+  var width=0;
+  
+  var examTotalQuestionwidth = 0;
+  
+  var queNo=1;
+  
+  var i = 1;
+  var j = 1;
+</script>
+	<script th:each="examSubject:${examSubjects}" th:inline="javascript">
+var dataLayer = [];
+for (i = 0; i < [[${#lists.size(examSubject.questions)}]]; i++) {
+	dataLayer.push(j);
+	 j++;
+}
+
+if (dataLayer1.length === 0) {
+	dataLayer1=dataLayer;
+}else if (dataLayer2.length === 0) {
+	dataLayer2=dataLayer;
+}else if (dataLayer3.length === 0) {
+	dataLayer3=dataLayer;
+}else if (dataLayer4.length === 0) {
+	dataLayer4=dataLayer;
+}else if (dataLayer5.length === 0) {
+	dataLayer5=dataLayer;
+}else if (dataLayer6.length === 0) {
+	dataLayer6=dataLayer;
+}else if (dataLayer7.length === 0) {
+	dataLayer7=dataLayer;
+}
+examTotalQuestions+=[[${#lists.size(examSubject.questions)}]];
+</script>
+
+	<script type="text/javascript">
+	
+	examTotalQuestionwidth=100/parseInt(examTotalQuestions);
+	
+var t1=examAttemptTime;
+var pingInterval = 120000;
+var pingAllowed=true;
+var pingProgress=false;
+function getPingAllowed() {
+	return pingAllowed;
+}
+function setPingAllowed(pingAllowedVal) {
+	pingAllowed=pingAllowedVal;
+}
+$(document).ready(function(){
+	var duration = document.getElementById("duration");
+	duration.innerHTML=disptime(scheduleTime*60);
+	var remainingTime = t1;
+	 if(examCompleted){
+		//	alert("ok");
+	//	$('#timeId').html(disptime(t1));
+		
+		document.getElementById("timeId").innerHTML=disptime(t1);
+		setInterval(function() {
+			//alert("ok1");
+					remainingTime=remainingTime-1;
+					$('#timeId').html(disptime(remainingTime));
+		},1000);
+	pingcheck = setInterval(function() {
+		//alert(pingcheck);
+		//alert("ok3")
+		//alert(t1);
+		if(t1>0) {
+			//alert(getPingAllowed());
+			if(getPingAllowed()) {
+				pingProgress=true;
+				$("#timeremaingId").val(remainingTime);
+				
+				$.ajax({
+					type : "GET",
+					url : "/student/saveStuExamActivity",
+					data : {
+						timeRemaining : document.getElementById("timeremaingId").value,
+						examAttempt : examAttemptVal
+					},
+				  success: function(data){
+					  if(!isNaN(data)) {
+						  t1=data;
+						  remainingTime=data;
+//						$('#timeId').html(disptime(t1));
+					  } else {
+							clearInterval(pingcheck);
+							alert("No activity found or server restarted. Please login again.");
+							// changeAction("<s:property value='%{#homeId}'/>");
+							//location.href = "<s:property value='%{#homeId}'/>";
+					  }
+				  }
+				});
+				
+				
+				pingProgress=false;
+			}
+		}  else {
+			clearInterval(pingcheck);
+			getExamClose();
+			alert("Time out!!! your answers have been saved successfully");
+			//endTimeOverExam("<s:property value='%{#endExamid}'/>");
+			//endExam("/college-student/save-exam.jml");
+		} 
+	}, pingInterval);
+	}  
+	//$('#nqcount').val($('#qcount').val());
+	/* <s:if test='examAttempt.schedule.pattern.examType!=null && examAttempt.schedule.pattern.examType.marks>0'>
+	$('#tnqcount').val($('#qcount').val()* <s:property value="%{examAttempt.schedule.pattern.examType.marks}"/>);
+   </s:if> */
+	
+	
+});
+
+
+function disptime(tnumber) {
+	//alert(tnumber);
+	
+	if(tnumber=="0") {
+		alert("Time is over.");
+		getExamClose();
+		alert("Time out!!! your answers have been saved successfully");
+	}
+	if(tnumber<=0) {
+		return "0:00:00";
+	}
+	h = 0;
+	s = tnumber%(60);
+	if(s<10) {
+		s="0"+s;
+	}
+	m1 = (tnumber-s)/(60);
+	m=m1;
+	if(m1>60) {
+		m=m1%60;
+		h=(m1-m)/60;
+	}
+	if(m<10) {
+		m="0"+m;
+	}
+	//alert( h+":"+m+":"+s);
+	//if(document.getElementById("timeremaingId"))
+    document.getElementById("timeremaingId").value=tnumber;
+	//alert(document.getElementById("timeremaingId").value);
+	return h+":"+m+":"+s;
+	
+}
+	
+		var startTime = new Date();
+		
+		var totalTimeInSeconds = examAttemptTime;
+		
+		var timeGap = examAttemptTime;
+		
+		var timeCount = 0;
+		var secTemp = 60;
+		$(document).ready(function() {
+			//displayTime();
+			overlay(0);
+			
+			$("[id^=questionViewSelId]").hide();
+			$('#questionViewSelId1').show();
+			
+			
+			
+			$('#selSubNameId').html($('#portlet_tabVal1').text().trim());
+			
+				getExamQuestionData(null,null,1);	
+			
+			$("[id^=portlet_tabVal]").on("click", function(){
+				
+				$('#selSubNameId').html($('#'+this.id).text().trim());
+				var idSelVal=this.id.substr(this.id.length-1);
+				$("[id^=questionViewSelId]").hide();
+				$('#questionViewSelId'+idSelVal).show();
+				if(idSelVal==1){
+					if(!dataLayerView1){
+						getExamQuestion(1);
+						dataLayer1Que=dataLayer1[0];
+						dataLayerView1=true;
+					}else{
+						getExamQuestion(dataLayer1Que);
+					}
+					
+					$('#answeredSideViewId').text($('#answered1').text());
+				    $('#not_answeredSideViewId').text($('#not_answered1').text());
+					$('#not_visitedSideViewId').text($('#not_visited1').text());
+					$('#marked_reviewSideViewId').text($('#marked_review1').text());
+					$('#answer_marked_reviewSideViewId').text($('#answer_marked_review1').text());
+					
+				}else if(idSelVal==2){
+					
+					$('#selSubNameId').html($('#portlet_tabVal2').text().trim());
+					if(!dataLayerView2){
+						getExamQuestion(dataLayer2[0]);
+					dataLayer2Que=dataLayer2[0];
+					dataLayerView2=true;
+					
+					if(document.getElementById('queViewId'+dataLayer2Que).getAttribute("class")=="not_visited" && !examAttemptCompleted){
+						
+						document.getElementById('queViewId'+dataLayer2Que).setAttribute("class","not_answered");
+						displayCount(2);
+					}
+					
+					}else{
+						getExamQuestion(dataLayer2Que);
+					}
+					$('#answeredSideViewId').text($('#answered2').text());
+						    $('#not_answeredSideViewId').text($('#not_answered2').text());
+							$('#not_visitedSideViewId').text($('#not_visited2').text());
+							$('#marked_reviewSideViewId').text($('#marked_review2').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review2').text());
+				}else if(idSelVal==3){
+					$('#selSubNameId').html($('#portlet_tabVal3').text().trim());
+					if(!dataLayerView3){
+					getExamQuestion(dataLayer3[0]);
+					dataLayer3Que=dataLayer3[0];
+					dataLayerView3=true;
+                     if(document.getElementById('queViewId'+dataLayer3Que).getAttribute("class")=="not_visited" && !examAttemptCompleted){
+						
+						document.getElementById('queViewId'+dataLayer3Que).setAttribute("class","not_answered");
+						displayCount(3);
+					}
+					}else{
+						getExamQuestion(dataLayer3Que);
+					}
+					$('#answeredSideViewId').text($('#answered3').text());
+						    $('#not_answeredSideViewId').text($('#not_answered3').text());
+							$('#not_visitedSideViewId').text($('#not_visited3').text());
+							$('#marked_reviewSideViewId').text($('#marked_review3').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review3').text());
+				}else if(idSelVal==4){
+					$('#selSubNameId').html($('#portlet_tabVal4').text().trim());
+					if(!dataLayerView4){
+					getExamQuestion(dataLayer4[0]);
+					dataLayer4Que=dataLayer4[0];
+					dataLayerView4=true;
+					 if(document.getElementById('queViewId'+dataLayer4Que).getAttribute("class")=="not_visited" && !examAttemptCompleted){
+							
+							document.getElementById('queViewId'+dataLayer4Que).setAttribute("class","not_answered");
+							displayCount(4);
+						}
+					}else{
+						getExamQuestion(dataLayer4Que);
+					}
+					$('#answeredSideViewId').text($('#answered4').text());
+						    $('#not_answeredSideViewId').text($('#not_answered4').text());
+							$('#not_visitedSideViewId').text($('#not_visited4').text());
+							$('#marked_reviewSideViewId').text($('#marked_review4').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review4').text());
+				}else if(idSelVal==5){
+					$('#selSubNameId').html($('#portlet_tabVal5').text().trim());
+					if(!dataLayerView5){
+					getExamQuestion(dataLayer5[0]);
+					dataLayer5Que=dataLayer5[0];
+					dataLayerView5=true;
+					 if(document.getElementById('queViewId'+dataLayer5Que).getAttribute("class")=="not_visited"  && !examAttemptCompleted){
+							
+							document.getElementById('queViewId'+dataLayer5Que).setAttribute("class","not_answered");
+							displayCount(5);
+						}
+					}else{
+						getExamQuestion(dataLayer5Que);
+					}
+					$('#answeredSideViewId').text($('#answered5').text());
+						    $('#not_answeredSideViewId').text($('#not_answered5').text());
+							$('#not_visitedSideViewId').text($('#not_visited5').text());
+							$('#marked_reviewSideViewId').text($('#marked_review5').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review5').text());
+				}else if(idSelVal==6){
+					$('#selSubNameId').html($('#portlet_tabVal6').text().trim());
+					if(!dataLayerView6){
+					getExamQuestion(dataLayer6[0]);
+					dataLayer6Que=dataLayer6[0];
+					dataLayerView6=true;
+					 if(document.getElementById('queViewId'+dataLayer6Que).getAttribute("class")=="not_visited"  && !examAttemptCompleted){
+							
+							document.getElementById('queViewId'+dataLayer6Que).setAttribute("class","not_answered");
+							displayCount(6);
+						}
+					}else{
+						getExamQuestion(dataLayer6Que);
+					}
+					$('#answeredSideViewId').text($('#answered6').text());
+						    $('#not_answeredSideViewId').text($('#not_answered6').text());
+							$('#not_visitedSideViewId').text($('#not_visited6').text());
+							$('#marked_reviewSideViewId').text($('#marked_review6').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review6').text());
+				}else if(idSelVal==7){
+					$('#selSubNameId').html($('#portlet_tabVal7').text().trim());
+					if(!dataLayerView7){
+						getExamQuestion(dataLayer7[0]);
+						dataLayer7Que=dataLayer7[0];
+						dataLayerView7=true;
+                      if(document.getElementById('queViewId'+dataLayer7Que).getAttribute("class")=="not_visited"){
+							
+							document.getElementById('queViewId'+dataLayer7Que).setAttribute("class","not_answered"  && !examAttemptCompleted);
+							displayCount(7);
+						}
+						}else{
+							getExamQuestion(dataLayer7Que);
+						}
+						$('#answeredSideViewId').text($('#answered7').text());
+							    $('#not_answeredSideViewId').text($('#not_answered7').text());
+								$('#not_visitedSideViewId').text($('#not_visited7').text());
+								$('#marked_reviewSideViewId').text($('#marked_review7').text());
+								$('#answer_marked_reviewSideViewId').text($('#answer_marked_review7').text());
+					}
+				
+				
+		});
+			
+			displayCount(null);
+			
+			$('#answeredSideViewId').text($('#answered1').text());
+		    $('#not_answeredSideViewId').text($('#not_answered1').text());
+			$('#not_visitedSideViewId').text($('#not_visited1').text());
+			$('#marked_reviewSideViewId').text($('#marked_review1').text());
+			$('#answer_marked_reviewSideViewId').text($('#answer_marked_review1').text());
+			
+			$("[id^=questionViewSelId]").on("click", function(){
+				var idSelVal=this.id.substr(this.id.length-1);
+				if(idSelVal==1){
+					$('#answeredSideViewId').text($('#answered1').text());
+				    $('#not_answeredSideViewId').text($('#not_answered1').text());
+					$('#not_visitedSideViewId').text($('#not_visited1').text());
+					$('#marked_reviewSideViewId').text($('#marked_review1').text());
+					$('#answer_marked_reviewSideViewId').text($('#answer_marked_review1').text());
+					
+				}else if(idSelVal==2){
+					$('#answeredSideViewId').text($('#answered2').text());
+						    $('#not_answeredSideViewId').text($('#not_answered2').text());
+							$('#not_visitedSideViewId').text($('#not_visited2').text());
+							$('#marked_reviewSideViewId').text($('#marked_review2').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review2').text());
+				}else if(idSelVal==3){
+					$('#answeredSideViewId').text($('#answered3').text());
+						    $('#not_answeredSideViewId').text($('#not_answered3').text());
+							$('#not_visitedSideViewId').text($('#not_visited3').text());
+							$('#marked_reviewSideViewId').text($('#marked_review3').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review3').text());
+				}else if(idSelVal==4){
+					$('#answeredSideViewId').text($('#answered4').text());
+						    $('#not_answeredSideViewId').text($('#not_answered4').text());
+							$('#not_visitedSideViewId').text($('#not_visited4').text());
+							$('#marked_reviewSideViewId').text($('#marked_review4').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review4').text());
+				}else if(idSelVal==5){
+					$('#answeredSideViewId').text($('#answered5').text());
+						    $('#not_answeredSideViewId').text($('#not_answered5').text());
+							$('#not_visitedSideViewId').text($('#not_visited5').text());
+							$('#marked_reviewSideViewId').text($('#marked_review5').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review5').text());
+				}else if(idSelVal==6){
+					$('#answeredSideViewId').text($('#answered6').text());
+						    $('#not_answeredSideViewId').text($('#not_answered6').text());
+							$('#not_visitedSideViewId').text($('#not_visited6').text());
+							$('#marked_reviewSideViewId').text($('#marked_review6').text());
+							$('#answer_marked_reviewSideViewId').text($('#answer_marked_review6').text());
+				}else if(idSelVal==7){
+					$('#answeredSideViewId').text($('#answered7').text());
+				    $('#not_answeredSideViewId').text($('#not_answered7').text());
+					$('#not_visitedSideViewId').text($('#not_visited7').text());
+					$('#marked_reviewSideViewId').text($('#marked_review7').text());
+					$('#answer_marked_reviewSideViewId').text($('#answer_marked_review7').text());
+		}
+			});
+		});
+		
+		function displayCount(idSelVal) {
+			
+			$('#answeredEnd1View').text(0);
+			  $('#not_answeredEnd1View').text(0);
+			  $('#not_visitedEnd1View').text(0);
+			  $('#marked_reviewEnd1View').text(0);
+			  $('#answer_marked_reviewEnd1View').text(0);
+			  
+			  
+			for (var k = 1; k < 8; k++) {
+				var dataLayerCol=null;
+				if(idSelVal!=null){
+					k=idSelVal;
+				}
+				if(k==1){
+					dataLayerCol=dataLayer1;
+				}else if(k==2){
+					dataLayerCol=dataLayer2;
+				}else if(k==3){
+					dataLayerCol=dataLayer3;
+				}else if(k==4){
+					dataLayerCol=dataLayer4;
+				}else if(k==5){
+					dataLayerCol=dataLayer5;
+				}else if(k==6){
+					dataLayerCol=dataLayer6;
+				}else if(k==7){
+					dataLayerCol=dataLayer7;
+				}
+				
+				$('#answered'+k).text(0);
+				$('#not_answered'+k).text(0);
+				$('#not_visited'+k).text(0);
+				$('#marked_review'+k).text(0);
+				$('#answer_marked_review'+k).text(0);
+		for (var i = 0; i < dataLayerCol.length; i++) {
+			
+			if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="answered"){
+				$('#answered'+k).text(parseInt($('#answered'+k).text())+1);
+				$('#answeredEnd1View').text(parseInt($('#answeredEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="not_answered"){
+				$('#not_answered'+k).text(parseInt($('#not_answered'+k).text())+1);
+				$('#not_answeredEnd1View').text(parseInt($('#not_answeredEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="not_visited"){
+				$('#not_visited'+k).text(parseInt($('#not_visited'+k).text())+1);
+				$('#not_visitedEnd1View').text(parseInt($('#not_visitedEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="marked_review"){
+				$('#marked_review'+k).text(parseInt($('#marked_review'+k).text())+1);
+				$('#marked_reviewEnd1View').text(parseInt($('#marked_reviewEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="answer_marked_review"){
+				$('#answer_marked_review'+k).text(parseInt($('#answer_marked_review'+k).text())+1);
+				$('#answer_marked_reviewEnd1View').text(parseInt($('#answer_marked_reviewEnd1View').text())+1);
+			}
+		}
+		if(idSelVal!=null){
+			$('#answeredSideViewId').text($('#answered'+k).text());
+		    $('#not_answeredSideViewId').text($('#not_answered'+k).text());
+			$('#not_visitedSideViewId').text($('#not_visited'+k).text());
+			$('#marked_reviewSideViewId').text($('#marked_review'+k).text());
+			$('#answer_marked_reviewSideViewId').text($('#answer_marked_review'+k).text());
+		break;
+		}
+			}
+			displayQuAtmCount();
+			}
+		
+function displayQuAtmCount() {
+			
+			$('#answeredEnd1View').text(0);
+			  $('#not_answeredEnd1View').text(0);
+			  $('#not_visitedEnd1View').text(0);
+			  $('#marked_reviewEnd1View').text(0);
+			  $('#answer_marked_reviewEnd1View').text(0);
+			  
+			  
+			for (var k = 1; k < 8; k++) {
+				var dataLayerCol=null;
+				if(k==1){
+					dataLayerCol=dataLayer1;
+				}else if(k==2){
+					dataLayerCol=dataLayer2;
+				}else if(k==3){
+					dataLayerCol=dataLayer3;
+				}else if(k==4){
+					dataLayerCol=dataLayer4;
+				}else if(k==5){
+					dataLayerCol=dataLayer5;
+				}else if(k==6){
+					dataLayerCol=dataLayer6;
+				}else if(k==7){
+					dataLayerCol=dataLayer7;
+				}
+				
+		for (var i = 0; i < dataLayerCol.length; i++) {
+			
+			if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="answered"){
+				$('#answeredEnd1View').text(parseInt($('#answeredEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="not_answered"){
+				$('#not_answeredEnd1View').text(parseInt($('#not_answeredEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="not_visited"){
+				$('#not_visitedEnd1View').text(parseInt($('#not_visitedEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="marked_review"){
+				$('#marked_reviewEnd1View').text(parseInt($('#marked_reviewEnd1View').text())+1);
+			}else if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="answer_marked_review"){
+				$('#answer_marked_reviewEnd1View').text(parseInt($('#answer_marked_reviewEnd1View').text())+1);
+			}
+		}
+			}
+			}
+
+		function displayTime() {
+			setInterval(function() {
+				var date = new Date();
+				timeCount++;
+				if (secTemp < 0) {
+					secTemp = 60;
+				}
+				$("#timeId").html(
+						Math.floor((totalTimeInSeconds - timeCount) / 60) + ":"
+								+ secTemp);
+				secTemp--;
+			}, 1000);
+		}
+
+		$(".not_visited").on("click", function() {
+			$(this).removeClass("not_visited");
+			$(this).addClass("not_answered");
+		});
+
+		function toggleRightPanel(val) {
+			if (val) {
+				$("#leftPanelId").toggleClass("col-md-12");
+				$("#rightPanelId").hide();
+				$("#expandSpanId").show();
+			} else {
+				$("#leftPanelId").toggleClass("col-md-12");
+				$("#rightPanelId").show();
+				$("#expandSpanId").hide();
+				$("#collapseSpanId").show();
+			}
+		}
+
+		function showQuestionPaper(examAttemptId) {
+			$.ajax({
+				url : "/student/showQuestionPaper",
+				data : {
+					examAttemptId : examAttemptId
+				},
+				success : function(data) {
+					$("#questionPaperDivId").html(data);
+					$("#questionPaperPopUp").modal();
+				}
+			});
+		}
+		
+		
+		
+		function getExamQuestionData(question,tabNo,queSelId) {
+			 
+			$.ajax({
+				type : "GET",
+				url : "/student/getExamQuestionView1",
+				async: true,
+				data : {
+					examAttempt : examAttemptVal,
+					queSelId:queSelId
+				},
+				success : function(data) {
+					
+					$('#questionDataVal'+queSelId).html('');
+					$('#questionDataVal'+queSelId).html(data);
+					
+					queNo=queSelId;
+					
+					selQueAnswer="";
+					
+					 $('#progressBar').css('width', Math.round(width)+'%');
+		              $("#label").html( Math.round(width) + '%');
+		              width =examTotalQuestionwidth+width;
+		              
+		              
+		              if(queSelId==examTotalQuestions){
+							 overlay(1);
+							 $('#portlet_tab1').html($('#questionDataVal1').html());
+							 
+							 if(document.getElementById('queViewId1').getAttribute("class")=="not_visited"){
+									
+									document.getElementById('queViewId1').setAttribute("class","not_answered");
+									displayCount(1);
+								}
+						 }
+		              
+		              queNo=1;
+		  			selQueAnswer="";
+		  			
+		  			getExamQues(parseInt(queSelId)+1);
+		  			
+				},
+				error: function ( jqXHR, exception,textStatus) {
+		            if (jqXHR.status === 0) {
+		                alert('Please Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.\n' + jqXHR.responseText);
+		            }
+		           
+		        },
+			});
+			
+		}
+		
+		function getExamQues(queSelId1) {
+			if(queSelId1<=examTotalQuestions){
+				getExamQuestionData(null,null,queSelId1);
+			}
+		}
+		
+		
+		function getExamQuestion(queSelId) {
+			var selQueId=queSelId;
+			if(queSelId.length>4){
+				selQueId = queSelId.substring(4, queSelId.length);
+			}else {
+				selQueId=queSelId;
+			}
+			if(checkValueByLoop(selQueId,dataLayer1) == "Exist") {
+				$('#portlet_tab1').html('');
+				$('#portlet_tab1').html($('#questionDataVal'+selQueId).html());
+				dataLayer1Que=selQueId;
+				if(!examAttemptCompleted){
+					displayCount(1);	
+				}
+			}else if(checkValueByLoop(selQueId,dataLayer2) == "Exist") {
+				$('#portlet_tab2').html('');
+				$('#portlet_tab2').html($('#questionDataVal'+selQueId).html());
+				dataLayer2Que=selQueId;
+				if(!examAttemptCompleted){
+				displayCount(2);
+				}
+			}else if(checkValueByLoop(selQueId,dataLayer3) == "Exist") {
+				$('#portlet_tab3').html('');
+				$('#portlet_tab3').html($('#questionDataVal'+selQueId).html());
+				dataLayer3Que=selQueId;
+				if(!examAttemptCompleted){
+				displayCount(3);
+				}
+			}else if(checkValueByLoop(selQueId,dataLayer4) == "Exist") {
+				$('#portlet_tab4').html('');
+				$('#portlet_tab4').html($('#questionDataVal'+selQueId).html());
+				dataLayer4Que=selQueId;
+				if(!examAttemptCompleted){
+				displayCount(4);
+				}
+			}else if(checkValueByLoop(selQueId,dataLayer5) == "Exist") {
+				$('#portlet_tab5').html('');
+				$('#portlet_tab5').html($('#questionDataVal'+selQueId).html());
+				dataLayer5Que=selQueId;
+				if(!examAttemptCompleted){
+				displayCount(5);
+				}
+			}else if(checkValueByLoop(selQueId,dataLayer6) == "Exist") {
+				$('#portlet_tab6').html('');
+				$('#portlet_tab6').html($('#questionDataVal'+selQueId).html());
+				dataLayer6Que=selQueId;
+				if(!examAttemptCompleted){
+				displayCount(6);
+				}
+			}else if(checkValueByLoop(selQueId,dataLayer7) == "Exist") {
+				$('#portlet_tab7').html('');
+				$('#portlet_tab7').html($('#questionDataVal'+selQueId).html());
+				dataLayer7Que=selQueId;
+				if(!examAttemptCompleted){
+				displayCount(7);
+				}
+			}
+			queNo=selQueId;
+			selQueAnswer="";
+		}
+		
+		function checkValueByLoop(value,arr){
+			  var status = 'Not exist';
+			 
+			  for(var i=0; i<arr.length; i++){
+			   var name = arr[i];
+			   if(name == value){
+			    status = 'Exist';
+			    break;
+			   }
+			  }
+			 
+			  return status;
+			 }
+		
+		
+		
+		function markForReview(){
+			
+			if(document.getElementById('queViewId'+queNo).getAttribute("class")=="answered"){
+				document.getElementById('queViewId'+queNo).setAttribute("class","answer_marked_review");
+			}else if((document.getElementById('queViewId'+queNo).getAttribute("class")=="not_answered" || document.getElementById('queViewId'+queNo).getAttribute("class")=="not_visited")){
+				document.getElementById('queViewId'+queNo).setAttribute("class","marked_review");
+			}
+			
+			
+			if(checkValueByLoop(queNo,dataLayer1) == "Exist") {
+				displayCount(1);
+			}else if(checkValueByLoop(queNo,dataLayer2) == "Exist") {
+					displayCount(2);
+			}else if(checkValueByLoop(queNo,dataLayer3) == "Exist") {
+				displayCount(3);
+			}else if(checkValueByLoop(queNo,dataLayer4) == "Exist") {
+				displayCount(4);
+			}else if(checkValueByLoop(queNo,dataLayer5) == "Exist") {
+				displayCount(5);
+			}else if(checkValueByLoop(queNo,dataLayer6) == "Exist") {
+				displayCount(6);
+			}else if(checkValueByLoop(queNo,dataLayer7) == "Exist") {
+				displayCount(7);
+			}
+			
+			if(selQueAnswer!=""){
+			saveQuestionAttempt(queNo,selQueAnswer,true);
+			 queNo=parseInt(queNo);
+			}else{
+				 queNo=parseInt(queNo)+1;
+			}
+			
+			
+			 if(parseInt(examTotalQuestions)>parseInt(queNo)){
+				
+                if(document.getElementById('queViewId'+queNo).getAttribute("class")=="not_visited"){
+					
+					document.getElementById('queViewId'+queNo).setAttribute("class","not_answered");
+				}
+				getQueCountSHow(queNo,false); 
+			}else{
+				getQueCountSHow(queNo,true); 
+			} 
+			
+			
+			
+			
+		}
+		
+		function clearResponse(){
+			
+			var queNoVal=queNo;
+			
+			$.ajax({
+				type : "GET",
+				url : "/student/clearResponse",
+				data : {
+					examAttempt : examAttemptVal,
+					timeRemaining : document.getElementById("timeremaingId").value,
+					questionNo:queNoVal
+				},
+				success : function(data) {
+					$('#questionDataVal'+queNo).html('');
+					$('#questionDataVal'+queNo).html(data);
+					
+					if(checkValueByLoop(queNo,dataLayer1) == "Exist") {
+						 $('#portlet_tab1').html($('#questionDataVal'+queNo).html());
+					}else if(checkValueByLoop(queNo,dataLayer2) == "Exist") {
+						 $('#portlet_tab2').html($('#questionDataVal'+queNo).html());
+					}else if(checkValueByLoop(queNo,dataLayer3) == "Exist") {
+						 $('#portlet_tab3').html($('#questionDataVal'+queNo).html());
+					}else if(checkValueByLoop(queNo,dataLayer4) == "Exist") {
+						 $('#portlet_tab4').html($('#questionDataVal'+queNo).html());
+					}else if(checkValueByLoop(queNo,dataLayer5) == "Exist") {
+						 $('#portlet_tab5').html($('#questionDataVal'+queNo).html());
+					}else if(checkValueByLoop(queNo,dataLayer6) == "Exist") {
+						 $('#portlet_tab6').html($('#questionDataVal'+queNo).html());
+					}else if(checkValueByLoop(queNo,dataLayer7) == "Exist") {
+						 $('#portlet_tab7').html($('#questionDataVal'+queNo).html());
+					}
+					document.getElementById('queViewId'+queNo).setAttribute("class","not_answered");
+					if(checkValueByLoop(queNo,dataLayer1) == "Exist") {
+						displayCount(1);
+					}else if(checkValueByLoop(queNo,dataLayer2) == "Exist") {
+							displayCount(2);
+					}else if(checkValueByLoop(queNo,dataLayer3) == "Exist") {
+						displayCount(3);
+					}else if(checkValueByLoop(queNo,dataLayer4) == "Exist") {
+						displayCount(4);
+					}else if(checkValueByLoop(queNo,dataLayer5) == "Exist") {
+						displayCount(5);
+					}else if(checkValueByLoop(queNo,dataLayer6) == "Exist") {
+						displayCount(6);
+					}else if(checkValueByLoop(queNo,dataLayer7) == "Exist") {
+						displayCount(7);
+					}
+					
+					selQueAnswer="";
+				},
+				error: function ( jqXHR, exception,textStatus) {
+		            if (jqXHR.status === 0) {
+		                alert('Please Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.\n' + jqXHR.responseText);
+		            }
+		           
+		        },
+			});
+		}
+		
+		
+		function saveQuestionAttempt(questionNo,answer,markForReview) {
+			if(questionNo==null || questionNo.length==0){
+				questionNo=queNo;
+				if(questionNo==""){
+					questionNo=1;
+				}
+			}
+			
+			
+				answer = selQueAnswer;
+				
+				var lastQueVal=false;
+				
+				var firstQue=questionNo;
+				var secondQue=null;
+				
+				var firstQuePreviousClass=null;
+				var secondQuePreviousClass=null;
+				
+				if(parseInt(examTotalQuestions)>parseInt(questionNo)){
+					secondQue=parseInt(questionNo)+1;
+				}else{
+					secondQue=parseInt(questionNo);
+					lastQueVal=true;
+				}
+				if(selQueAnswer!=""){
+					if(document.getElementById('queViewId'+firstQue).getAttribute("class")=="marked_review" && markForReview){
+						document.getElementById('queViewId'+firstQue).setAttribute("class","answer_marked_review");
+					}else{
+						firstQuePreviousClass=document.getElementById('queViewId'+firstQue).getAttribute("class");
+						document.getElementById('queViewId'+firstQue).setAttribute("class","answered");
+					}
+				}else{
+					answer =queAnswersArray[firstQue];
+					
+					if(document.getElementById('queViewId'+firstQue).getAttribute("class")=="marked_review" && markForReview){
+						document.getElementById('queViewId'+firstQue).setAttribute("class","answer_marked_review");
+					}else if(document.getElementById('queViewId'+firstQue).getAttribute("class")=="marked_review"){
+						firstQuePreviousClass=document.getElementById('queViewId'+firstQue).getAttribute("class");
+						document.getElementById('queViewId'+firstQue).setAttribute("class","answered");
+					}
+				}
+				
+				getQueCountSHow(secondQue,lastQueVal); 
+				
+			var timeGapOfQue = timeGap-document.getElementById("timeremaingId").value;
+			//$(".loadingTxt").html("<div align='center' style='padding-top:20%;'><strong>Loading....</strong></div>");
+			
+			var lastQue=false;
+			timeGap=document.getElementById("timeremaingId").value;
+			if(parseInt(examTotalQuestions)>parseInt(questionNo)){
+				questionNo=parseInt(questionNo)+1;
+			}else{
+				questionNo=parseInt(questionNo);
+				lastQue=true;
+			}
+			
+			secondQuePreviousClass=document.getElementById('queViewId'+questionNo).getAttribute("class");
+			secondQue=questionNo;
+			
+				if(document.getElementById('queViewId'+questionNo).getAttribute("class")=="not_visited"){
+					
+					document.getElementById('queViewId'+questionNo).setAttribute("class","not_answered");
+				}
+				
+				if(checkValueByLoop(questionNo,dataLayer1) == "Exist") {
+					displayCount(1);
+					$('#selSubNameId').html($('#portlet_tabVal1').text().trim());
+				}else if(checkValueByLoop(questionNo,dataLayer2) == "Exist") {
+					displayCount(2);
+					$('#selSubNameId').html($('#portlet_tabVal2').text().trim());
+				}else if(checkValueByLoop(questionNo,dataLayer3) == "Exist") {
+					displayCount(3);
+					$('#selSubNameId').html($('#portlet_tabVal3').text().trim());
+				}else if(checkValueByLoop(questionNo,dataLayer4) == "Exist") {
+					dataLayer4Que=selQueId;
+					displayCount(4);
+					$('#selSubNameId').html($('#portlet_tabVal4').text().trim());
+				}else if(checkValueByLoop(questionNo,dataLayer5) == "Exist") {
+					displayCount(5);
+					$('#selSubNameId').html($('#portlet_tabVal5').text().trim());
+				}else if(checkValueByLoop(questionNo,dataLayer6) == "Exist") {
+					displayCount(6);
+					$('#selSubNameId').html($('#portlet_tabVal6').text().trim());
+				}else if(checkValueByLoop(questionNo,dataLayer7) == "Exist") {
+					displayCount(7);
+					$('#selSubNameId').html($('#portlet_tabVal7').text().trim());
+				}
+			
+			queNo=questionNo;
+			selQueAnswer="";
+			$.ajax({
+				type : "GET",
+				url : "/student/saveQuestionAttempt",
+				async: "false",
+				data : {
+					examAttempt : examAttemptVal,
+					timeRemaining : document.getElementById("timeremaingId").value,
+					questionNo:firstQue,
+					answer:answer,
+					timeGapOfQue:timeGapOfQue,
+					markForReview:markForReview
+				},
+				success : function(data) {
+					
+					queAnswersArray[firstQue]=answer;
+					
+						$('#questionDataVal'+firstQue).html('');
+						$('#questionDataVal'+firstQue).html(data);	
+				},
+				error: function ( jqXHR, exception,textStatus) {
+					
+					document.getElementById('queViewId'+firstQue).setAttribute("class",firstQuePreviousClass);
+					document.getElementById('queViewId'+secondQue).setAttribute("class",secondQuePreviousClass);
+					
+					getQueCountSHow(secondQue,lastQueVal); 
+					
+		            if (jqXHR.status === 0) {
+		                alert('Please Verify Network.');
+		            } else if (jqXHR.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (jqXHR.status == 500) {
+		                alert('Internal Server Error [500].');
+		            } else if (exception === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (exception === 'timeout') {
+		                alert('Time out error.');
+		            } else if (exception === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+		                alert('Uncaught Error.\n' + jqXHR.responseText);
+		            }
+		           
+		        },
+			});
+		}
+		
+		function getQueCountSHow(preQueVal,lastQueVal){
+			
+			if(checkValueByLoop(preQueVal,dataLayer1) == "Exist") {
+				$('#portlet_tabVal1').tab('show');
+				 
+				 $("[id^=questionViewSelId]").hide();
+					$('#questionViewSelId1').show();
+				 if(!lastQueVal){
+					 getExamQuestion(preQueVal);
+				 }
+				
+				displayCount(1);
+			}else if(checkValueByLoop(preQueVal,dataLayer2) == "Exist") {
+				
+					 $('#portlet_tabVal2').tab('show');
+					 
+					 $("[id^=questionViewSelId]").hide();
+						$('#questionViewSelId2').show();
+						 if(!lastQueVal){
+							 getExamQuestion(preQueVal);
+						 }
+					displayCount(2);
+			}else if(checkValueByLoop(preQueVal,dataLayer3) == "Exist") {
+				 $('#portlet_tabVal3').tab('show');
+				 $("[id^=questionViewSelId]").hide();
+					$('#questionViewSelId3').show();
+					 if(!lastQueVal){
+						 getExamQuestion(preQueVal);
+					 }
+				displayCount(3);
+			}else if(checkValueByLoop(preQueVal,dataLayer4) == "Exist") {
+				 $('#portlet_tabVal4').tab('show');
+				 $("[id^=questionViewSelId]").hide();
+					$('#questionViewSelId4').show();
+					 if(!lastQueVal){
+						 getExamQuestion(preQueVal);
+					 }
+				displayCount(4);
+			}else if(checkValueByLoop(preQueVal,dataLayer5) == "Exist") {
+				 $('#portlet_tabVal5').tab('show');
+				 $("[id^=questionViewSelId]").hide();
+					$('#questionViewSelId5').show();
+					 if(!lastQueVal){
+						 getExamQuestion(preQueVal);
+					 }
+				displayCount(5);
+			}else if(checkValueByLoop(preQueVal,dataLayer6) == "Exist") {
+				$('#portlet_tabVal6').tab('show');
+				 $("[id^=questionViewSelId]").hide();
+					$('#questionViewSelId6').show();
+					 if(!lastQueVal){
+						 getExamQuestion(preQueVal);
+					 }
+				displayCount(6);
+			}else if(checkValueByLoop(preQueVal,dataLayer7) == "Exist") {
+				$('#portlet_tabVal7').tab('show');
+				 $("[id^=questionViewSelId]").hide();
+					$('#questionViewSelId7').show();
+					 if(!lastQueVal){
+						 getExamQuestion(preQueVal);
+					 }
+				displayCount(7);
+			}
+		}
+		
+		
+		
+		function qattemptAnswer(answer) {
+			selQueAnswer+=answer;
+		}
+		
+		  function qattempt(queTypeId,answer,questionNo,queId,queVal,questionNoVal) {
+			  
+			  selQueAnswer="";
+			  if(queTypeId==1  || queTypeId==4  || queTypeId==5 || queTypeId==6 || queTypeId==7 || queTypeId==8  || queTypeId==9 || queTypeId==15 || queTypeId==11){
+				   selQueAnswer=answer;
+				   queAnswersArray[questionNoVal]=answer;
+				   
+			  }else if(queTypeId==2){
+					  
+					  if(document.getElementById("myradio-"+answer)!=null && document.getElementById("myradio-"+answer).checked==true){
+						  selQueAnswer+='1';
+					  }else  if(document.getElementById("myradio-"+answer)!=null){
+						  selQueAnswer = selQueAnswer.replace('1','');
+					  }
+					  
+					  if(document.getElementById("myradio-"+questionNo)!=null && document.getElementById("myradio-"+questionNo).checked==true){
+						  selQueAnswer+='2';
+					  } else if(document.getElementById("myradio-"+questionNo)!=null){
+						  selQueAnswer = selQueAnswer.replace('2','');
+					  }
+					  if(document.getElementById("myradio-"+queId)!=null && document.getElementById("myradio-"+queId).checked==true){
+						  selQueAnswer+='3';
+					  }else if(document.getElementById("myradio-"+queId)!=null){
+						  selQueAnswer = selQueAnswer.replace('3','');
+					  }
+					  if(document.getElementById("myradio-"+queVal)!=null && document.getElementById("myradio-"+queVal).checked==true){
+						  selQueAnswer+='4';
+					  } else if(document.getElementById("myradio-"+queVal)!=null){
+						  selQueAnswer = selQueAnswer.replace('4','');
+					  }  
+					  
+					  queAnswersArray[questionNoVal]=selQueAnswer;
+			  }else if(queTypeId==3){
+					  selQueAnswer=document.getElementsByName("answerInt"+queId)[0].value;
+					  queAnswersArray[questionNoVal]=selQueAnswer;
+			  }else if(queTypeId==26){
+					  selQueAnswer=document.getElementById("floatAnswer-"+queVal).value;
+					  queAnswersArray[questionNoVal]=selQueAnswer;
+			  }
+			  
+			  
+			  var isauto = document.getElementById("autonext").checked;
+			  if(isauto && queTypeId!=2 && queTypeId!=11 && queTypeId!=3) {
+				  saveQuestionAttempt(questionNo,selQueAnswer,false);
+			  } 
+		  }
+		  
+		  
+		  function endExam() {
+			  document.getElementById("examContentViewId").style.display="none";
+				document.getElementById("examEndContentViewId").style.display="inline";
+				
+				
+				for (var k = 1; k < 7; k++) {
+					
+					var dataLayerCol=null;
+					if(k==1){
+						dataLayerCol=dataLayer1;
+					}else if(k==2){
+						dataLayerCol=dataLayer2;
+					}else if(k==3){
+						dataLayerCol=dataLayer3;
+					}else if(k==4){
+						dataLayerCol=dataLayer4;
+					}else if(k==5){
+						dataLayerCol=dataLayer5;
+					}else if(k==6){
+						dataLayerCol=dataLayer6;
+					}else if(k==7){
+						dataLayerCol=dataLayer7;
+					}
+			   for (var i = 0; i < dataLayerCol.length; i++) {
+				
+				
+				if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="answered"){
+					$('#answeredEndView'+k).text($('#answered'+k).text());
+				}
+				
+				if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="not_answered"){
+					$('#not_answeredEndView'+k).text($('#not_answered'+k).text());
+				}
+				if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="not_visited"){
+					$('#not_visitedEndView'+k).text($('#not_visited'+k).text());
+				}
+				
+				if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="marked_review"){
+					$('#marked_reviewEndView'+k).text($('#marked_review'+k).text());
+				}
+				
+				if(document.getElementById('queViewId'+dataLayerCol[i]).getAttribute("class")=="answer_marked_review"){
+					$('#answer_marked_reviewEndView'+k).text($('#answer_marked_review'+k).text());
+				}
+			}
+		
+				}
+				
+			  }
+		  
+		  function showExamModule() {
+			  document.getElementById("examContentViewId").style.display="inline";
+				document.getElementById("examEndContentViewId").style.display="none";
+			  }
+		  function getEndExam(){
+			  
+			  if (confirm("Are you sure you want to continue....")) {
+				  getExamClose();
+				} else {
+					return false;
+				}
+		  }
+		  function getExamClose(){
+			  var examAtmVal=examAttemptVal;
+				  $.ajax({
+						type : "GET",
+						url : "/student/saveEndExamAttempt",
+						data : {
+							examAttempt : examAtmVal
+						},
+						success : function(data) {
+							
+							alert(data);
+							window.close();
+						},
+						error: function ( jqXHR, exception,textStatus) {
+				            if (jqXHR.status === 0) {
+				                alert('Please Verify Network.');
+				            } else if (jqXHR.status == 404) {
+				                alert('Requested page not found. [404]');
+				            } else if (jqXHR.status == 500) {
+				                alert('Internal Server Error [500].');
+				            } else if (exception === 'parsererror') {
+				                alert('Requested JSON parse failed.');
+				            } else if (exception === 'timeout') {
+				                alert('Time out error.');
+				            } else if (exception === 'abort') {
+				                alert('Ajax request aborted.');
+				            } else {
+				                alert('Uncaught Error.\n' + jqXHR.responseText);
+				            }
+				           
+				        },
+					});
+				  
+				  
+				  
+			  
+		  }
+	</script>
+	<script>
+$(document).ready(function(){
+	    $("#downId").click(function(){
+    	$("#examQuestionContentId").scrollTop($("#examQuestionContentId").height());
+    });
+    
+     $("#upId").click(function(){
+        $("#examQuestionContentId").scrollTop(0);
+    });
+});
+
+$(document).bind("keyup keydown", function(e){
+    if(e.ctrlKey && e.keyCode == 80){
+      	tooltip("Print prohibited.","error");
+        return false;
+    }
+    /* if(e.keyCode == 123){
+        tooltip("F12 prohibited.","error");
+        return false;
+    } */
+    if(e.keyCode == 116 || (e.ctrlKey && e.keyCode == 82)){
+        tooltip("Refresh prohibited.","error");
+        return false;
+      }
+});
+
+
+</script>
+	<script>
+
+$(document).ready(function () {
+    $('[id^=editDialog]').hover(
+  function () {
+	  var idSelVal=this.id.substr(this.id.length-1);
+     $('[id^=dropdown-menu'+idSelVal+']').slideDown(600);
+  }, 
+  function () {
+	  var idSelVal=this.id.substr(this.id.length-1);
+	     $('[id^=dropdown-menu'+idSelVal+']').slideUp(600);
+  }
+);
+   
+    
+    $('[id^=allQueAtmSelId]').hover(
+    		  function () {
+    			  $('[id^=totalQueAtm]').slideDown(600);
+    		  }, 
+    		  function () {
+    			  $('[id^=totalQueAtm]').slideUp(600);
+    		  }
+    		);
+    		   
+    
+    
+    
+    $('[id^=queViewId]').click(function(){
+    	if(!examAttemptCompleted){
+    		document.getElementById(this.id).setAttribute("class",document.getElementById(this.id).getAttribute("class").split(" ")[0]);	
+    	}
+    	
+    });
+ 
+});
+
+
+function overlay(v) {
+	if (v == 0) {
+		 document.getElementById("examContentViewId").style.display="none";
+			document.getElementById("loading").style.display="inline";
+	} else {
+		 document.getElementById("examContentViewId").style.display="inline";
+			document.getElementById("loading").style.display="none";
+	}
+
+}
+</script>
+
+</body>
+</html>

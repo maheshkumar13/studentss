@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+label {
+ font-weight:bold;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover
+	{
+	background: #228be6 !important;
+	color: #ffffff;
+	display: block;
+	border-bottom: 3px solid #228be6 !important;
+}
+
+.nav-tabs>li.active>a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(34, 139, 230, 0);
+	border-top-color: #228be6;
+	border-width: 10px;
+	margin-left: -10px;
+}
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject ">Monthly Electricity
+					Consumption Details</span>
+			</div>
+
+		</div>
+
+		<div class="portlet-body">
+			<ul class="nav nav-tabs custom-tab-active">
+				<li class="active"><a href="#tab_1_1" data-toggle="tab">
+						Create</a></li>
+				<li><a href="#tab_1_2" data-toggle="tab"
+					onclick="getTableData()"> View Status </a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade active in" id="tab_1_1">
+					<div class="custom-div">
+						<form th:action="@{/scaits/monthlyeleConDetailsSave}" id="formId"
+							method="post" enctype="multipart/form-data">
+							<div class="row">
+								<div class="col-md-4">
+									<label>Building Name</label> <select class="form-control p-0"
+										id="building" name="building" onchange="return loadScno(); ">
+										<option value="0">Select Building</option>
+										<option th:each="buildings:${buildingList}"
+											th:value="${buildings.id}" th:text="${buildings.buildingName}"
+											th:selected="${building!=null &&  buildings.id==building}"></option>
+									</select>
+								</div>
+
+								<div class="col-md-4">
+									<label>SCNo</label><select class="form-control" name="scno"
+										id="scno" onchange="return loadPreviousReading(); ">
+										<option value="0">Select Service</option>
+										<option th:each="scno:${scno}" th:value="${scno.scno}"
+											th:text="${scno.scno}"
+											th:selected="${scno!=null &&  scno==scno}"></option>
+									</select>
+								</div>
+
+								<div class="col-md-4">
+									<label>Bill NO </label><input type="text" name="billNo"
+										id="billNo"
+										onchange="javascript:this.value=this.value.toUpperCase();"
+										data-required="1" class="form-control" required="required" />
+								</div>
+
+								<div class="col-md-4">
+									<label>USC NO </label><input name="uscNo" id="uscNo"
+										class="form-control form-control-inline" size="16" type="text"
+										value="" required="required" />
+								</div>
+
+
+								<div class="col-md-4">
+									<label> ERO NO</label><input name="erono" id="erono"
+										class="form-control form-control-inline " size="16"
+										type="text" value="" required="required" readonly="readonly" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Previous Reading Date</label> <input type="text"
+										class="form-control  date-picker" name="prevReadingDate"
+										id="prevReadingDate" placeholder="date">
+								</div>
+
+
+								<div class="col-md-4">
+									<label>Previous Reading</label> <input name="prevReading"
+										id="prevReading" class="form-control form-control-inline "
+										size="16" type="text" value="" required="required"
+										readonly="readonly"
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+								<div class="col-md-4">
+									<label>Current Bill Date</label> <input type="text"
+										class="form-control  date-picker" name="presReadingDate"
+										id="presReadingDate" placeholder="date">
+								</div>
+
+								<div class="col-md-4">
+									<label>Bill Due Date</label> <input type="text"
+										class="form-control  date-picker" name="dueDate" id="dueDate"
+										placeholder="date">
+								</div>
+								<div class="col-md-4">
+									<label>Pay Date</label> <input type="text"
+										class="form-control  date-picker" name="payDate" id="payDate"
+										placeholder="date">
+								</div>
+
+								<div class="col-md-4">
+									<label>Present Reading</label><input name="presReading"
+										id="presReading" onblur="return Total();"
+										class="form-control form-control-inline " size="16"
+										type="text" value="" required="required"
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Used Units </label><input name="usedUnits"
+										id="usedUnits" class="form-control form-control-inline "
+										size="16" type="text" value="" required="required"
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Multiplying Factor</label><input
+										name="multiplyingFactor" id="multiplyingFactor"
+										class="form-control form-control-inline " size="16"
+										type="text" value="" required="required" onblur="calFactor()"
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+
+								<div class="col-md-4">
+									<label>MultiplyingUnits </label><input name="multiplyingUnits"
+										id="multiplyingUnits"
+										class="form-control form-control-inline " size="16"
+										type="text" value="" required="required" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Penalty Amount </label> <input name="penalityAmount"
+										id="penalityAmount" class="form-control form-control-inline "
+										size="16" type="text" value="" required="required" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Total Amount </label><input name="totalAmount"
+										id="totalAmount" class="form-control form-control-inline "
+										size="16" type="text" value="" required="required" />
+								</div>
+
+								<div class="col-md-8">
+									<label>Remarks </label> <input name="remarks" id="remarks"
+										class="form-control form-control-inline " size="16"
+										type="text" value="" required="required" />
+								</div>
+
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="tab_1_2">
+					<div th:replace="electricity/monthlyEleConDetailsInnerPage.html"></div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet-footer">
+			<div class="row" id="button">
+				<div class="col-md-12">
+					<button type="button" class="btn-pri" onClick="monthlyeleConSave()">Insert</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn-pri" onclick="resetFields()">Reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script
+		src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+		type="text/javascript"></script>
+	<script
+		src="../assets/pages/scripts/components-date-time-pickers.min.js"
+		type="text/javascript"></script>
+	<script type="text/javascript">
+
+  
+		$("#prevReadingDate,#presReadingDate,#payDate,#dueDate")
+				.datetimepicker({
+					format : 'dd-mm-yyyy'
+				});
+
+		$(document).ready(function() {
+			$("a").click(function() {
+				$('#button').show();
+			});
+		});
+		function getTableData() {
+			pageOverlay(0);
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getMonthlyEleData",
+				success : function(data) {
+					pageOverlay(1);
+					$('#tab_1_2').html(data);
+					$('#button').hide();
+				},
+				error : function() {
+					pageOverlay(1);
+					alert('Error occured');
+				}
+			});
+		}
+
+		function resetFields() {
+			$("#building").val(0);
+			$("#scno").val(0);
+			$("#erono").val('');
+			$("#uscNo").val('');
+			$("#billNo").val('');
+			$("#prevReadingDate").val('');
+			$("#prevReading").val('');
+			$("#presReadingDate").val('');
+			$("#presReading").val('');
+			$("#dueDate").val('');
+			$("#usedUnits").val('');
+			$("#peakHourReading").val('');
+			$("#nonPeakHourReading").val('');
+			$("#multiplyingFactor").val('');
+			$("#multiplyingUnits").val('');
+			$("#payDate").val('');
+			$("#penalityAmount").val('');
+			$("#totalAmount").val('');
+			$("#remarks").val('');
+			$('#payDate').val('');
+
+		}
+
+		function editMonEleDetails(id) {
+			pageOverlay(0);
+			$.ajax({
+				type : "get",
+				url : "/scaits/editMonthlyeleConDetails",
+				data : {
+					id : id
+				},
+				success : function(data) {
+					$('a[href="#tab_1_1"]').click();
+					$('#button').show();
+					var prePopulate = JSON.parse(data);
+					$('#building').val(prePopulate[0]);
+					if (prePopulate[1]) {
+						var select = $('#scno');
+						select.find('option').remove();
+						$.each(prePopulate[1],
+								function(key, value) {
+									$('<option>').val(key).text(value)
+											.appendTo(select);
+								});
+					}
+					$('#billNo').val(prePopulate[2]);
+					$('#uscNo').val(prePopulate[3]);
+					$('#erono').val(prePopulate[4]);
+					$('#prevReadingDate').val(prePopulate[5]);
+					$('#prevReading').val(prePopulate[6]);
+					$('#presReadingDate').val(prePopulate[7]);
+					$('#presReading').val(prePopulate[8]);
+					$('#usedUnits').val(prePopulate[9]);
+					$('#multiplyingFactor').val(prePopulate[10]);
+					$('#multiplyingUnits').val(prePopulate[11]);
+					$('#totalAmount').val(prePopulate[12])
+					$('#remarks').val(prePopulate[13]);
+					$("#example").html(prePopulate[14]);
+					$('#scno').val(prePopulate[15]);
+					$('#dueDate').val(prePopulate[16]);
+					$('#rid').val(prePopulate[17]);
+					$('#payDate').val(prePopulate[18]);
+					$("#example").DataTable({});
+					pageOverlay(1);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+		function monthlyeleConSave() {
+			if ($("#building").val() == "" || $("#building").val() == 0) {
+				showToastr("Please select building", "error");
+				$("#building").focus();
+				return false;
+			} else if ($("#scno").val() == "" || $("#scno").val() == 0) {
+				showToastr("Please enter  SCNO", "error");
+				$("#scno").focus();
+				return false;
+			} else if ($("#billNo").val() == "") {
+				showToastr("Please enter  BillNo", "error");
+				$("#billNo").focus();
+				return false;
+			} else if ($("#uscNo").val() == "") {
+				showToastr("Please enter  UscNo", "error");
+				$("#uscNo").focus();
+				return false;
+			} else if ($("#erono").val() == "") {
+				showToastr("Please enter valied ERO No ", "error");
+				$("#erono").focus();
+				return false;
+			} else if ($("#prevReadingDate").val() == "") {
+				showToastr("Please select   prevReadingDate", "error");
+				$("#prevReadingDate").focus();
+				return false;
+			} else if ($("#prevReading").val() == "") {
+				showToastr("Please enter  PrevReading ", "error");
+				$("#prevReading").focus();
+				return false;
+			} else if ($("#presReadingDate").val() == "") {
+				showToastr("please enter PresReadingDatee", "error");
+				$("#presReadingDate").focus();
+				return false;
+			} else if ($("#dueDate").val() == "") {
+				showToastr("please select  dueDate", "error");
+				$("#dueDate").focus();
+				return false;
+			} else if ($("#payDate").val() == "") {
+				showToastr("please enter PayDate", "error");
+				$("#payDate").focus();
+				return false;
+			} else if ($("#presReading").val() == "") {
+				showToastr("Please enter  PresReading", "error");
+				$("#presReading").focus();
+				return false;
+			} else if ($("#usedUnits").val() == "") {
+				showToastr("Please enter  Consumed Units", "error");
+				$("#usedUnits").focus();
+				return true;
+			} else if ($("#totalAmount").val() == "") {
+				showToastr("Please enter  TotalAmount", "error");
+				$("#totalAmount").focus();
+				return false;
+			} else if ($("#prevReading").val() > $("#presReading").val()) {
+				showToastr(
+						"Present Reading  Must be grather thanPrevious Reading",
+						"error");
+				$("#presReading").focus();
+				return false;
+			} else if (confirm("Do you want to insert this record")) {
+				pageOverlay(0);
+				$.ajax({
+					type : "post",
+					url : "/scaits/monthlyeleConDetailsSave",
+					data : $("#formId").serialize(),
+					success : function(data) {
+						var prePopulate = JSON.parse(data);
+						resetFields();
+						pageOverlay(1);
+						alert(prePopulate[1]);
+					},
+					error : function() {
+						alert('Error occured');
+						pageOverlay(1);
+					}
+				});
+			} else {
+				return false;
+			}
+		}
+
+		function loadScno() {
+			pageOverlay(0);
+			$.ajax({
+				url : "/scaits/getGenList",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#scno');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+					pageOverlay(1);
+				}
+			});
+		}
+		function loadPreviousReading() {
+			pageOverlay(0);
+			$.ajax({
+				url : "/scaits/getMonConPrevReading",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#erono').val('');
+					$('#prevReadingDate').val('');
+					$('#prevReading').val('');
+					var prePopulate = JSON.parse(data);
+					if (prePopulate[0]) {
+						$('#erono').val(prePopulate[0]);
+					}
+					if (prePopulate[1]) {
+						$('#prevReadingDate').val(prePopulate[1]);
+					}
+					if (prePopulate[2]) {
+						$('#prevReading').val(prePopulate[2]);
+					}
+					pageOverlay(1);
+				}
+			});
+		}
+		function DotAndNumericOnly(evt) {
+			var key = (evt.which) ? evt.which : evt.keyCode;
+			if (key == 46)
+				return true;
+			if ((key >= 48 && key <= 57) || key == 8 || key == 9 || key == 46
+					|| (key >= 37 && key <= 40)) {
+				return true;
+			}
+			return false;
+		}
+		function Total() {
+			var Previous = $("#prevReading").val();
+			var Present = $("#presReading").val();
+			$("#usedUnits").val('');
+			$("#multiplyingUnits").val('');
+			if (Previous != '' && Present != '') {
+				if (Previous >= Present) {
+					showToastr(
+							" Present Reading  Must be grather thanPrevious Reading",
+							"error");
+					tot = parseFloat(Present) - parseFloat(Previous);
+					$("#usedUnits").val(
+							parseFloat(Present) - parseFloat(Previous));
+				} else {
+					tot = parseFloat(Present) - parseFloat(Previous);
+					tot = Math.round(tot * 100) / 100;
+					$("#usedUnits").val(tot);
+					calFactor();
+				}
+			}
+		}
+
+		function calFactor() {
+			var usedunits = $("#usedUnits").val();
+			var multiplyingFactor = $("#multiplyingFactor").val();
+			if (usedunits == null || usedunits == 0 || usedunits == '') {
+				showToastr("Consumed Units Shouldnot Empty", "error");
+				$("#multiplyingUnits").val();
+				$("#usedUnits").focus();
+				return false;
+			} else {
+				if (multiplyingFactor == null || multiplyingFactor == 0
+						|| multiplyingFactor == '') {
+					$("#multiplyingUnits").val(usedunits);
+				} else {
+					var abc = parseFloat(multiplyingFactor)
+							* parseFloat(usedunits);
+					$("#multiplyingUnits").val(abc);
+				}
+				return true;
+			}
+		}
+	</script>
+</body>
+
+</html>
+

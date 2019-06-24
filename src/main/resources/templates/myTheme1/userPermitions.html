@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+<div class="portlet light " >
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-bubble font-green-sharp"></i>
+                                        <span class="caption-subject font-green-sharp bold uppercase">User Permitions</span>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="btn-group">
+                                            <a class="btn green-haze btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                                <i class="fa fa-angle-down"></i>
+                                            </a>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li>
+                                                    <a href="javascript:;"> Option 1</a>
+                                                </li>
+                                                <li class="divider"> </li>
+                                                <li>
+                                                    <a href="javascript:;">Option 2</a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:;">Option 3</a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:;">Option 4</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <ul class="nav nav-pills">
+                                        <li class="active">
+                                            <a href="#tab_2_1" data-toggle="tab"> APPROVE_QP </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_2" data-toggle="tab"> TOC_MANAGMENT </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_3" data-toggle="tab"> APPROVE_QUESTION </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_4" data-toggle="tab"> AUTHOR_QUESTION </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_5" data-toggle="tab"> AUTHOR_QP </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_6" data-toggle="tab"> EXAM_ADMIN </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_7" data-toggle="tab"> QP_DOC_GENERATION </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_8" data-toggle="tab"> PERMISSION_MANAGMENT </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_9" data-toggle="tab"> SUPER_USER </a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_2_0" data-toggle="tab"> USER_MANAGEMENT </a>
+                                        </li>
+                                       
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade active in" id="tab_2_1">
+                                        
+                                        <!-- <s:iterator value="currentUser.permissionsByType.keySet()"
+								status="stat" var="var">
+								<s:iterator value="permissions" var="pvar">
+									<s:if test='#pvar.displayName.equals(#var.toString())'>
+										<s:if test="#pvar.treeBased">
+											<tr class="gradeX">
+												<td width="113px" align="left" style="padding-left: 15px;"><s:property
+														value="%{#var}" /></td>
+												<td width="53px" align="left" style="padding-left: 15px;"><s:iterator
+														value='user.permissionsByType.get(#var.toString())'>
+														<s:if test="permission.treeBased">
+															<s:property value="category.path" />
+															<br />
+														</s:if>
+													</s:iterator> <s:url id="peditId" action="editUserPermission"
+														namespace="/admin">
+														<s:param name="user" value="%{user.id}" />
+														<s:param name="permission" value="%{#pvar.id}" />
+													</s:url> <s:a href="%{#peditId}" cssClass="">Edit</s:a></td>
+											</tr>
+										</s:if>
+									</s:if>
+								</s:iterator>
+							</s:iterator> -->
+                                        
+                                        
+                                            <p> APPROVE_QP </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_2">
+                                            <p> TOC_MANAGMENT</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_3">
+                                            <p> APPROVE_QUESTION</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_4">
+                                            <p> AUTHOR_QUESTION </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_5">
+                                            <p> AUTHOR_QP</p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_6">
+                                            <p> EXAM_ADMIN </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_7">
+                                            <p> QP_DOC_GENERATION </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_8">
+                                            <p> PERMISSION_MANAGMENT </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_9">
+                                            <p> SUPER_USER </p>
+                                        </div>
+                                        <div class="tab-pane fade" id="tab_2_0">
+                                            <p> USER_MANAGEMENT </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+</body>
+</html>

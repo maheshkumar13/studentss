@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="utf-8">
+<title>Questions</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 2 load the theme CSS file -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Questions Home</div>
+				<div class="panel-body"
+					style="max-width: 100%; height: 68vh; overflow: scroll;">
+					<div id="jsTreeJSONCheckServer"></div>
+				</div>
+			</div>
+		</div>
+		<div id="questionsDivId"></div>
+	</div>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+	<script>
+		function categoryList() {
+			pageOverlay(0);
+			$.ajax({
+				url : '/qb/categoryList',
+				success : function(data) {
+					$('#jsTreeJSONCheckServer').jstree({
+						'core' : {
+							'data' : data
+						}
+					//"plugins" : [ "checkbox" ]
+					});
+					pageOverlay(1);
+				},
+				error : function() {
+					alert("Unable to load details");
+					pageOverlay(1);
+				}
+			})
+		}
+
+		$(document).ready(function() {
+			categoryList();
+		});
+
+		$('#jsTreeJSONCheckServer')
+		// listen for event
+		.on('changed.jstree', function(e, data) {
+			var i, j, r = [];
+			for (i = 0, j = data.selected.length; i < j; i++) {
+				r.push(data.instance.get_node(data.selected[i]).id);
+			}
+			getCategoryQuestions(r.join(', '))
+		})
+
+		function getCategoryQuestions(category) {
+			pageOverlay(0);
+			$.ajax({
+				url : '/qb/categoryQuestions?category=' + category,
+				success : function(data) {
+					$("#questionsDivId").html(data);
+					pageOverlay(1);
+				},
+				error : function() {
+					alert("Unable to load details");
+					pageOverlay(1);
+				}
+			})
+		}
+	</script>
+</body>
+</html>

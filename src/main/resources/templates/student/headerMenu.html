@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+</head>
+<body>
+	<div th:fragment="headerMenu">
+		<div class="page-header-menu">
+			<div class="container-fluid">
+				<!-- BEGIN HEADER SEARCH BOX -->
+				<form class="search-form"
+					action="http://keenthemes.com/preview/metronic/theme/admin_3/page_general_search.html"
+					method="GET">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Search"
+							name="query"> <span class="input-group-btn"> <a
+							href="javascript:;" class="btn submit"> <i
+								class="icon-magnifier"></i>
+						</a>
+						</span>
+					</div>
+				</form>
+				<!-- END HEADER SEARCH BOX -->
+				<!-- BEGIN MEGA MENU -->
+				<!-- DOC: Apply "hor-menu-light" class after the "hor-menu" class below to have a horizontal menu with white background -->
+				<!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the dropdown opening on mouse hover -->
+				<div class="hor-menu  ">
+					<ul class="nav navbar-nav">
+						<li aria-haspopup="true"
+							class="menu-dropdown classic-menu-dropdown"><a
+							href="/student/dashboard"> Dashboard <span class="arrow"></span>
+						</a> <!-- <ul class="dropdown-menu pull-left">
+								<li aria-haspopup="true" class=" active"><a
+									href="javascript:void(0)" class="nav-linkactive"> <i
+										class="icon-bar-chart"></i> Default Dashboard <span
+										class="badge badge-success">1</span>
+								</a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> <i
+										class="icon-bulb"></i> Dashboard 2
+								</a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> <i
+										class="icon-graph"></i> Dashboard 3 <span
+										class="badge badge-danger">3</span>
+								</a></li>
+							</ul> --></li>
+						<li aria-haspopup="true"
+							class="menu-dropdown classic-menu-dropdown "><a
+							href="javascript:;">Online Exam Schedules<span class="arrow"></span>
+						</a>
+							<ul class="dropdown-menu pull-left">
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=1}"
+									class="nav-link"> JEE-MAINS </a></li>
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=4}"
+									class="nav-link"> BITSAT </a></li>
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=12}"
+									class="nav-link"> AIIMS </a></li>
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=3}"
+									class="nav-link"> EAMCET </a></li>
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=5}"
+									class="nav-link"> NEET </a></li>
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=22}"
+									class="nav-link"> JIPMER </a></li>
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=2}"
+									class="nav-link"> JEE ADVANCED </a></li>
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineExamSchedules?examType=26}"
+									class="nav-link"> CLAT-IAS</a></li>
+							</ul></li>
+						<li aria-haspopup="true"
+							th:if="${@currentUser.getCurrentStudent().result}"
+							class="menu-dropdown classic-menu-dropdown "><a
+							href="javascript:;">Results<span class="arrow"></span>
+						</a>
+							<ul class="dropdown-menu pull-left">
+								<li aria-haspopup="true" class=" "><a
+									th:href="@{/student/onlineResults}" class="nav-link">
+										Results </a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)"
+									onclick="javascript:window.open('/student/progressReport');"
+									class="nav-link"> Progress Report </a></li>
+							</ul></li>
+						<!-- <li aria-haspopup="true"
+							class="menu-dropdown mega-menu-dropdown  "><a
+							href="javascript:;"> UI Features <span class="arrow"></span>
+						</a>
+							<ul class="dropdown-menu" style="min-width: 710px">
+								<li>
+									<div class="mega-menu-content">
+										<div class="row">
+											<div class="col-md-4">
+												<ul class="mega-menu-submenu">
+													<li><a href="javascript:void(0)"> Color Library </a></li>
+													<li><a href="javascript:void(0)"> Metronic Grid
+															System </a></li>
+													<li><a href="javascript:void(0)"> General
+															Components </a></li>
+													<li><a href="javascript:void(0)"> Buttons </a></li>
+													<li><a href="javascript:void(0)"> Spinner Buttons
+													</a></li>
+													<li><a href="javascript:void(0)"> Popover
+															Confirmations </a></li>
+													<li><a href="javascript:void(0)"> Bootstrap Sweet
+															Alerts </a></li>
+													<li><a href="javascript:void(0)"> Font Icons </a></li>
+													<li><a href="javascript:void(0)"> Social Icons </a></li>
+													<li><a href="javascript:void(0)"> Typography </a></li>
+													<li><a href="javascript:void(0)"> Tabs, Accordions
+															& Navs </a></li>
+													<li><a href="javascript:void(0)"> Tree View </a></li>
+													<li><a href="javascript:void(0)"> Google Maps </a></li>
+												</ul>
+											</div>
+											<div class="col-md-4">
+												<ul class="mega-menu-submenu">
+													<li><a href="javascript:void(0)"> Vector Maps </a></li>
+													<li><a href="javascript:void(0)"> Timeline 1 </a></li>
+													<li><a href="javascript:void(0)"> Timeline 2 </a></li>
+													<li><a href="javascript:void(0)"> Horizontal
+															Timeline </a></li>
+													<li><a href="javascript:void(0)"> Page Progress
+															Bar - Flash </a></li>
+													<li><a href="javascript:void(0)"> Page Progress
+															Bar - Big Counter </a></li>
+													<li><a href="javascript:void(0)"> Block UI </a></li>
+													<li><a href="javascript:void(0)"> Bootstrap Growl
+															Notifications </a></li>
+													<li><a href="javascript:void(0)"> Notific8
+															Notifications </a></li>
+													<li><a href="javascript:void(0)"> Toastr
+															Notifications </a></li>
+													<li><a href="javascript:void(0)"> Bootbox Dialogs
+													</a></li>
+												</ul>
+											</div>
+											<div class="col-md-4">
+												<ul class="mega-menu-submenu">
+													<li><a href="javascript:void(0)"> Metronic Alerts
+															API </a></li>
+													<li><a href="javascript:void(0)"> Session Timeout
+													</a></li>
+													<li><a href="javascript:void(0)"> User Idle
+															Timeout </a></li>
+													<li><a href="javascript:void(0)"> Modals </a></li>
+													<li><a href="javascript:void(0)"> Extended Modals
+													</a></li>
+													<li><a href="javascript:void(0)"> Tiles </a></li>
+													<li><a href="javascript:void(0)"> Date Paginator </a></li>
+													<li><a href="javascript:void(0)"> Nestable List </a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul></li>
+						 <li aria-haspopup="true"
+							class="menu-dropdown classic-menu-dropdown "><a
+							href="javascript:;"> Layouts <span class="arrow"></span>
+						</a>
+							<ul class="dropdown-menu pull-left">
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> Light Mega Menu
+								</a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> Light Top Bar
+										Dropdowns </a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> Fluid Page </a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> Fixed Top Bar </a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> Fixed Mega Menu
+								</a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> Disabled Menu
+										Links </a></li>
+								<li aria-haspopup="true" class=" "><a
+									href="javascript:void(0)" class="nav-link"> Blank Page </a></li>
+							</ul></li> 
+						 <li aria-haspopup="true"
+							class="menu-dropdown mega-menu-dropdown  mega-menu-full"><a
+							href="javascript:;"> Components <span class="arrow"></span>
+						</a>
+							<ul class="dropdown-menu" style="min-width:">
+								<li>
+									<div class="mega-menu-content">
+										<div class="row">
+											<div class="col-md-3">
+												<ul class="mega-menu-submenu">
+													<li>
+														<h3>Components 1</h3>
+													</li>
+													<li><a href="javascript:void(0)"> Date & Time
+															Pickers </a></li>
+													<li><a href="javascript:void(0)"> Color Pickers </a></li>
+													<li><a href="javascript:void(0)"> Select2
+															Dropdowns </a></li>
+													<li><a href="javascript:void(0)"> Bootstrap
+															Multiselect Dropdowns </a></li>
+													<li><a href="javascript:void(0)"> Bootstrap Select
+													</a></li>
+													<li><a href="javascript:void(0)"> Bootstrap
+															Multiple Select </a></li>
+												</ul>
+											</div>
+											<div class="col-md-3">
+												<ul class="mega-menu-submenu">
+													<li>
+														<h3>Components 2</h3>
+													</li>
+													<li><a href="javascript:void(0)"> Select Splitter
+													</a></li>
+													<li><a href="javascript:void(0)"> Clipboard </a></li>
+													<li><a href="javascript:void(0)"> Typeahead
+															Autocomplete </a></li>
+													<li><a href="javascript:void(0)"> Bootstrap
+															Tagsinput </a></li>
+													<li><a href="javascript:void(0)"> Bootstrap Switch
+													</a></li>
+													<li><a href="javascript:void(0)"> Bootstrap
+															Maxlength </a></li>
+												</ul>
+											</div>
+											<div class="col-md-3">
+												<ul class="mega-menu-submenu">
+													<li>
+														<h3>Components 3</h3>
+													</li>
+													<li><a href="javascript:void(0)"> Bootstrap File
+															Input </a></li>
+													<li><a href="javascript:void(0)"> Bootstrap
+															Touchspin </a></li>
+													<li><a href="javascript:void(0)"> Form Widgets &
+															Tools </a></li>
+													<li><a href="javascript:void(0)"> Context Menu </a></li>
+													<li><a href="javascript:void(0)"> Markdown &
+															WYSIWYG Editors </a></li>
+												</ul>
+											</div>
+											<div class="col-md-3">
+												<ul class="mega-menu-submenu">
+													<li>
+														<h3>Components 4</h3>
+													</li>
+													<li><a href="javascript:void(0)"> Code Editors </a></li>
+													<li><a href="javascript:void(0)"> Ion Range
+															Sliders </a></li>
+													<li><a href="javascript:void(0)"> NoUI Range
+															Sliders </a></li>
+													<li><a href="javascript:void(0)"> Knob Circle
+															Dials </a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul></li> <li aria-haspopup="true"
+							class="menu-dropdown classic-menu-dropdown "><a
+							href="javascript:;"> More <span class="arrow"></span>
+						</a>
+							<ul class="dropdown-menu pull-left">
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-settings"></i> Form Stuff <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Bootstrap
+												Form <br>Controls
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Material
+												Design <br>Form Controls
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Form
+												Validation </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Material
+												Design <br>Form Validation States
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Material
+												Design <br>Form Validation
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Form Layouts
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Form
+												Repeater </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Form Input
+												Mask </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Form
+												X-editable </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Form Wizard
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> iCheck
+												Controls </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Image
+												Cropping </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Multiple
+												File Upload </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Dropzone
+												File Upload </a></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-briefcase"></i> Tables <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Basic Tables
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Responsive
+												Tables </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Bootstrap
+												Tables </a></li>
+										<li aria-haspopup="true" class="dropdown-submenu "><a
+											href="javascript:;" class="nav-link nav-toggle">
+												Datatables <span class="arrow"></span>
+										</a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Managed Datatables </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Buttons Extension </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Colreorder Extension </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Rowreorder Extension </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Scroller Extension </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> FixedHeader Extension </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Responsive Extension </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Editable Datatables </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Ajax Datatables </a></li>
+											</ul></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:void(0)" class="nav-link nav-toggle "> <i
+										class="icon-wallet"></i> Portlets <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Boxed
+												Portlets </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Light
+												Portlets </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Solid
+												Portlets </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Ajax
+												Portlets </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Draggable
+												Portlets </a></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:void(0)" class="nav-link nav-toggle "> <i
+										class="icon-settings"></i> Elements <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Steps </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Lists </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Ribbons </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Overlays </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> User Cards </a></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-bar-chart"></i> Charts <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> amChart </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Flot Charts
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Flow Charts
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Google
+												Charts </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> eCharts </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> Morris
+												Charts </a></li>
+										<li aria-haspopup="true" class="dropdown-submenu "><a
+											href="javascript:;" class="nav-link nav-toggle">
+												HighCharts <span class="arrow"></span>
+										</a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> HighCharts </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> HighStock </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> HighMaps </a></li>
+											</ul></li>
+									</ul></li>
+							</ul></li>  <li aria-haspopup="true"
+							class="menu-dropdown classic-menu-dropdown "><a
+							href="javascript:;"> <i class="icon-briefcase"></i> Pages <span
+								class="arrow"></span>
+						</a>
+							<ul class="dropdown-menu pull-left">
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-basket"></i> eCommerce <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-home"></i> Dashboard
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-basket"></i> Orders
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-tag"></i> Order View
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-graph"></i> Products
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-graph"></i> Product Edit
+										</a></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-docs"></i> Apps <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-clock"></i> Todo 1
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-check"></i> Todo 2
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-envelope"></i> Inbox
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-calendar"></i> Calendar
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-notebook"></i> Support
+										</a></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-user"></i> User <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-user"></i> Profile 1
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-user-female"></i> Profile 1 Account
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-user-following"></i> Profile 1 Help
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-users"></i> Profile 2
+										</a></li>
+										<li aria-haspopup="true" class="dropdown-submenu "><a
+											href="javascript:;" class="nav-link nav-toggle"> <i
+												class="icon-notebook"></i> Login <span class="arrow"></span>
+										</a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> Login Page 1 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> Login Page 2 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> Login Page 3 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> Login Page 4 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> Login Page 5 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link " target="_blank"> Login Page 6 </a></li>
+											</ul></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link " target="_blank">
+												<i class="icon-lock"></i> Lock Screen 1
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link " target="_blank">
+												<i class="icon-lock-open"></i> Lock Screen 2
+										</a></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-social-dribbble"></i> General <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-info"></i> About
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-call-end"></i> Contact
+										</a></li>
+										<li aria-haspopup="true" class="dropdown-submenu "><a
+											href="javascript:;" class="nav-link nav-toggle"> <i
+												class="icon-notebook"></i> Portfolio <span class="arrow"></span>
+										</a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Portfolio 1 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Portfolio 2 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Portfolio 3 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Portfolio 4 </a></li>
+											</ul></li>
+										<li aria-haspopup="true" class="dropdown-submenu "><a
+											href="javascript:;" class="nav-link nav-toggle"> <i
+												class="icon-magnifier"></i> Search <span class="arrow"></span>
+										</a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Search 1 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Search 2 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Search 3 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Search 4 </a></li>
+												<li class=""><a href="javascript:void(0)"
+													class="nav-link "> Search 5 </a></li>
+											</ul></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-tag"></i> Pricing
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-tag"></i> Pricing 2
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-wrench"></i> FAQ
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-pencil"></i> Blog
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-note"></i> Blog Post
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-envelope"></i> Invoice
+										</a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> <i
+												class="icon-envelope"></i> Invoice 2
+										</a></li>
+									</ul></li>
+								<li aria-haspopup="true" class="dropdown-submenu "><a
+									href="javascript:;" class="nav-link nav-toggle "> <i
+										class="icon-settings"></i> System <span class="arrow"></span>
+								</a>
+									<ul class="dropdown-menu">
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link " target="_blank">
+												Coming Soon </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> 404 Page 1 </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link " target="_blank">
+												404 Page 2 </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link " target="_blank">
+												404 Page 3 </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link "> 500 Page 1 </a></li>
+										<li aria-haspopup="true" class=" "><a
+											href="javascript:void(0)" class="nav-link " target="_blank">
+												500 Page 2 </a></li>
+									</ul></li>
+							</ul></li> -->
+					</ul>
+				</div>
+				<!-- END MEGA MENU -->
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

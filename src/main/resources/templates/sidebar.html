@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div th:fragment="sidebar">
+		<div class="sidebar-content">
+			<div class="nav-container">
+				<ul id="main-menu-navigation" data-menu="menu-navigation"
+					class="navigation navigation-main">
+					<li class="has-sub nav-item"><a href="javascript:void(0)"><i
+							class="ft-home"></i><span data-i18n="" class="menu-title">Call
+								Records</span><span
+							class="tag badge badge-pill badge-danger float-right mr-1 mt-1">2</span></a>
+						<ul class="menu-content">
+							<li class="active"><a th:href="@{/showRecordings}"
+								class="menu-item">Recordings</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

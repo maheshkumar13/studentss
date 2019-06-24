@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style type="text/css">
+.badge, .label {
+	margin-left: 15px;
+}
+.form-group select { margin-bottom:15px !important;}
+</style>
+</head>
+<body>
+	 <div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">SMS-Message Send</div>
+		</div>
+		
+		<div class="portlet-body" style="width: 100%;" id="myDIV">
+		
+		<form action="/scaits/sendMessageService" id="requestformId" enctype="multipart/form-data">
+			<div class="row">
+				<div class="col-md-6">
+					<!-- BEGIN EXAMPLE TABLE PORTLET-->
+					     <div class="form-body">
+					                    <div class="form-group">
+                                               
+                                                <div class="col-md-6">
+                                                 <label class="control-label">Message To</label>
+                                                    <select class="form-control"  name="msgTo" id="ddlTo" onchange="ToHide(this.value)">
+                                                        <option>Select</option>
+													<option value="Student">Student</option>
+													<option value="OutStudent">OutStudent</option>
+													<option value="Parent">Parent</option>
+													<option value="Staff">Staff</option>
+													<option value="Others">Others</option>
+													<option value="RookieStudent">RookieStudent</option>
+                                                    </select>
+                                                </div>
+                                            
+                                           </div> 
+                                           
+                                           <div id="stafid" class="form-group"	style="display: none; margin: 4px 0 0 4px">
+                                          
+                                                <div class="col-md-6">
+                                                 <label class="control-label">Message Type</label>
+                                                    <select class="form-control"  name="msgType" id="ddlMessage" onclick="MarksHide(this.value)" onchange="messageTo(this.value)">
+                                                      <option value="0">Select Message</option>
+													<option value="General">General</option>
+													<option value="Marketing">Marketing</option>
+													<option value="Customize">Customize</option>
+                                                    </select>
+                                                </div>
+											</div>
+											
+											
+											<div class="form-group" id="parentOrStudentid" style="display: none;">
+											  
+											  
+											   <div class="col-md-6">
+											   <label class="control-label">Message Type</label>
+                                                    <select class="form-control"  name="msgType" id="ddlMessage1" 	onclick="MarksHide(this.value)"  onchange="messageTo(this.value)">
+                                                    <option value="0">Select Message</option>
+													<option value="General">General</option>
+													<option value="Marks">Marks</option>
+													<option value="Payments">Payments</option>
+													<option value="Marketing">Marketing</option>
+                                                    </select>
+                                                </div>
+											</div>
+											
+											<div  class="form-group" id="divMessageTextid" style="display: none;">
+											
+											 
+											  <div class="col-md-6">
+											   <label class=" control-label">Message</label>
+										<select class="form-control"  name="smsMessage"
+								         id="ddlmsgtextid" onchange="messageText(this)" >
+								        <option th:value="${MsgText}"
+									         th:each="msg : ${smsMessages}" th:text="${msg}"
+									    ></option>
+							           </select>
+										
+										<textarea class="form-control" readonly="readonly"  ondrop="return false"
+									placeholder="Enter Question IDs" id="messageid" maxlength="160" cols="3" rows="10" ondrag="return false"
+									 ></textarea>
+											</div>				
+									       </div>
+									       
+									    <div  id="divStudent" style="display: none;"> 
+									    <div class="form-group">
+									  
+									    <div class="col-md-6">
+									      <label class="control-label">Class</label>
+									      <select class="form-control"  name="studyClass"
+								         id="sectionJoinInto" onchange="loadJoinInto(this.value);" >
+								        <option th:value="${class.id}"
+									         th:each="class : ${@currentUser.getCurrentUser().getCampus().getCampusClasses()}" th:text="${class.displayName}"
+									    ></option>
+							                </select>
+									       </div></div>
+									        <div class="form-group">
+									     
+									        <div class="col-md-6">
+									          <label class="control-label">Join Year</label>
+									       <select class="form-control"  name="joinYear"
+								         id="sectionJoinYear" onchange="getStreams();" >
+								        <option value="0">Select
+									    </option>
+							                </select> 
+									       </div></div>
+									       <div class="form-group">
+									       
+									       <div class="col-md-6">
+									         <label class="control-label"></label>
+									       <label class="mt-checkbox">
+                                                            <input type="checkbox"  name="allChecked" id="allStuCheckedId" onclick="getStudents()"> All Students
+                                                            <span></span>
+                                                        </label>
+                                          
+									       </div></div>
+									       <div id="showStuDetialsId" class="form-group">
+											 <div class="col-md-6">
+											  <label class=" control-label">Stream</label>
+											  
+											  <select class="form-control"  name="streamName"
+								         id="groupsectiontransferStream" onchange="getPrograms()" >
+								        <option value="0"> Select Stream</option>
+							                </select>
+											 </div>
+											 <div class="col-md-6">
+											  <label class=" control-label">Programs</label>
+											   <select class="form-control"  name="groupsectiontransferentry.toProgram"
+								         id="groupsectiontransferFromProgram" onchange="getCourses()" >
+								        <option  value="0"> Select Program</option>
+							                </select> 
+											 </div>
+											 <div class="col-md-6">
+											  <label class=" control-label">Course Track</label>
+											   <select class="form-control"  name="groupsectiontransferentry.campusTrack"
+								         id="groupsectionCourses" onchange="getBatches()" >
+								        <option  value="0"> Select Course</option>
+							                </select> 
+											 </div>
+											  <div class="col-md-6">
+											   <label class=" control-label">Batch</label>
+											     <select class="form-control"  name="groupsectiontransferentry.courseBatch"
+								         id="groupsectiontransferFromBatch" onchange="loadSections()" >
+								           <option  value="0"> Select Batch</option>
+							                </select>
+											   
+											  </div>
+											  
+											   <div class="col-md-6">
+											   <label class=" control-label">Sections</label>
+											    <select class="form-control"  name="groupsectiontransferentry.sectionFrom"
+								         id="ddlsectionId" onchange="smsStudentList()" >
+								         <option  value="0"> Select Section</option>
+							                </select>
+											   
+											  </div>
+											  </div>
+											</div>
+									       	<div id="divMarks" style="display: none;">
+									       	 <div class="form-group">
+									       	 <div class="col-md-6">
+									       	 <label class=" control-label">Exam Type</label>
+									       	 <textarea rows="1"  id="txtexamTypeid" maxlength="10" onChange="javascript:this.value=this.value.toUpperCase();" ondrag="return false" name="examType"></textarea>
+									       	 
+									       	 </div>
+									       	 </div>
+									       	  <div class="col-md-6">
+									       	 <label class=" control-label">Exam Date</label>
+									       	 <textarea rows="1"  id="txtexamDateid" maxlength="10" onChange="javascript:this.value=this.value.toUpperCase();" ondrag="return false" name="examDateStr"></textarea>
+									       	 
+									       	 </div>
+											</div>
+									       
+									       
+                                          <div class="clearfix" style="margin-bottom:15px"></div> 
+                                           
+                                            <div class="form-group" id="divUploadid">
+                                               
+                                                <div class="col-md-6">
+                                                <label for="txtuploadid" class="control-label">Upload Excel File</label>
+                                                   <!--  <input type="file"  id="txtuploadid" name="uploadFile"> -->
+                                                    
+                                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                        <div class="input-group input-large">
+                                                            <div class="form-control uneditable-input input-fixed input-medium" data-trigger="fileinput">
+                                                                <i class="fa fa-file "></i>&nbsp;
+                                                                <span class="fileinput-filename"> </span>
+                                                            </div>
+                                                            <span class="input-group-addon btn default btn-file">
+                                                                <span class="fileinput-new"> <i class="fa fa-upload"></i> Upload</span>
+                                                                <span class="fileinput-exists"> <i class="fa fa-exchange"></i> Change</span>
+                                                                <input type="file" id="txtuploadid" name="uploadFile"> </span>
+                                                            <a href="javascript:;" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
+                                                              <i class="fa fa-trash" style="color:#ffffff"></i> Remove
+                                                             </a>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    
+                                                   
+                                                </div>
+                                               
+                                                <div class="clearfix" style="margin-bottom:15px"></div> 
+                                                <div id="uploadValId" style="visibility: visible;">
+													 <a href="/SMS_Template.xls"
+													id="smsrequestID" class="lblalert" >  Sample Excel</a>
+													</div>
+													
+													<div id="staffUploadId" style="visibility: hidden;">
+													 <a href="/SMS_Template_EmpStaff.xls"
+													id="smsrequestID1" class="lblalert" >  Sample Excel</a>
+													</div>
+																					
+                                             </div>
+                                             <div id="smsStudentId"></div>
+                                             <div class="form-group">
+                                              <div class="col-md-6">
+                                             <input type="submit" class="btn btn-pri"
+																	onclick="return UploadValidation();" id="button3"
+																	value="Send" />
+																	</div>
+											</div>
+                     
+					</div>
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+		
+		function ToHide(subject){
+			
+			
+		     var aTag=document.getElementById("smsrequestID");
+				
+		     if(document.getElementById("ddlTo").selectedIndex==1 || document.getElementById("ddlTo").selectedIndex==2  || document.getElementById("ddlTo").selectedIndex==3 ||document.getElementById("ddlTo").selectedIndex==6){
+				aTag.setAttribute('href',"/SMS_Template.xls");
+		     }else{
+				aTag.setAttribute('href',"/SMS_Template_Emp.xls");
+		     } 
+				
+				document.getElementById("ddlMessage").selectedIndex=0;
+				document.getElementById("ddlMessage1").selectedIndex=0;
+				 document.getElementById("sectionJoinInto").selectedIndex=0;
+				document.getElementById("sectionJoinYear").selectedIndex=0;
+				document.getElementById("groupsectionCourses").selectedIndex=0;
+				document.getElementById("ddlsectionId").selectedIndex=0;
+				this.smsStudentList(); 
+				$('#smsStudentId').hide();
+				$('#divStudent').hide();
+				$('#divMarks').hide();
+				$('#parentOrStudentid').hide();
+				if(document.getElementById("ddlTo").selectedIndex==1 || document.getElementById("ddlTo").selectedIndex==2
+						|| document.getElementById("ddlTo").selectedIndex==3 || document.getElementById("ddlTo").selectedIndex==6){
+					if(subject=="Student" || subject=="RookieStudent" || subject=="Parent" || subject=="OutStudent"){
+				        $('#divUploadid').hide();
+						$('#divStudent').show();
+						$('#parentOrStudentid').show();
+						$('#divMarks').hide();
+						$('#stafid').hide();
+				        $('#smsStudentId').show();
+					}
+				}
+			   else {
+				$('#divUploadid').show();
+				document.getElementById('uploadValId').style.visibility = 'visible';
+				document.getElementById('staffUploadId').style.visibility = 'hidden';
+				$('#stafid').show();
+				$('#smsStudentId').hide();
+			 }
+			}
+		
+		function messageTo(MessageType) {
+			
+			$.ajax({
+						url : "<s:property value='%{#messageToid}'/>?messageTo="
+								+ document
+										.getElementById("ddlTo").value+"&messageType="+ MessageType,
+						dataType : 'text',
+						success : function(data) {
+							$('#ddlmsgtextid').html(data);
+						}
+					});
+			//alert(document	.getElementById("ddlTo").value);
+			if( document	.getElementById("ddlTo").value=="OusStudent" && MessageType=="General"){
+				OutStudent();
+			}
+		}
+		
+		function MarksHide(subject){
+			
+			if(subject=="General" && (document.getElementById("ddlTo").value =="OutStudent")){
+				$('#divMarks').hide();
+				$('#smsStudentId').hide();
+				$('#divStudent').hide();
+				$('#smsStudentId').hide();
+				$('#divUploadid').hide();
+				$('#divMessageTextid').show();
+				smsOutGeneralStudentList();
+				}else{
+			
+			if(subject=="Marks" && (document.getElementById("ddlTo").selectedIndex==1 || document.getElementById("ddlTo").selectedIndex==6 || document.getElementById("ddlTo").selectedIndex==2 || document.getElementById("ddlTo").selectedIndex==3) ){
+			$('#divMarks').hide();
+			$('#divUploadid').hide();
+			$('#divMessageTextid').hide();
+			$('#divStudent').hide();
+			$('#divUploadid').hide();
+			if(subject=="Marks"){
+			$('#divMarks').show();
+			$('#smsStudentId').show();
+			//$('#divStudent').show();
+			$('#smsStudentId').hide();
+			$('#divUploadid').show();
+			document.getElementById('uploadValId').style.visibility = 'visible';
+			document.getElementById('staffUploadId').style.visibility = 'hidden';
+			}
+		   } else if(subject=="Customize" && (document.getElementById("ddlTo").value =="Staff")){
+			   
+			   $('#divMessageTextid').hide();
+			   $('#divUploadid').show();
+			   
+			   document.getElementById('uploadValId').style.visibility = 'hidden';
+				document.getElementById('staffUploadId').style.visibility = 'visible';
+			
+		   }else{
+				document.getElementById("sectionJoinInto").selectedIndex=0;
+				document.getElementById("sectionJoinYear").selectedIndex=0;
+				document.getElementById("groupsectionCourses").selectedIndex=0;
+				document.getElementById("ddlsectionId").selectedIndex=0;
+				$('#smsStudentId').hide();
+				if(document.getElementById("ddlTo").selectedIndex==4 || document.getElementById("ddlTo").selectedIndex==5){
+			    $('#divUploadid').show();
+			    document.getElementById('uploadValId').style.visibility = 'visible';
+				document.getElementById('staffUploadId').style.visibility = 'hidden';
+				}else{
+			    $('#divUploadid').hide();
+				$('#smsStudentId').show();
+				}
+				$('#divMarks').hide();
+			    $('#divMessageTextid').show();
+			    if((document.getElementById("ddlTo").selectedIndex==1 || document.getElementById("ddlTo").selectedIndex==2 ||
+			    		document.getElementById("ddlTo").selectedIndex==3) && (subject=="General" || subject=="Payments")){
+			    	$('#divStudent').show();
+			    }
+				
+			}
+		}
+		}
+		
+		function loadJoinInto(studyclass) { // Get Years list when Join into (Jr.,Sr.,LT, ST) is selected
+			
+			$.ajax({
+				url : "/reports/getJoinYear?joinInto="
+						+ studyclass,
+				
+				success : function(data) {
+					var select = $('#sectionJoinYear');
+					select.find('option').remove();
+					$.each(data, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+					
+				}
+			});
+		}
+		function getStreams() {
+			$
+					.ajax({
+						url : "/reports/getStream?joinInto="
+								+  document.getElementById("sectionJoinInto").value
+								+ "&academicYear="
+								+ document
+										.getElementById("sectionJoinYear").value
+								,
+						success : function(data) {
+							var select = $('#groupsectiontransferStream');
+							select.find('option').remove();
+							$.each(data, function(key, value) {
+								$('<option>').val(key).text(value).appendTo(select);
+							});
+						/* 	$('#groupsectiontransferStream').html(data); */
+						}
+					});
+		}
+		
+		function getPrograms() {
+			$
+					.ajax({
+						url : "/reports/getPrograms?joinInto="
+								+ document.getElementById("sectionJoinInto").value
+								+ "&academicYear="
+								+ document
+										.getElementById("sectionJoinYear").value
+								+ "&stream="
+								+ document
+										.getElementById("groupsectiontransferStream").value
+								,
+						
+						success : function(data) {
+							var select = $('#groupsectiontransferFromProgram');
+							select.find('option').remove();
+							$.each(data, function(key, value) {
+								$('<option>').val(key).text(value).appendTo(select);
+							});
+							/* $('#groupsectiontransferFromProgram').html(data); */
+						}
+					});
+
+		}
+		function getCourses() {
+			$
+					.ajax({
+						url : "/reports/getCourses?joinInto="
+								+ document.getElementById("sectionJoinInto").value
+								+ "&academicYear="
+								+ document
+										.getElementById("sectionJoinYear").value
+								+ "&program="
+								+ document
+										.getElementById("groupsectiontransferFromProgram").value,
+						dataType : 'text',
+						success : function(data) {
+							var select = $('#groupsectionCourses');
+							select.find('option').remove();
+							$.each(data, function(key, value) {
+								$('<option>').val(key).text(value).appendTo(select);
+							});
+							
+						}
+					});
+
+		}
+		function getBatches() {
+			$
+					.ajax({
+						url : "/reports/getBatches?joinInto="
+								+ document.getElementById("sectionJoinInto").value
+								+ "&academicYear="
+								+ document
+										.getElementById("sectionJoinYear").value
+								+ "&program="
+								+ document
+										.getElementById("groupsectiontransferFromProgram").value
+								+ "&campusTrack="
+								+ document
+										.getElementById("groupsectionCourses").value
+								,
+						dataType : 'text',
+						success : function(data) {
+							var select = $('#groupsectiontransferFromBatch');
+							select.find('option').remove();
+							$.each(data, function(key, value) {
+								$('<option>').val(key).text(value).appendTo(select);
+							});
+							
+						}
+					});
+		}
+
+		function loadSections() {
+
+			$
+					.ajax({
+						url : "/reports/loadSections?joinInto="
+								+ document.getElementById("sectionJoinInto").value
+								+ "&campusTrack="
+								+ document
+										.getElementById("groupsectionCourses").value
+								+ "&academicYear="
+								+ document
+										.getElementById("sectionJoinYear").value
+								+ "&program="
+								+ document
+										.getElementById("groupsectiontransferFromProgram").value
+								+ "&courseBatch="
+								+ document
+										.getElementById("groupsectiontransferFromBatch").value,
+						dataType : 'text',
+						success : function(data) {
+							var select = $('#ddlsectionId');
+							select.find('option').remove();
+							$.each(data, function(key, value) {
+								$('<option>').val(key).text(value).appendTo(select);
+							});
+						
+						}
+					});
+		}
+		
+		function smsStudentList() {
+			
+			$.ajax({
+						url : "/reports/smsStudentList?section="
+								+ document.getElementById("ddlsectionId").value
+								+ "&joinInto="
+									+ document.getElementById("sectionJoinInto").value
+									+ "&campusTrack="
+									+ document
+											.getElementById("groupsectionCourses").value
+									+ "&academicYear="
+									+ document
+											.getElementById("sectionJoinYear").value
+									+ "&program="
+									+ document
+											.getElementById("groupsectiontransferFromProgram").value
+									+ "&courseBatch="
+									+ document
+											.getElementById("groupsectiontransferFromBatch").value
+											,
+						dataType : 'text',
+						success : function(data) {
+							$("#smsStudentId").show();
+							$('#smsStudentId').html(data);
+						}
+					});
+		}
+		
+		
+		</script>
+	</th:block>
+</body>
+</html>

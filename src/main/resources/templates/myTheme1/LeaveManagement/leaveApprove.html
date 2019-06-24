@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- <s:url action="leaveApprove" id="loadLeaveApproveId" namespace="/empManagementSystem" /> -->
+<style>
+th, td {
+	white-space: nowrap;
+}
+
+.inmodal .modal-header {
+	padding: 10px 15px;
+}
+
+.inmodal .modal-title {
+	font-size: 18px;
+}
+
+.panel-success {
+	height: auto;
+}
+
+.panel-group {
+	margin-bottom: 66px;
+}
+
+.panel-heading {
+	margin-bottom: 20px;
+}
+
+.panel-body {
+	margin-bottom: 20px;
+}
+
+.m-t-md {
+	margin-top: 0;
+}
+</style>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#searchTxtId").on("keyup", function() {
+		    var value = $(this).val().toLowerCase();
+		    $("#myList li").filter(function() {
+		      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+		    });
+		  });
+		
+	});
+
+	function getLeaveApprovePopup(leaveId) {
+		$.ajax({
+			url : "/leaveManagement/leaveApprovePopup?leave=" + leaveId,
+			dataType : 'text',
+			success : function(data) {
+				$('#leaveApprovePopupDataId').html(data);
+			},
+			error : function() {
+				alert('Unable to load details');
+			}
+		});
+	}
+	
+</script>
+<div class="row">
+	<div class="col-lg-3">
+		<input class="form-control" id="searchTxtId" type="text"
+			placeholder="Search..">
+	</div>
+</div>
+<br>
+<div class="row" id="contentId">
+	<div class="col-lg-12">
+		<div class="panel-group">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					Leave Approve <span class="badge">
+					<span th:text="${empLeaveRequests.size()}"></span>
+					</span>
+				</div>
+				<div class="panel-body">
+					<div th:if="${empLeaveRequests.size()>0}">
+						<div class="form-group">
+							<div class="col-xs-12">
+								<div class="row" style="height: 480px; overflow-y: scroll;">
+									<ul class="list-group" id="myList">
+											<div th:each="itrVar,itrStatus : ${empLeaveRequests}">
+											<li style="list-style: none;">
+												<div class="col-lg-3">
+													<div class="contact-box center-version">
+														<a href="javascript:void(0)" data-toggle="modal"
+															data-target="#leaveApprovePopupId"
+															th:onclick="${'javascript:getLeaveApprovePopup(' + itrVar.leaveId +')'}">
+															<img alt="image" class="img-circle"
+															th:src="'http://scaits.info/attachment/empImage/'+${itrVar.employee.employeeDetails[0].tempPayroll}+'_Photo.jpg'">
+															<p class="h6 m-b-xs">
+																<strong>
+																<span th:text="${itrVar.employee.userName}"></span></strong><strong><br>
+					                                            <span th:text="${itrVar.employee.payRollId}"></span>
+																</strong>
+															</p>
+															<div>
+															<span th:text="${itrVar.employee.designation}"></span>
+															</div>
+															<div class="m-t-md">
+																<strong style="color: orange;"> 
+																<span th:text="${itrVar.leaveType.leaveType}"></span>
+																</strong><br> <span
+																	style="font-size: 12px; white-space: nowrap;"> <strong
+																	style="color: #1ab394;">
+																	<span th:text="${#dates.format(itrVar.fromDate, 'dd-MM-yyyy')}"></span>
+																	</strong> 
+																	
+																	<div th:if="${fromDate!=toDate}">
+																		 to <strong style="color: #1ab394;"> 
+																	<span th:text="${#dates.format(itrVar.toDate, 'dd-MM-yyyy')}"></span>	 
+																		 </strong>
+																	</div> ( <strong style="color: #1c84c6">
+																	<span th:text="${itrVar.totalDuration}"></span>
+																	</strong> Day(s) )
+																</span><br>
+																<div th:if="${itrVar.reason!=null && itrVar.reason.length()>20}">
+																	<span th:title="${itrVar.reason}">
+																	<span th:text="${itrVar.reason.substring(0,20)+'....'}"></span>
+																	</span>
+																</div>
+																<div th:if="${itrVar.reason!=null && !(itrVar.reason.length()>20)}">
+																<span th:text="${itrVar.reason}"></span>
+																</div>
+																<br>
+															</div>
+														</a>
+													</div>
+												</div>
+											</li>
+										</div>
+									</ul>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal inmodal fade" id="leaveApprovePopupId" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="width: 40%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">Leave Details</h4>
+			</div>
+			<div class="modal-body" id="leaveApprovePopupDataId"></div>
+		</div>
+	</div>
+</div>

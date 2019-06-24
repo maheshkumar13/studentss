@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta charset="utf-8" />
+<body>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<tr>
+				<td width="6%"><b>Paragraph Text</b></td>
+				<td><span
+					th:utext="${@currentUser.getQuestionText(question.paragraphText)}"
+					style="color: #337ab7;"></span></td>
+			</tr>
+			<th:block th:each="question:${question.choiceQuestions}">
+				<tr>
+					<td width="6%"><b>Question</b></td>
+					<td><span
+						th:utext=${@currentUser.getQuestionText(question.questionText)}></span>
+						<th:block th:if="${question.choicesPerLine &lt; 2}">
+							<table>
+								<tr th:each="choiceVal,choiceStat : ${question.choices}">
+									<td style="padding-right: 25px;"><b
+										th:if=${choiceStat.index==0}>A)&nbsp;</b> <b
+										th:if=${choiceStat.index==1}>B)&nbsp;</b> <b
+										th:if=${choiceStat.index==2}>C)&nbsp;</b> <b
+										th:if=${choiceStat.index==3}>D)&nbsp;</b> <b
+										th:if=${choiceStat.index==4}>E)&nbsp;</b> <span
+										th:utext="${@currentUser.getQuestionText(choiceVal.choiceText)}"></span>
+									</td>
+								</tr>
+							</table>
+						</th:block> <th:block th:if="${question.choicesPerLine &gt; 2}">
+							<table>
+								<tr>
+									<td style="padding-right: 25px;"
+										th:each="choiceVal,choiceStat : ${question.choices}"><b
+										th:if=${choiceStat.index==0}>A)&nbsp;</b> <b
+										th:if=${choiceStat.index==1}>B)&nbsp;</b> <b
+										th:if=${choiceStat.index==2}>C)&nbsp;</b> <b
+										th:if=${choiceStat.index==3}>D)&nbsp;</b> <b
+										th:if=${choiceStat.index==4}>E)&nbsp;</b> <span
+										th:utext="${@currentUser.getQuestionText(choiceVal.choiceText)}"></span>
+									</td>
+								</tr>
+							</table>
+						</th:block> <th:block th:if="${question.choicesPerLine==2}">
+							<table>
+								<tr>
+									<td style="padding-right: 25px;"
+										th:if="${question.choices.size()>0}"><b>A)</b>&nbsp;<span
+										th:utext="${@currentUser.getQuestionText(question.choices.get(0).choiceText)}"></span></td>
+									<td style="padding-right: 25px;"
+										th:if="${question.choices.size()>1}"><b>B)</b>&nbsp;<span
+										th:utext="${@currentUser.getQuestionText(question.choices.get(1).choiceText)}"></span></td>
+								</tr>
+								<tr>
+									<td style="padding-right: 25px;"
+										th:if="${question.choices.size()>2}"><b>C)</b>&nbsp;<span
+										th:utext="${@currentUser.getQuestionText(question.choices.get(2).choiceText)}"></span></td>
+									<td style="padding-right: 25px;"
+										th:if="${question.choices.size()>3}"><b>D)</b>&nbsp;<span
+										th:utext="${@currentUser.getQuestionText(question.choices.get(3).choiceText)}"></span></td>
+								</tr>
+								<tr th:if="${question.choices.size()>4}">
+									<td style="padding-right: 25px;"
+										th:if="${question.choices.size()>4}"><b>E)</b>&nbsp;<span
+										th:utext="${@currentUser.getQuestionText(question.choices.get(4).choiceText)}"></span></td>
+								</tr>
+							</table>
+						</th:block></td>
+				</tr>
+				<tr>
+					<td width="6%"><b>Answer</b></td>
+					<td><th:block th:each="choice,choiceStat:${question.choices}">
+							<span th:if=${choice.correctAnswer}
+								th:text="${@currentUser.getChar(choiceStat.index+1)}"
+								style="color: #8E44AD !important; font-weight: bold;"> </span>
+						</th:block></td>
+				</tr>
+				<tr>
+					<td width="6%"><b>Solution</b></td>
+					<td><span
+						th:utext="${@currentUser.getQuestionText(question.solution)}"
+						style="color: #337ab7;"></span></td>
+				</tr>
+			</th:block>
+		</table>
+	</div>
+</body>
+</html>

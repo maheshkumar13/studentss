@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<form class="form-horizontal" action=" " method="post" id="formId">
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Internal Exam Fee Details</div>
+		</div>
+	<div class="row" id="campusDiv" th:if="${campusList.size()>1}">
+		<div class="col-md-4">
+				<label>City</label> <select class="form-control" name="city"
+					id="cityId" onchange="getCityCampuses(this.value);">
+					<option value="">Select City</option>
+					<th:block th:each="city:${cityMasterList}">
+						<option th:value="${city.cityId}" th:text="${city.cityName}"></option>
+					</th:block>
+				</select>
+			</div>
+			
+			<div class="col-md-4">
+				<label>Campus</label><select class="form-control" name="campus"
+					id="CityCampusId">
+					<option value="">Select Campus</option>
+					<th:block th:each="campus:${campusList}">
+						<option th:value="${campus.Id}" th:text="${campus.campusName}"></option>
+					</th:block>
+				</select>
+			</div>
+		
+			<div id="buttonI">
+				<div class="col-md-2">
+					<button type="button" class="btn btn-info" id="searchId"
+						onclick="reportFilters();">
+						<span class="glyphicon glyphicon-search"></span>&nbsp;getReport
+					</button>
+				</div>
+			</div>
+			</div>
+			<div id="studentDeatailsGridId"></div>
+	</div>
+	</form>
+	</body>
+	
+	<script th:inline="javascript">
+	$(document).ready(function () {
+			reportFilters();
+	}); 
+	 function getCityCampuses(city) {
+	            $.ajax({
+                type : "GET",
+                url : "/scaits/getcitycampus",
+                data : {
+                    city : city
+                },
+                dataType : 'text',
+                success : function(data) {
+                    var prePopulate = JSON.parse(data);
+                    var select = $('#CityCampusId');
+                    select.find('option').remove();
+                    $.each(prePopulate, function(key, value) {
+                        $('<option>').val(key).text(value).appendTo(select);
+                    });
+
+                }
+            });
+        }
+
+				function reportFilters() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/InternalExamFeeReport",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+				}
+			});
+		}
+
+		/* function loadBulkStudentList() {
+					$.ajax({
+				type : "GET",
+				url : "/scaits/getStudentDetailsGrid",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+
+		} */
+		
+		</script>
+	</html>

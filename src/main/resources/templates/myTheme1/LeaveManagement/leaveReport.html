@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<style>
+
+ul {
+	list-style-type: none;
+}
+
+body {
+	font-family: Verdana, sans-serif;
+}
+
+.month {
+	padding: 20px 25px;
+	width: 100%;
+	background: #1abc9c;
+	text-align: center;
+	height: 74px;
+}
+
+.month ul {
+	margin: 0;
+	padding: 0;
+}
+
+.month ul li {
+	color: white;
+	font-size: 20px;
+	text-transform: capitalize;
+	letter-spacing: 3px;
+}
+
+.month .prev {
+	float: left;
+	padding-top: 10px;
+	cursor: pointer;
+}
+
+.month .next {
+	float: right;
+	padding-top: 10px;
+	cursor: pointer;
+}
+
+.weekdays {
+	margin: 0;
+	padding: 10px 0;
+	background-color: #ddd;
+	font-weight: bold;
+}
+
+.weekdays li {
+	display: inline-block;
+	width: 13.6%;
+	text-align: center;
+}
+
+.days {
+	padding: 10px 0;
+	background: #eee;
+	margin: 0;
+}
+
+.days li {
+	list-style-type: none;
+	display: inline-block;
+	width: 13.6%;
+	text-align: center;
+	margin-bottom: 30px;
+	font-size: 12px;
+}
+
+.days li .active {
+	padding: 5px;
+	background: #1abc9c;
+	color: white !important
+}
+
+</style>
+
+<script>
+	var app = angular.module('myApp', []);
+	app.controller('myCtrl', function($scope) {
+		var monthNames = [ "January", "February", "March", "April", "May",
+				"June", "July", "August", "September", "October", "November",
+				"December" ];
+		var d = new Date();
+		if (d.getMonth() == 0) {
+			$scope.monthVal1 = monthNames[12 - 1] + "-";
+		} else {
+			$scope.monthVal1 = monthNames[d.getMonth() - 1] + "-";
+		}
+		$scope.monthVal2 = monthNames[d.getMonth()];
+
+		$scope.yearVal = d.getFullYear();
+
+		$scope.changeCalendar = function(val, mon, y) {
+			var d = new Date();
+			if (val == "prev") {
+				d.setMonth(monthNames.indexOf(mon) - 1);
+				if (d.getMonth() == 11) {
+					d.setYear(y - 1);
+				} else {
+					d.setYear(y);
+				}
+			} else {
+				d.setMonth(monthNames.indexOf(mon) + 1);
+				if (d.getMonth() == 0) {
+					d.setYear(y + 1);
+				} else {
+					d.setYear(y);
+				}
+			}
+			$scope.monthVal2 = monthNames[d.getMonth()];
+			if (d.getMonth() == 0) {
+				$scope.monthVal1 = "December-";
+			} else {
+				$scope.monthVal1 = monthNames[d.getMonth() - 1] + "-";
+			}
+			$scope.yearVal = d.getFullYear();
+			getCalendarDates(monthNames.indexOf($scope.monthVal2) + 1,
+					$scope.yearVal, val);
+		}
+	});
+
+	function getCalendarDates(m, y, val) {
+		$.ajax({
+			type : 'POST',
+			url : '/leaveManagement/leaveReport?monthVal=' + m
+					+ '&year=' + y,
+			dataType : 'text',
+			success : function(data) {
+				if (data.indexOf("FEEDBACK-") != -1) {
+					handleFeedback(data, val);
+				} else {
+					$("#daysDivId").html(data);
+				}
+
+			},
+			error : function() {
+				alert("Unable to load details");
+			}
+
+		});
+	}
+
+	function handleFeedback(data, val) {
+		msg = data.substring(data.indexOf("-", 9) + 1);
+		alert(msg);
+	}
+</script>
+</head>
+<body>
+	<div ng-app="myApp" ng-controller="myCtrl" class="container">
+		<div class="row">
+			<div class="col-sm-3 col-md-9">
+				<div class="month">
+					<ul>
+						<li class="prev"
+							ng-click="changeCalendar('prev',monthVal2,yearVal)" id="prevId">&#10094;</li>
+						<li class="next" id="nextId"
+							ng-click="changeCalendar('next',monthVal2,yearVal)">&#10095;</li>
+						<li><span id="monthId">26th {{monthVal1}}<span></span>25th
+								{{monthVal2}}
+						</span><br> <span style="font-size: 18px" id="yearId">{{yearVal}}</span></li>
+					</ul>
+				</div>
+
+				<div id="daysDivId">
+					<div th:replace="myTheme1/LeaveManagement/calendarDates"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

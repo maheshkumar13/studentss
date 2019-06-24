@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="row">
+		<div class="col-xs-6" th:each="subjectKey:${subjectTopicWise}">
+			<div class="portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<span class="caption-subject font-green-sharp bold uppercase"
+							th:text="${subjectKey.key.getName()+' Sub Topic ('+subjectKey.value.get(0).size()+')'}"></span>
+											
+											<span th:text="'Total Questions '+${@currentUser.getMapSize(subjectKey.value.get(0))}"></span>
+					</div>
+					<div class="actions">
+						<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:void(0)"> </a>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div th:id="${'container1'+subjectKey.key.getName()}" style=""></div>
+				</div>
+			</div>
+		</div>
+
+		<div id="subSubTopicGraphId" >
+		<div  th:replace="myTheme1/subSubTopicWiseTestDetails"></div>
+		</div>
+
+		<div class="col-md-12">
+			<!-- BEGIN SAMPLE TABLE PORTLET-->
+			<div class="portlet box green">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-comments"></i> <span
+							th:each="cat:${subjectTopicWiseQuestions}"> <span
+							th:text="${cat.key.name}"></span>
+						</span>
+						<!-- <span th:text=${subjectTopicWiseQuestions.key.name}></span> -->
+						Topic Question's
+					</div>
+					<div class="tools">
+						<a href="javascript:;" class="collapse" data-original-title=""
+							title=""> </a> <a href="#portlet-config" data-toggle="modal"
+							class="config" data-original-title="" title=""> </a> <a
+							href="javascript:;" class="reload" data-original-title=""
+							title=""> </a> <a href="javascript:;" class="remove"
+							data-original-title="" title=""> </a>
+					</div>
+				</div>
+				<div class="portlet-body" style="display: block;">
+					<div class="table-scrollable">
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th>S.No</th>
+									<th>No Of Questions</th>
+									<th>Test Code</th>
+									<th>Category</th>
+									<th>Topic</th>
+									<th>Sub Topic</th>
+									<th>Sub Sub Topic</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<div th:each="cat1:${subjectTopicWiseQuestions}">
+									<tr th:each=subWiseQue,statusVal:${cat1.value}
+										th:if=${statusVal.index==0}>
+										<td><a role="menuitem"
+											th:onclick='${"javascript:getSubTopicQuestions(" + subWiseQue.id +","+offlineExamSummary.id+")"}'
+											data-toggle="modal" data-target="#getSubTopicQuestions"><span
+												th:text=${statusVal.index+1}></span></a></td>
+										<td><a role="menuitem"
+											th:onclick='${"javascript:getSubTopicQuestions(" + subWiseQue.id +","+offlineExamSummary.id+")"}'
+											data-toggle="modal" data-target="#getSubTopicQuestions">
+												<span th:text=${cat1.value.size()}></span>
+										</a></td>
+										<td><a role="menuitem"
+											th:onclick='${"javascript:getSubTopicQuestions(" + subWiseQue.id +","+offlineExamSummary.id+")"}'
+											data-toggle="modal" data-target="#getSubTopicQuestions"><span
+												th:text=${subWiseQue.offlineExam.testCode}></span></a></td>
+										<td><a role="menuitem"
+											th:onclick='${"javascript:getSubTopicQuestions(" + subWiseQue.id +","+offlineExamSummary.id+")"}'
+											data-toggle="modal" data-target="#getSubTopicQuestions"><span
+												th:text=${subWiseQue.category.name}> </span></a></td>
+										<td><a role="menuitem"
+											th:onclick='${"javascript:getSubTopicQuestions(" + subWiseQue.id +","+offlineExamSummary.id+")"}'
+											data-toggle="modal" data-target="#getSubTopicQuestions"><span
+												th:text=${subWiseQue.topic.name}></span></a></td>
+										<td><a role="menuitem"
+											th:onclick='${"javascript:getSubTopicQuestions(" + subWiseQue.id +","+offlineExamSummary.id+")"}'
+											data-toggle="modal" data-target="#getSubTopicQuestions"><span
+												th:text=${subWiseQue.subtopic.name}></span></a></td>
+										<td><a role="menuitem"
+											th:onclick='${"javascript:getSubTopicQuestions(" + subWiseQue.id +","+offlineExamSummary.id+")"}'
+											data-toggle="modal" data-target="#getSubTopicQuestions"><span
+												th:text=${subWiseQue.subsubtopic.name}></span></a></td>
+									</tr>
+								</div>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- END SAMPLE TABLE PORTLET-->
+		</div>
+
+	</div>
+
+	<div class="modal fade" id="getSubTopicQuestions" tabindex="-1"
+		role="basic" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true"></button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+
+
+					<div id="quePopupDivId">
+						<div th:replace="myTheme1/testSubTopicPopUpData"></div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn dark btn-outline"
+						data-dismiss="modal">Close</button>
+					<!-- <button type="button" class="btn green">Save changes</button> -->
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<form action="" method="post" id="getTestSubSubTopicGraphDataId">
+
+		<input type="hidden" id="subnameId" name="subnameId"> <input
+			type="hidden" id="offlineExamSummaryId" name="offlineExamSummaryId">
+		<input type="hidden" id="subTopicId" name="subTopicId">
+
+	</form>
+
+	<form action="" method="post" id="getSubTopicQuestionsDataId">
+
+		<input type="hidden" id="subWiseQueId" name="subWiseQueId"> <input
+			type="hidden" id="offExamId" name="offExamId">
+
+	</form>
+
+
+</body>
+<th:block layout:fragment="scripts">
+	<script th:inline="javascript">
+
+	function getSubTopicQuestions(subWiseQueId,offlineExamSummaryId) {
+		
+		$("#subWiseQueId").val(subWiseQueId);
+		$("#offExamId").val(offlineExamSummaryId);
+		pageOverlay(0);
+		$.ajax({
+			url : '/qb/getSubTopicQuestions',
+			type : 'GET',
+			data : $("#getSubTopicQuestionsDataId").serialize(),
+			success : function(data) {
+				$('#quePopupDivId').html(data);
+				pageOverlay(1);
+			},
+			error : function() {
+				alert("Unable to load details.");
+				pageOverlay(1);
+			}
+		});
+
+	}
+
+</script>
+
+	<script th:inline="javascript" th:each=subject:${subjectTopicWiseGraph}>
+/*<![CDATA[*/
+           var catStrName1=[];
+var catStrId1=[];
+	var subTopicName = [[${subject.key.getName()}]];
+var subnameId = [[${subject.key.id}]];
+var offlineExamSummaryId = [[${offlineExamSummary.id}]];
+var subValueName = [[${subject.value}]];
+var dataXSubLayer = [];
+var dataYSubLayer = [];
+$(function() {
+	
+	
+
+	    for (i = 0; i < subValueName.length; i++) {
+	    	var ext= subValueName[i].substring(0,subValueName[i].lastIndexOf('-'));
+	    	var ext1 = subValueName[i].substring(subValueName[i].lastIndexOf('-') + 1);
+	    	
+	    	
+	    	catStrName1.push(ext);
+    		catStrId1.push(ext1);
+	    	
+	    	if(i%2==0){
+	    		dataYSubLayer.push(ext);
+	    	}else{
+	    		dataXSubLayer.push(parseInt(subValueName[i]));
+	    	}
+	    }
+	$("[id=container1"+subTopicName+"]").highcharts(
+			{
+				chart : {
+					type : 'bar'
+				},
+				title : {
+					text : ''
+				},
+				xAxis : {
+					categories : dataYSubLayer
+				},
+				yAxis : {
+					gridLineWidth : 0,
+					labels : {
+						overflow : 'justify',
+						enabled : false
+					}
+				},
+				tooltip : {
+					valueSuffix : ' Questions'
+				},
+				credits : {
+					enabled : false
+				},
+				
+				
+				 plotOptions: {
+				        series: {
+				            cursor: 'pointer',
+				            point: {
+				                events: {
+				                    click: function () {
+				                    	
+				                    	 $("#subnameId").val(subnameId);
+					        				$("#offlineExamSummaryId").val(offlineExamSummaryId);
+					        				
+					        				var a = catStrName1.indexOf(this.category);
+					        				$("#subTopicId").val(catStrId1[a]);
+					                        
+					                        $.ajax({
+					        					url : '/qb/getTestSubSubTopicGraphData',
+					        					type : 'GET',
+					        					data : $("#getTestSubSubTopicGraphDataId").serialize(),
+					        					success : function(data) {
+					        						$('#subSubTopicGraphId').show();
+					        						$('#subSubTopicGraphId').html('');
+					        						$('#subSubTopicGraphId').html(data);
+					        						pageOverlay(1);
+					        					},
+					        					error : function() {
+					        						alert("Unable to load details.");
+					        						pageOverlay(1);
+					        					}
+					        				});
+				                    }
+				                }
+				            },
+				            dataLabels: {
+				                enabled: true
+				            }
+				        }
+				    },
+				    
+				    
+				legend : {
+					enabled : false
+				},
+				series : [ {
+					name : subTopicName,
+					data : dataXSubLayer,
+					maxPointWidth: 20
+				} ]
+			});
+});
+/*]]>*/
+</script>
+
+</th:block>
+
+</html>

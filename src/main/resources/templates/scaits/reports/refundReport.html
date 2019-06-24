@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<form class="form-horizontal" action=" " method="post" id="formId">
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Refund Status Report</div>
+		</div>
+
+			<div class="row">
+				<div class="col-md-3">
+						<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline "><input
+							type="checkbox" id="approvedId" name="refundStatus"
+							class="checkSelection" value="APPROVED" checked /><span></span> </label> <label
+							class="bold">Approved</label>
+					</div>
+					
+					<div class="col-md-3">
+						<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline "><input
+							type="checkbox" id="rejectId" name="refundStatus"
+							class="checkSelection" value="REJECT" checked /><span></span> </label> <label
+							class="bold">reject</label>
+					</div>
+					
+						<div class="col-md-3">
+						<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline "><input
+							type="checkbox" id="confirmId" name="refundStatus"
+							class="checkSelection" value="CONFIRMED" checked /><span></span> </label> <label
+							class="bold"> Confirm</label>
+					</div>
+					<div class="col-md-3">
+						<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline "><input
+							type="checkbox" id="ddpreparedId" name="refundStatus"
+							class="checkSelection" value="DD PREPARED" checked /><span></span> </label> <label
+							class="bold">Divisional Check</label>
+					</div>
+					
+					<div class="col-md-3">
+						<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline "><input
+							type="checkbox" id="ddnpreparedId" name="refundStatus"
+							class="checkSelection" value="DD NOT PREPARED" checked /><span></span> </label> <label
+							class="bold">Divisional Reject</label>
+					</div>
+					
+				
+					
+				
+			</div>
+				<div id="buttonI">
+				<div class="col-md-2">
+					<button type="button" class="btn btn-info" id="searchId"
+						onclick="reportFilters();">
+						<span class="glyphicon glyphicon-search"></span>&nbsp;getReport
+					</button>
+				</div>
+			</div>
+			<div id="studentDeatailsGridId"></div>
+			</div>
+			</form>
+			</body>
+			
+			<script type="text/javascript">
+$(document).ready(function(){
+    $('.checkSelection').click(function() {
+        $('.checkSelection').not(this).prop('checked', false);
+    });
+    $('#button').hide();
+});
+
+function getIds() {
+	alert('hii');
+    var list = [];
+    $.each($("input[name='sport']:checked"), function(){            
+        if($(this).val()){
+        list.push($(this).val());
+        }
+    });
+    $("#studentsList").val(list);
+}
+
+$('input[name="request"]').click(function() {
+    if ($(this).is(':checked')) {
+  $('#campusWise').show();
+   $("#student").hide();
+    }else{
+        $('#campusWise').hide();
+         $("#student").hide();
+    }
+});
+function reportFilters() {
+	$.ajax({
+		type : "GET",
+		url : "/scaits/refundReportList",
+		data : $("#formId").serialize(),
+		success : function(data) {
+			$('#studentDeatailsGridId').html('');
+			$('#studentDeatailsGridId').html(data);
+		},
+		error : function() {
+			alert('Error occured');
+		}
+	});
+}
+
+
+			</script>
+			</html>
+			
+		

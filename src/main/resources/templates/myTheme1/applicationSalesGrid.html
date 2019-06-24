@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+		
+		<div class="table-container">
+			<table class="table table-striped order-column nowrap leave-status-table"
+				 id="sample_3">
+				<thead>
+					<tr>
+						<th>Application No</th>
+						<th>Surname</th>
+						<th>Student Name</th>
+						<th>Parent Name</th>
+						<th>Class</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="appNoVal,status:${applicationnos}">
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+appNoVal.ApplicationNo+')'}"
+							th:text="${appNoVal.ApplicationNo}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+appNoVal.ApplicationNo+')'}"
+							th:text="${appNoVal.Surname!=null?appNoVal.Surname:''}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+appNoVal.ApplicationNo+')'}"
+							th:text="${appNoVal.StudentName!=null?appNoVal.StudentName:''}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+appNoVal.ApplicationNo+')'}"
+							th:text="${appNoVal.ParentName!=null?appNoVal.ParentName:''}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+appNoVal.ApplicationNo+')'}"
+							th:text="${appNoVal.Class!=null?appNoVal.Class:''}"></a></td>
+					</tr>
+				</tbody>
+			</table>
+			
+			</div>
+			
+		</div>
+	</div>
+</body>
+</html>

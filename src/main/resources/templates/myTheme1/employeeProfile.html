@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{myTheme1/base}">
+<head>
+<style type="text/css">
+.month {
+	padding: 20px 25px;
+	width: 100%;
+	background: #1abc9c;
+	text-align: center;
+	height: 74px;
+}
+
+.month ul {
+	margin: 0;
+	padding: 0;
+}
+
+.month ul li {
+	color: white;
+	font-size: 20px;
+	text-transform: capitalize;
+	letter-spacing: 3px;
+}
+
+.month .prev {
+	float: left;
+	padding-top: 10px;
+	cursor: pointer;
+}
+
+.month .next {
+	float: right;
+	padding-top: 10px;
+	cursor: pointer;
+}
+
+.weekdays {
+	margin: 0;
+	padding: 23px 0;
+	background-color: #ddd;
+	font-weight: bold;
+}
+
+.weekdays li {
+	display: inline-block;
+	width: 13.6%;
+	text-align: center;
+}
+
+.days {
+	padding: 10px 0;
+	background: #eee;
+	margin: -13px;
+}
+
+.days li {
+	list-style-type: none;
+	display: inline-block;
+	width: 13.6%;
+	text-align: center;
+	margin-bottom: 30px;
+	font-size: 12px;
+}
+
+.days li .active {
+	padding: 5px;
+	background: #1abc9c;
+	color: white !important
+}
+
+
+
+</style>
+<script th:inline="javascript">
+
+      /*<![CDATA[*/
+	    
+         var runningMonth = /*[[${runningMonth}]]*/;
+         var empRequestStr = /*[[${requestDates}]]*/;
+         var empApproveStr = /*[[${approvedDates}]]*/;
+      
+       /*]]>*/
+</script>
+<script type="text/javascript">
+
+
+
+function getInit(){
+	//alert(runningMonth);
+	getEmpAtdReport(runningMonth);
+	
+	for(var u=0;u<12;u++){
+		if(document.getElementById("tab0_6_"+u)!=null){
+			document.getElementById("tab0_6_"+u).className ="tab-pane";	
+		}
+		if(document.getElementById("tab0_6_"+u+"_id")!=null){
+			document.getElementById("tab0_6_"+u+"_id").className ="";	
+		}
+	}
+	document.getElementById("tab0_6_"+runningMonth).className ="tab-pane active in";
+	document.getElementById("tab0_6_"+runningMonth+"_id").className ="active";
+}
+
+function getEmpAtdReport(monthVal){
+	
+}
+
+function getApprovedDates(monthVal){
+	
+	var d = new Date();
+	var yearVal = d.getFullYear();
+	
+	if(monthVal=="tab"){
+		monthVal=runningMonth;
+	}
+	//alert(monthVal);
+	var myObj = JSON.parse(empApproveStr);
+	for (x in myObj) {
+		//alert("month : "+myObj[x].monthVal);
+	  if(myObj[x].monthVal==monthVal && myObj[x].yearVal==yearVal){
+		 // alert("json "+JSON.stringify(myObj[x]));
+		 $("#empLeaveAppId"+monthVal).html("");
+		 // $("#empLeaveAppId"+monthVal).append(JSON.stringify(myObj[x]));
+		  
+              /* var row = $("<table><tbody><tr /></tbody></table>")
+              
+              row.append($("<table><tbody><tr><td>" + JSON.stringify(myObj[x].Date)+ "</td></tr></tbody></table>"));
+              row.append($("<table><tbody><tr><td>" + JSON.stringify(myObj[x].Date) + "</td></tr></tbody></table>"));
+              row.append($("<table><tbody><tr><td>" + JSON.stringify(myObj[x].monthVal)  + "</td></tr></tbody></table>"));
+              row.append($("<table><tbody><tr><td>" + JSON.stringify(myObj[x].monthVal)  + "</td></tr></tbody></table>"));
+              row.append($("<table><tbody><tr><td>" + JSON.stringify(myObj[x].monthVal)  + "</td></tr></tbody></table>"));
+              $("#empLeaveAppId"+monthVal).append(row); */
+              
+              
+              
+              var number_of_rows = 1;
+              var k = 0;
+              var table_body = '<table border="1" id="example"><thead><tr><th>Date</th><th>Month</th></tr></thead><tbody>';
+              table_body+='<tr>';
+              table_body +='<td>';
+              table_body +=JSON.stringify(myObj[x].Date).replace('"','');
+              table_body +='</td>';
+              table_body +='<td>';
+              table_body +=JSON.stringify(myObj[x].monthVal).replace('"','');
+              table_body +='</td>';
+              table_body+='</tr>';
+              table_body+='</tbody></table>';
+              $("#empLeaveAppId"+monthVal).html(table_body);
+		  
+	  }
+	} 
+	
+	for(var u=0;u<12;u++){
+		if(document.getElementById("tab2_6_"+u)!=null){
+			document.getElementById("tab2_6_"+u).className ="tab-pane";	
+		}
+		if(document.getElementById("tab2_6_"+u+"_id")!=null){
+			document.getElementById("tab2_6_"+u+"_id").className ="";	
+		}
+	}
+	document.getElementById("tab2_6_"+monthVal).className ="tab-pane active in";
+	document.getElementById("tab2_6_"+monthVal+"_id").className ="active";
+	
+}
+
+function getRequestDates(monthVal){
+	
+	var d = new Date();
+	var yearVal = d.getFullYear();
+	
+	if(monthVal=="tab"){
+		monthVal=runningMonth;
+	}
+	var myObj = JSON.parse(empApproveStr);
+	for (x in myObj) {
+		//alert("month : "+myObj[x].monthVal);
+	  if(myObj[x].monthVal==monthVal && myObj[x].yearVal==yearVal){
+		 // alert("json "+JSON.stringify(myObj[x]));
+		 $("#empLeaveReqId"+monthVal).html("");
+		  $("#empLeaveReqId"+monthVal).append(JSON.stringify(myObj[x]));
+		  
+		  
+	  }
+	  
+	} 
+	for(var u=0;u<12;u++){
+		if(document.getElementById("tab1_6_"+u)!=null){
+			document.getElementById("tab1_6_"+u).className ="tab-pane";	
+		}
+		if(document.getElementById("tab1_6_"+u+"_id")!=null){
+			document.getElementById("tab1_6_"+u+"_id").className ="";	
+		}
+	}
+	document.getElementById("tab1_6_"+monthVal).className ="tab-pane active in";
+	document.getElementById("tab1_6_"+monthVal+"_id").className ="active";
+}
+</script>
+</head>
+<body  onload="getInit()">
+	<div layout:fragment="page_content">
+		<!-- <div class="page-content-wrapper">
+			BEGIN CONTENT BODY
+			<div class="page-content"> -->
+		<!-- BEGIN PAGE HEAD-->
+		<div class="page-head">
+			<!-- BEGIN PAGE TITLE -->
+			<div class="page-title">
+				<h1>Employee Profile</h1>
+			</div>
+			<!-- END PAGE TITLE -->
+			<!-- BEGIN PAGE TOOLBAR -->
+			<div th:replace="/myTheme1/themePanel :: themePanel"></div>
+			<!-- END PAGE TOOLBAR -->
+		</div>
+		<!-- END PAGE HEAD-->
+		<!-- BEGIN PAGE BREADCRUMB -->
+		<ul class="page-breadcrumb breadcrumb">
+			<li><a href="index.html">Home</a> <i class="fa fa-circle"></i></li>
+			<li><span class="active">Employee Profile</span></li>
+		</ul>
+		<!-- END PAGE BREADCRUMB -->
+		<!-- BEGIN PAGE BASE CONTENT -->
+		<!-- BEGIN DASHBOARD STATS 1-->
+		<div class="row">
+			<div class="col-md-12">
+				<!-- BEGIN PROFILE SIDEBAR -->
+				<div class="profile-sidebar">
+					<!-- PORTLET MAIN -->
+					<div class="portlet light profile-sidebar-portlet bordered">
+						<!-- SIDEBAR USERPIC -->
+						<div class="profile-userpic">
+							<img class="img-responsive" alt="employee profile page"
+								style="height: 100px; width: 100px;"
+								th:src="'http://scaits.info/attachment/empImage/'+${@currentUser.getCurrentUser().getPayRollId()}+'_Photo.jpg'">
+						</div>
+						<!-- END SIDEBAR USERPIC -->
+						<!-- SIDEBAR USER TITLE -->
+						<div class="profile-usertitle">
+							<div class="profile-usertitle-name"
+								th:text="${@currentUser.getCurrentUser().getUserName()}"></div>
+							<div class="profile-usertitle-job"
+								th:text="${@currentUser.getCurrentUser().getPayRollId()}"></div>
+							<div class="profile-usertitle-job"
+								th:text="${@currentUser.getCurrentUser().getCampus()}"></div>
+						</div>
+						<!-- END SIDEBAR USER TITLE -->
+						<!-- SIDEBAR BUTTONS -->
+						<div class="profile-userbuttons">
+							<button class="btn btn-circle green btn-sm" type="button">Follow</button>
+							<button class="btn btn-circle red btn-sm" type="button">Message</button>
+						</div>
+						<!-- END SIDEBAR BUTTONS -->
+						<!-- SIDEBAR MENU -->
+						<div class="profile-usermenu">
+							<ul class="nav">
+								<li class="active"><a href="page_user_profile_1.html">
+										<i class="icon-home"></i> Overview
+								</a></li>
+								<li><a href="page_user_profile_1_account.html"> <i
+										class="icon-settings"></i> Account Settings
+								</a></li>
+								<li><a href="page_user_profile_1_help.html"> <i
+										class="icon-info"></i> Help
+								</a></li>
+							</ul>
+						</div>
+						<!-- END MENU -->
+					</div>
+					<!-- END PORTLET MAIN -->
+					<!-- PORTLET MAIN -->
+					<div class="portlet light bordered">
+						<!-- STAT -->
+						<div class="row list-separated profile-stat">
+							<div class="col-md-4 col-sm-4 col-xs-6">
+								<div class="uppercase profile-stat-title">37</div>
+								<div class="uppercase profile-stat-text">Projects</div>
+							</div>
+							<div class="col-md-4 col-sm-4 col-xs-6">
+								<div class="uppercase profile-stat-title">51</div>
+								<div class="uppercase profile-stat-text">Tasks</div>
+							</div>
+							<div class="col-md-4 col-sm-4 col-xs-6">
+								<div class="uppercase profile-stat-title">61</div>
+								<div class="uppercase profile-stat-text">Uploads</div>
+							</div>
+						</div>
+						<!-- END STAT -->
+						<div>
+							<h4 class="profile-desc-title">About Marcus Doe</h4>
+							<span class="profile-desc-text"> Lorem ipsum dolor sit
+								amet diam nonummy nibh dolore. </span>
+							<div class="margin-top-20 profile-desc-link">
+								<i class="fa fa-globe"></i> <a href="http://www.keenthemes.com/">www.keenthemes.com</a>
+							</div>
+							<div class="margin-top-20 profile-desc-link">
+								<i class="fa fa-twitter"></i> <a
+									href="http://www.twitter.com/keenthemes/">@keenthemes</a>
+							</div>
+							<div class="margin-top-20 profile-desc-link">
+								<i class="fa fa-facebook"></i> <a
+									href="http://www.facebook.com/keenthemes/">keenthemes</a>
+							</div>
+						</div>
+					</div>
+					<!-- END PORTLET MAIN -->
+				</div>
+				<!-- END BEGIN PROFILE SIDEBAR -->
+				<!-- BEGIN PROFILE CONTENT -->
+				<div class="profile-content">
+					<div class="row">
+						<div class="col-md-6">
+							<!-- BEGIN PORTLET -->
+							<div class="portlet light bordered">
+								<div class="portlet-title">
+									<div class="caption caption-md">
+										<i class="icon-bar-chart theme-font hide"></i> <span
+											class="caption-subject font-blue-madison bold uppercase">Your
+											Activity</span> <span class="caption-helper hide">weekly
+											stats...</span>
+									</div>
+									<div class="actions">
+										<div class="btn-group btn-group-devided" data-toggle="buttons">
+											<label
+												class="btn btn-transparent grey-salsa btn-circle btn-sm active">
+												<input name="options" class="toggle" id="option1"
+												type="radio">Today
+											</label> <label
+												class="btn btn-transparent grey-salsa btn-circle btn-sm">
+												<input name="options" class="toggle" id="option2"
+												type="radio">Week
+											</label> <label
+												class="btn btn-transparent grey-salsa btn-circle btn-sm">
+												<input name="options" class="toggle" id="option2"
+												type="radio">Month
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="portlet-body">
+									<div class="row number-stats margin-bottom-30">
+										<div class="col-md-6 col-sm-6 col-xs-6">
+											<div class="stat-left">
+												<div class="stat-chart">
+													<!-- do not line break "sparkline_bar" div. sparkline chart has an issue when the container div has line break -->
+													<div id="sparkline_bar">
+														<canvas width="90" height="45"
+															style="width: 90px; height: 45px; vertical-align: top; display: inline-block;"></canvas>
+													</div>
+												</div>
+												<div class="stat-number">
+													<div class="title">Total</div>
+													<div class="number">2460</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-6 col-xs-6">
+											<div class="stat-right">
+												<div class="stat-chart">
+													<!-- do not line break "sparkline_bar" div. sparkline chart has an issue when the container div has line break -->
+													<div id="sparkline_bar2">
+														<canvas width="90" height="45"
+															style="width: 90px; height: 45px; vertical-align: top; display: inline-block;"></canvas>
+													</div>
+												</div>
+												<div class="stat-number">
+													<div class="title">New</div>
+													<div class="number">719</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="table-scrollable table-scrollable-borderless">
+										<table class="table table-hover table-light">
+											<thead>
+												<tr class="uppercase">
+													<th colspan="2">MEMBER</th>
+													<th>Earnings</th>
+													<th>CASES</th>
+													<th>CLOSED</th>
+													<th>RATE</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td class="fit"><img class="user-pic"
+														src="../assets/pages/media/users/avatar4.jpg"></td>
+													<td><a class="primary-link" href="javascript:;">Brain</a>
+													</td>
+													<td>$345</td>
+													<td>45</td>
+													<td>124</td>
+													<td><span class="bold theme-font">80%</span></td>
+												</tr>
+												<tr>
+													<td class="fit"><img class="user-pic"
+														src="../assets/pages/media/users/avatar5.jpg"></td>
+													<td><a class="primary-link" href="javascript:;">Nick</a>
+													</td>
+													<td>$560</td>
+													<td>12</td>
+													<td>24</td>
+													<td><span class="bold theme-font">67%</span></td>
+												</tr>
+												<tr>
+													<td class="fit"><img class="user-pic"
+														src="../assets/pages/media/users/avatar6.jpg"></td>
+													<td><a class="primary-link" href="javascript:;">Tim</a>
+													</td>
+													<td>$1,345</td>
+													<td>450</td>
+													<td>46</td>
+													<td><span class="bold theme-font">98%</span></td>
+												</tr>
+												<tr>
+													<td class="fit"><img class="user-pic"
+														src="../assets/pages/media/users/avatar7.jpg"></td>
+													<td><a class="primary-link" href="javascript:;">Tom</a>
+													</td>
+													<td>$645</td>
+													<td>50</td>
+													<td>89</td>
+													<td><span class="bold theme-font">58%</span></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<!-- END PORTLET -->
+						</div>
+						<div class="col-md-6">
+							<!-- BEGIN PORTLET -->
+							<div class="portlet light bordered">
+								<div class="portlet-title tabbable-line">
+									<div class="caption caption-md">
+										<i class="icon-globe theme-font hide"></i> <span
+											class="caption-subject font-blue-madison bold uppercase">Leave
+											Management</span>
+									</div>
+									<ul class="nav nav-tabs">
+									<li class="active"><a href="#tab_1_0" data-toggle="tab">
+												Calander </a></li>
+										<li><a href="#tab_1_1" data-toggle="tab" onclick="getRequestDates('tab')">
+												Request </a></li>
+										<li><a href="#tab_1_2" data-toggle="tab" onclick="getApprovedDates('tab')"> Approved </a></li>
+									</ul>
+								</div>
+								<div class="portlet-body">
+									<!--BEGIN TABS-->
+									<div class="tab-content">
+										<div class="tab-pane active" id="tab_1_0">
+											<div class="slimScrollDiv"
+												style="width: auto; height: 450px; overflow: hidden; position: relative;">
+												<div class="scroller"
+													style="width: auto; height: 450px; overflow: hidden;"
+													data-handle-color="#D7DCE2" data-always-visible="1"
+													data-rail-visible1="0" data-initialized="1">
+													<div class="portlet-body">
+														<div class="row">
+															<div class="col-md-3 col-sm-3 col-xs-3">
+																<ul class="nav nav-tabs tabs-left">
+																	<li class="active" id="tab0_6_1_id"><a aria-expanded="true"
+																		href="#tab0_6_1" data-toggle="tab" onclick="getEmpAtdReport('1')"> Jan </a></li>
+																	<li id="tab0_6_2_id"><a aria-expanded="false" href="#tab_6_2"
+																		data-toggle="tab" onclick="getEmpAtdReport('2')"> Feb </a></li>
+																	<li id="tab0_6_3_id"><a aria-expanded="false" href="#tab_6_3"
+																		data-toggle="tab" onclick="getEmpAtdReport('3')"> Mar </a></li>
+																	<li id="tab0_6_4_id"><a aria-expanded="false" href="#tab_6_4"
+																		data-toggle="tab" onclick="getEmpAtdReport('4')"> Apr </a></li>
+																	<li id="tab0_6_5_id"><a aria-expanded="false" href="#tab_6_5"
+																		data-toggle="tab" onclick="getEmpAtdReport('5')"> May </a></li>
+																	<li id="tab0_6_6_id"><a aria-expanded="false" href="#tab_6_6"
+																		data-toggle="tab" onclick="getEmpAtdReport('6')"> Jun </a></li>
+																	<li id="tab0_6_7_id"><a aria-expanded="false" href="#tab_6_7"
+																		data-toggle="tab" onclick="getEmpAtdReport('7')"> Jul </a></li>
+																	<li id="tab0_6_8_id"><a aria-expanded="false" href="#tab_6_8"
+																		data-toggle="tab" onclick="getEmpAtdReport('8')"> Aug </a></li>
+																	<li id="tab0_6_9_id"><a aria-expanded="false" href="#tab_6_9"
+																		data-toggle="tab" onclick="getEmpAtdReport('9')"> Ser </a></li>
+																	<li id="tab0_6_10_id"><a aria-expanded="false" href="#tab_6_10"
+																		data-toggle="tab" onclick="getEmpAtdReport('10')"> Oct </a></li>
+																	<li id="tab0_6_11_id"><a aria-expanded="false" href="#tab_6_11"
+																		data-toggle="tab" onclick="getEmpAtdReport('11')"> Nov </a></li>
+																	<li id="tab0_6_12_id"><a aria-expanded="false" href="#tab_6_12"
+																		data-toggle="tab" onclick="getEmpAtdReport('12')"> Dec</a></li>
+
+																</ul>
+															</div>
+															<div class="col-md-9 col-sm-9 col-xs-9">
+																<div class="tab-content">
+																	<div class="tab-pane active in" id="tab0_6_1">
+																	<div id="empAtdReportDivId1"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_2">
+																		<div id="empAtdReportDivId2"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_3">
+																		<div id="empAtdReportDivId3"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_4">
+																		<div id="empAtdReportDivId4"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_5">
+																		<div id="empAtdReportDivId5"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_6">
+																		<div id="empAtdReportDivId6"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_7">
+																		<div id="empAtdReportDivId7"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_8">
+																		<div id="empAtdReportDivId8"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_9">
+																		<div id="empAtdReportDivId9"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_10">
+																		<div id="empAtdReportDivId10"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_11">
+																		<div id="empAtdReportDivId11"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab0_6_12">
+																		<div id="empAtdReportDivId12"></div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="slimScrollBar"
+													style="background: rgb(215, 220, 226); border-radius: 7px; top: 0px; width: 7px; height: 108.82px; right: 1px; display: block; position: absolute; z-index: 99; opacity: 0.4;"></div>
+												<div class="slimScrollRail"
+													style="background: rgb(234, 234, 234); border-radius: 7px; top: 0px; width: 7px; height: 100%; right: 1px; display: none; position: absolute; z-index: 90; opacity: 0.2;"></div>
+											</div>
+										</div>
+										<div class="tab-pane" id="tab_1_1">
+											<div class="slimScrollDiv"
+												style="width: auto; height: 320px; overflow: hidden; position: relative;">
+												<div class="scroller"
+													style="width: auto; height: 320px; overflow: hidden;"
+													data-handle-color="#D7DCE2" data-always-visible="1"
+													data-rail-visible1="0" data-initialized="1">
+													<div class="portlet-body">
+														<div class="row">
+															<div class="col-md-3 col-sm-3 col-xs-3">
+																<ul class="nav nav-tabs tabs-left">
+																	<li class="active"  id="tab1_6_1_id"><a aria-expanded="true"
+																		href="#tab1_6_1" data-toggle="tab" onclick="getRequestDates('1')"> Jan </a></li>
+																	<li id="tab1_6_2_id"><a aria-expanded="false" href="#tab1_6_2"
+																		data-toggle="tab" onclick="getRequestDates('2')"> Feb </a></li>
+																	<li id="tab1_6_3_id"><a aria-expanded="false" href="#tab1_6_3"
+																		data-toggle="tab"  onclick="getRequestDates('3')"> Mar </a></li>
+																	<li id="tab1_6_4_id"><a aria-expanded="false" href="#tab1_6_4"
+																		data-toggle="tab"  onclick="getRequestDates('4')"> Apr </a></li>
+																	<li id="tab1_6_5_id"><a aria-expanded="false" href="#tab1_6_5"
+																		data-toggle="tab"  onclick="getRequestDates('5')"> May </a></li>
+																	<li id="tab1_6_6_id"><a aria-expanded="false" href="#tab1_6_6"
+																		data-toggle="tab"  onclick="getRequestDates('6')"> Jun </a></li>
+																	<li id="tab1_6_7_id"><a aria-expanded="false" href="#tab1_6_7"
+																		data-toggle="tab"  onclick="getRequestDates('7')"> Jul </a></li>
+																	<li id="tab1_6_8_id"><a aria-expanded="false" href="#tab1_6_8"
+																		data-toggle="tab"  onclick="getRequestDates('8')"> Aug </a></li>
+																	<li id="tab1_6_9_id"><a aria-expanded="false" href="#tab1_6_9"
+																		data-toggle="tab"  onclick="getRequestDates('9')"> Ser </a></li>
+																	<li id="tab1_6_10_id"><a aria-expanded="false" href="#tab1_6_10"
+																		data-toggle="tab" onclick="getRequestDates('10')"> Oct </a></li>
+																	<li id="tab1_6_11_id"><a aria-expanded="false" href="#tab1_6_11"
+																		data-toggle="tab" onclick="getRequestDates('11')"> Nov </a></li>
+																	<li id="tab1_6_12_id"><a aria-expanded="false" href="#tab1_6_12"
+																		data-toggle="tab" onclick="getRequestDates('12')"> Dec</a></li>
+
+																</ul>
+															</div>
+															<div class="col-md-9 col-sm-9 col-xs-9">
+																<div class="tab-content">
+																	<div class="tab-pane active in" id="tab1_6_1">
+																		<div id="empLeaveReqId1"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_2">
+																		<div id="empLeaveReqId2"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_3">
+																		<div id="empLeaveReqId3"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_4">
+																		<div id="empLeaveReqId4"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_5">
+																		<div id="empLeaveReqId5"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_6">
+																		<div id="empLeaveReqId6"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_7">
+																		<div id="empLeaveReqId7"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_8">
+																		<div id="empLeaveReqId8"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_9">
+																		<div id="empLeaveReqId9"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_10">
+																		<div id="empLeaveReqId10"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_11">
+																		<div id="empLeaveReqId11"></div>
+																	</div>
+																	<div class="tab-pane fade" id="tab1_6_12">
+																		<div id="empLeaveReqId12"></div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="slimScrollBar"
+													style="background: rgb(215, 220, 226); border-radius: 7px; top: 0px; width: 7px; height: 108.82px; right: 1px; display: block; position: absolute; z-index: 99; opacity: 0.4;"></div>
+												<div class="slimScrollRail"
+													style="background: rgb(234, 234, 234); border-radius: 7px; top: 0px; width: 7px; height: 100%; right: 1px; display: none; position: absolute; z-index: 90; opacity: 0.2;"></div>
+											</div>
+										</div>
+										<div class="tab-pane" id="tab_1_2">
+											<div class="slimScrollDiv"
+												style="width: auto; height: 337px; overflow: hidden; position: relative;">
+												<div class="scroller"
+													style="width: auto; height: 337px; overflow: hidden;"
+													data-handle-color="#D7DCE2" data-always-visible="1"
+													data-rail-visible1="0" data-initialized="1">
+
+													<div class="portlet-body">
+														<div class="row">
+															<div class="col-md-3 col-sm-3 col-xs-3">
+																<ul class="nav nav-tabs tabs-left">
+																	<li class="active" id="tab2_6_1_id"><a aria-expanded="true" 
+																		href="#tab2_6_1" data-toggle="tab" onclick="getApprovedDates('1')"> Jan </a></li>
+																	<li id="tab2_6_2_id"><a aria-expanded="false" href="#tab2_6_2"
+																		data-toggle="tab"  onclick="getApprovedDates('2')"> Feb </a></li>
+																	<li id="tab2_6_3_id"><a aria-expanded="false" href="#tab2_6_3"
+																		data-toggle="tab"  onclick="getApprovedDates('3')"> Mar </a></li>
+																	<li id="tab2_6_4_id"><a aria-expanded="false" href="#tab2_6_4"
+																		data-toggle="tab"  onclick="getApprovedDates('4')"> Apr </a></li>
+																	<li id="tab2_6_5_id"><a aria-expanded="false" href="#tab2_6_5"
+																		data-toggle="tab"  onclick="getApprovedDates('5')"> May </a></li>
+																	<li id="tab2_6_6_id"><a aria-expanded="false" href="#tab2_6_6"
+																		data-toggle="tab"  onclick="getApprovedDates('6')"> Jun </a></li>
+																	<li id="tab2_6_7_id"><a aria-expanded="false" href="#tab2_6_7"
+																		data-toggle="tab"  onclick="getApprovedDates('7')"> Jul </a></li>
+																	<li id="tab2_6_8_id"> <a aria-expanded="false" href="#tab2_6_8"
+																		data-toggle="tab"  onclick="getApprovedDates('8')"> Aug </a></li>
+																	<li id="tab2_6_9_id"><a aria-expanded="false" href="#tab2_6_9"
+																		data-toggle="tab"  onclick="getApprovedDates('9')"> Ser </a></li>
+																	<li id="tab2_6_10_id"><a aria-expanded="false" href="#tab2_6_10"
+																		data-toggle="tab"  onclick="getApprovedDates('10')"> Oct </a></li>
+																	<li id="tab2_6_11_id"><a aria-expanded="false" href="#tab2_6_11"
+																		data-toggle="tab"  onclick="getApprovedDates('11')"> Nov </a></li>
+																	<li id="tab2_6_12_id"><a aria-expanded="false" href="#tab2_6_12"
+																		data-toggle="tab"  onclick="getApprovedDates('12')"> Dec</a></li>
+																</ul>
+															</div>
+															<div class="col-md-9 col-sm-9 col-xs-9">
+																<div class="tab-content">
+																	<div class="tab-pane active in" id="tab2_6_1">
+																		<table id="empLeaveAppId1">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_2">
+																		<table id="empLeaveAppId2">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_3">
+																		<table id="empLeaveAppId3">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_4">
+																		<table id="empLeaveAppId4">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_5">
+																		<table id="empLeaveAppId5">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_6">
+																		<table id="empLeaveAppId6">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_7">
+																		<table id="empLeaveAppId7">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_8">
+																		<table id="empLeaveAppId8">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_9">
+																		<table id="empLeaveAppId9">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_10">
+																		<table id="empLeaveAppId10">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_11">
+																		<table id="empLeaveAppId11">
+																		</table>
+																	</div>
+																	<div class="tab-pane fade" id="tab2_6_12">
+																		<table id="empLeaveAppId12">
+																		</table>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="slimScrollBar"
+													style="background: rgb(215, 220, 226); border-radius: 7px; top: 0px; width: 7px; right: 1px; display: block; position: absolute; z-index: 99; opacity: 0.4;"></div>
+												<div class="slimScrollRail"
+													style="background: rgb(234, 234, 234); border-radius: 7px; top: 0px; width: 7px; height: 100%; right: 1px; display: none; position: absolute; z-index: 90; opacity: 0.2;"></div>
+											</div>
+										</div>
+									</div>
+									<!--END TABS-->
+								</div>
+							</div>
+							<!-- END PORTLET -->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<!-- BEGIN PORTLET -->
+							<div class="portlet light bordered">
+								<div class="portlet-title">
+									<div class="caption caption-md">
+										<i class="icon-bar-chart theme-font hide"></i> <span
+											class="caption-subject font-blue-madison bold uppercase">Customer
+											Support</span> <span class="caption-helper">45 pending</span>
+									</div>
+									<div class="inputs">
+										<div class="portlet-input input-inline input-small ">
+											<div class="input-icon right">
+												<i class="icon-magnifier"></i> <input
+													class="form-control form-control-solid" type="text"
+													placeholder="search...">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="portlet-body">
+									<div class="slimScrollDiv"
+										style="width: auto; height: 305px; overflow: hidden; position: relative;">
+										<div class="scroller"
+											style="width: auto; height: 305px; overflow: hidden;"
+											data-handle-color="#D7DCE2" data-always-visible="1"
+											data-rail-visible1="0" data-initialized="1">
+											<div class="general-item-list">
+												<div class="item">
+													<div class="item-head">
+														<div class="item-details">
+															<img class="item-pic"
+																src="../assets/pages/media/users/avatar4.jpg"> <a
+																class="item-name primary-link" href="javascript:void(0)">Nick
+																Larson</a> <span class="item-label">3 hrs ago</span>
+														</div>
+														<span class="item-status"> <span
+															class="badge badge-empty badge-success"></span> Open
+														</span>
+													</div>
+													<div class="item-body">Lorem ipsum dolor sit amet,
+														consectetuer adipiscing elit, sed diam nonummy nibh
+														euismod tincidunt ut laoreet dolore magna aliquam erat
+														volutpat.</div>
+												</div>
+												<div class="item">
+													<div class="item-head">
+														<div class="item-details">
+															<img class="item-pic"
+																src="../assets/pages/media/users/avatar3.jpg"> <a
+																class="item-name primary-link" href="javascript:void(0)">Mark</a>
+															<span class="item-label">5 hrs ago</span>
+														</div>
+														<span class="item-status"> <span
+															class="badge badge-empty badge-warning"></span> Pending
+														</span>
+													</div>
+													<div class="item-body">Lorem ipsum dolor sit amet,
+														consectetuer adipiscing elit, sed diam nonummy nibh
+														euismod tincidunt ut laoreet dolore magna aliquam erat
+														volutpat tincidunt ut laoreet.</div>
+												</div>
+												<div class="item">
+													<div class="item-head">
+														<div class="item-details">
+															<img class="item-pic"
+																src="../assets/pages/media/users/avatar6.jpg"> <a
+																class="item-name primary-link" href="javascript:void(0)">Nick
+																Larson</a> <span class="item-label">8 hrs ago</span>
+														</div>
+														<span class="item-status"> <span
+															class="badge badge-empty badge-primary"></span> Closed
+														</span>
+													</div>
+													<div class="item-body">Lorem ipsum dolor sit amet,
+														consectetuer adipiscing elit, sed diam nonummy nibh.</div>
+												</div>
+												<div class="item">
+													<div class="item-head">
+														<div class="item-details">
+															<img class="item-pic"
+																src="../assets/pages/media/users/avatar7.jpg"> <a
+																class="item-name primary-link" href="javascript:void(0)">Nick
+																Larson</a> <span class="item-label">12 hrs ago</span>
+														</div>
+														<span class="item-status"> <span
+															class="badge badge-empty badge-danger"></span> Pending
+														</span>
+													</div>
+													<div class="item-body">Consectetuer adipiscing elit
+														Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+														sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+														magna aliquam erat volutpat.</div>
+												</div>
+												<div class="item">
+													<div class="item-head">
+														<div class="item-details">
+															<img class="item-pic"
+																src="../assets/pages/media/users/avatar9.jpg"> <a
+																class="item-name primary-link" href="javascript:void(0)">Richard
+																Stone</a> <span class="item-label">2 days ago</span>
+														</div>
+														<span class="item-status"> <span
+															class="badge badge-empty badge-danger"></span> Open
+														</span>
+													</div>
+													<div class="item-body">Lorem ipsum dolor sit amet,
+														consectetuer adipiscing elit, ut laoreet dolore magna
+														aliquam erat volutpat.</div>
+												</div>
+												<div class="item">
+													<div class="item-head">
+														<div class="item-details">
+															<img class="item-pic"
+																src="../assets/pages/media/users/avatar8.jpg"> <a
+																class="item-name primary-link" href="javascript:void(0)">Dan</a>
+															<span class="item-label">3 days ago</span>
+														</div>
+														<span class="item-status"> <span
+															class="badge badge-empty badge-warning"></span> Pending
+														</span>
+													</div>
+													<div class="item-body">Lorem ipsum dolor sit amet,
+														sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+														magna aliquam erat volutpat.</div>
+												</div>
+												<div class="item">
+													<div class="item-head">
+														<div class="item-details">
+															<img class="item-pic"
+																src="../assets/pages/media/users/avatar2.jpg"> <a
+																class="item-name primary-link" href="javascript:void(0)">Larry</a>
+															<span class="item-label">4 hrs ago</span>
+														</div>
+														<span class="item-status"> <span
+															class="badge badge-empty badge-success"></span> Open
+														</span>
+													</div>
+													<div class="item-body">Lorem ipsum dolor sit amet,
+														consectetuer adipiscing elit, sed diam nonummy nibh
+														euismod tincidunt ut laoreet dolore magna aliquam erat
+														volutpat.</div>
+												</div>
+											</div>
+										</div>
+										<div class="slimScrollBar"
+											style="background: rgb(215, 220, 226); border-radius: 7px; top: 0px; width: 7px; height: 102.67px; right: 1px; display: block; position: absolute; z-index: 99; opacity: 0.4;"></div>
+										<div class="slimScrollRail"
+											style="background: rgb(234, 234, 234); border-radius: 7px; top: 0px; width: 7px; height: 100%; right: 1px; display: none; position: absolute; z-index: 90; opacity: 0.2;"></div>
+									</div>
+								</div>
+							</div>
+							<!-- END PORTLET -->
+						</div>
+						<div class="col-md-6">
+							<!-- BEGIN PORTLET -->
+							<div class="portlet light bordered tasks-widget">
+								<div class="portlet-title">
+									<div class="caption caption-md">
+										<i class="icon-bar-chart theme-font hide"></i> <span
+											class="caption-subject font-blue-madison bold uppercase">Tasks</span>
+										<span class="caption-helper">16 pending</span>
+									</div>
+									<div class="inputs">
+										<div class="portlet-input input-small input-inline">
+											<div class="input-icon right">
+												<i class="icon-magnifier"></i> <input
+													class="form-control form-control-solid" type="text"
+													placeholder="search...">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="portlet-body">
+									<div class="task-content">
+										<div class="slimScrollDiv"
+											style="width: auto; height: 282px; overflow: hidden; position: relative;">
+											<div class="scroller"
+												style="width: auto; height: 282px; overflow: hidden;"
+												data-handle-color="#D7DCE2" data-always-visible="1"
+												data-rail-visible1="0" data-initialized="1">
+												<!-- START TASK LIST -->
+												<ul class="task-list">
+													<li>
+														<div class="task-checkbox">
+															<input name="test" type="hidden" value="1"> <input
+																name="test" class="liChild" type="checkbox" value="2">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> Present 2013 Year IPO
+																Statistics at Board Meeting </span> <span
+																class="label label-sm label-success">Company</span> <span
+																class="task-bell"> <i class="fa fa-bell-o"></i>
+															</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li>
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> Hold An Interview for
+																Marketing Manager Position </span> <span
+																class="label label-sm label-danger">Marketing</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li>
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> AirAsia Intranet
+																System Project Internal Meeting </span> <span
+																class="label label-sm label-success">AirAsia</span> <span
+																class="task-bell"> <i class="fa fa-bell-o"></i>
+															</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li>
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> Technical Management
+																Meeting </span> <span class="label label-sm label-warning">Company</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li>
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> Kick-off Company CRM
+																Mobile App Development </span> <span
+																class="label label-sm label-info">Internal
+																Products</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li>
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> Prepare Commercial
+																Offer For SmartVision Website Rewamp </span> <span
+																class="label label-sm label-danger">SmartVision</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li>
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> Sign-Off The
+																Comercial Agreement With AutoSmart </span> <span
+																class="label label-sm label-default">AutoSmart</span> <span
+																class="task-bell"> <i class="fa fa-bell-o"></i>
+															</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li>
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> Company Staff Meeting
+															</span> <span class="label label-sm label-success">Cruise</span>
+															<span class="task-bell"> <i class="fa fa-bell-o"></i>
+															</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+													<li class="last-line">
+														<div class="task-checkbox">
+															<input class="liChild" type="checkbox" value="">
+														</div>
+														<div class="task-title">
+															<span class="task-title-sp"> KeenThemes Investment
+																Discussion </span> <span class="label label-sm label-warning">KeenThemes
+															</span>
+														</div>
+														<div class="task-config">
+															<div class="task-config-btn btn-group">
+																<a class="btn btn-sm default" href="javascript:;"
+																	data-toggle="dropdown" data-close-others="true"
+																	data-hover="dropdown"> <i class="fa fa-cog"></i> <i
+																	class="fa fa-angle-down"></i>
+																</a>
+																<ul class="dropdown-menu pull-right">
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-check"></i> Complete
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-pencil"></i> Edit
+																	</a></li>
+																	<li><a href="javascript:;"> <i
+																			class="fa fa-trash-o"></i> Cancel
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</li>
+												</ul>
+												<!-- END START TASK LIST -->
+											</div>
+											<div class="slimScrollBar"
+												style="background: rgb(215, 220, 226); border-radius: 7px; top: 0px; width: 7px; height: 145.11px; right: 1px; display: block; position: absolute; z-index: 99; opacity: 0.4;"></div>
+											<div class="slimScrollRail"
+												style="background: rgb(234, 234, 234); border-radius: 7px; top: 0px; width: 7px; height: 100%; right: 1px; display: none; position: absolute; z-index: 90; opacity: 0.2;"></div>
+										</div>
+									</div>
+									<div class="task-footer">
+										<div class="btn-arrow-link pull-right">
+											<a href="javascript:;">See All Tasks</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- END PORTLET -->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="portlet light portlet-fit bordered">
+								<div class="portlet-title">
+									<div class="caption">
+										<i class="icon-microphone font-green"></i> <span
+											class="caption-subject bold font-green uppercase">
+											Timeline</span> <span class="caption-helper">user timeline</span>
+									</div>
+									<div class="actions">
+										<div class="btn-group btn-group-devided" data-toggle="buttons">
+											<label
+												class="btn btn-transparent dark btn-outline btn-circle btn-sm active">
+												<input name="options" class="toggle" id="option1"
+												type="radio">Actions
+											</label> <label
+												class="btn btn-transparent dark btn-outline btn-circle btn-sm">
+												<input name="options" class="toggle" id="option2"
+												type="radio">Settings
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="portlet-body">
+									<div class="timeline">
+										<!-- TIMELINE ITEM -->
+										<div class="timeline-item">
+											<div class="timeline-badge">
+												<img class="timeline-badge-userpic"
+													src="../assets/pages/media/users/avatar80_2.jpg">
+											</div>
+											<div class="timeline-body">
+												<div class="timeline-body-arrow"></div>
+												<div class="timeline-body-head">
+													<div class="timeline-body-head-caption">
+														<a class="timeline-body-title font-blue-madison"
+															href="javascript:;">Lisa Strong</a> <span
+															class="timeline-body-time font-grey-cascade">Replied
+															at 17:45 PM</span>
+													</div>
+													<div class="timeline-body-head-actions">
+														<div class="btn-group">
+															<button
+																class="btn btn-circle green btn-outline btn-sm dropdown-toggle"
+																type="button" data-toggle="dropdown"
+																data-close-others="true" data-hover="dropdown">
+																Actions <i class="fa fa-angle-down"></i>
+															</button>
+															<ul class="dropdown-menu pull-right" role="menu">
+																<li><a href="javascript:;">Action </a></li>
+																<li><a href="javascript:;">Another action </a></li>
+																<li><a href="javascript:;">Something else here
+																</a></li>
+																<li class="divider"></li>
+																<li><a href="javascript:;">Separated link </a></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+												<div class="timeline-body-content">
+													<span class="font-grey-cascade"> Lorem ipsum dolor
+														sit amet, consectetuer adipiscing elit, sed diam nonummy
+														nibh euismod tincidunt ut consectetuer adipiscing elit
+														laoreet dolore magna aliquam erat volutpat. Ut wisi enim
+														ad minim veniam, quis nostrud exerci tation ullamcorper
+														suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+													</span>
+												</div>
+											</div>
+										</div>
+										<!-- END TIMELINE ITEM -->
+										<!-- TIMELINE ITEM WITH GOOGLE MAP -->
+										<div class="timeline-item">
+											<div class="timeline-badge">
+												<img class="timeline-badge-userpic"
+													src="../assets/pages/media/users/avatar80_7.jpg">
+											</div>
+											<div class="timeline-body">
+												<div class="timeline-body-arrow"></div>
+												<div class="timeline-body-head">
+													<div class="timeline-body-head-caption">
+														<a class="timeline-body-title font-blue-madison"
+															href="javascript:;">Paul Kiton</a> <span
+															class="timeline-body-time font-grey-cascade">Added
+															office location at 2:50 PM</span>
+													</div>
+													<div class="timeline-body-head-actions">
+														<div class="btn-group">
+															<button class="btn btn-circle red btn-sm dropdown-toggle"
+																type="button" data-toggle="dropdown"
+																data-close-others="true" data-hover="dropdown">
+																Actions <i class="fa fa-angle-down"></i>
+															</button>
+															<ul class="dropdown-menu pull-right" role="menu">
+																<li><a href="javascript:;">Action </a></li>
+																<li><a href="javascript:;">Another action </a></li>
+																<li><a href="javascript:;">Something else here
+																</a></li>
+																<li class="divider"></li>
+																<li><a href="javascript:;">Separated link </a></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+												<div class="timeline-body-content">
+													<div class="gmaps" id="gmap_polygons"></div>
+												</div>
+											</div>
+										</div>
+										<!-- END TIMELINE ITEM WITH GOOGLE MAP -->
+										<!-- TIMELINE ITEM -->
+										<div class="timeline-item">
+											<div class="timeline-badge">
+												<div class="timeline-icon">
+													<i class="icon-user-following font-green-haze"></i>
+												</div>
+											</div>
+											<div class="timeline-body">
+												<div class="timeline-body-arrow"></div>
+												<div class="timeline-body-head">
+													<div class="timeline-body-head-caption">
+														<span class="timeline-body-alerttitle font-red-intense">You
+															have new follower</span> <span
+															class="timeline-body-time font-grey-cascade">at
+															11:00 PM</span>
+													</div>
+													<div class="timeline-body-head-actions">
+														<div class="btn-group">
+															<button
+																class="btn btn-circle green btn-outline&#10;&#10;btn-sm dropdown-toggle"
+																type="button" data-toggle="dropdown"
+																data-close-others="true" data-hover="dropdown">
+																Actions <i class="fa fa-angle-down"></i>
+															</button>
+															<ul class="dropdown-menu pull-right" role="menu">
+																<li><a href="javascript:;">Action </a></li>
+																<li><a href="javascript:;">Another action </a></li>
+																<li><a href="javascript:;">Something else here
+																</a></li>
+																<li class="divider"></li>
+																<li><a href="javascript:;">Separated link </a></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+												<div class="timeline-body-content">
+													<span class="font-grey-cascade"> You have new
+														follower <a href="javascript:;">Ivan Rakitic</a>
+													</span>
+												</div>
+											</div>
+										</div>
+										<!-- END TIMELINE ITEM -->
+										<!-- TIMELINE ITEM -->
+										<div class="timeline-item">
+											<div class="timeline-badge">
+												<div class="timeline-icon">
+													<i class="icon-docs font-red-intense"></i>
+												</div>
+											</div>
+											<div class="timeline-body">
+												<div class="timeline-body-arrow"></div>
+												<div class="timeline-body-head">
+													<div class="timeline-body-head-caption">
+														<span class="timeline-body-alerttitle font-green-haze">Server
+															Report</span> <span class="timeline-body-time font-grey-cascade">Yesterday
+															at 11:00 PM</span>
+													</div>
+													<div class="timeline-body-head-actions">
+														<div class="btn-group dropup">
+															<button class="btn btn-circle red btn-sm dropdown-toggle"
+																type="button" data-toggle="dropdown"
+																data-close-others="true" data-hover="dropdown">
+																Actions <i class="fa fa-angle-down"></i>
+															</button>
+															<ul class="dropdown-menu pull-right" role="menu">
+																<li><a href="javascript:;">Action </a></li>
+																<li><a href="javascript:;">Another action </a></li>
+																<li><a href="javascript:;">Something else here
+																</a></li>
+																<li class="divider"></li>
+																<li><a href="javascript:;">Separated link </a></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+												<div class="timeline-body-content">
+													<span class="font-grey-cascade"> Lorem ipsum dolore
+														sit amet <a href="javascript:;">Ispect</a>
+													</span>
+												</div>
+											</div>
+										</div>
+										<!-- END TIMELINE ITEM -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- END PROFILE CONTENT -->
+			</div>
+		</div>
+		<!-- END PAGE BASE CONTENT -->
+	</div>
+	<!-- END CONTENT BODY -->
+	<!-- </div>
+	</div> -->
+</body>
+</html>

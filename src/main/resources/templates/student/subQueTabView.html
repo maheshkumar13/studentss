@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+	<span class="questionId" th:each="examSubject,status1:${examSubjects}"
+		th:id="'questionViewSelId' + ${status1.index+1}"> <span
+		class="questionId"
+		th:each="examSubjectQuestion,status:${examSubject.examQuestions}">
+			<a
+			th:href="${'javascript:getExamQuestion(''' +  #ids.seq('diff') + ''')'}">
+				<span
+				th:classappend="${examSubjectQuestion.questionAttempt==null?'not_visited'
+									:(examSubjectQuestion.questionAttempt.markForReview?'answer_marked_review':(examSubjectQuestion.questionAttempt.answer>0?'answered':(examSubjectQuestion.questionAttempt.numericAnswer>0?'answered':'not_answered')))
+									}"
+				th:id="${#ids.seq('queViewId')}" th:text="${#ids.seq('')}"></span>
+		</a>
+	</span>
+	</span>
+</body>
+</html>

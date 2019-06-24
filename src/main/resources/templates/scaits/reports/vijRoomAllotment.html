@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Vja Room Allotment Report</div>
+		</div>
+	<div class="portlet-body">
+			<div class="custom-div">
+				<form class="form-horizontal" action=" " method="post" id="formId">
+					<div class="row">
+						<div class="col-md-4">
+								<label>City</label> <select class="form-control" name="city"
+									id="cityId" onchange="getCityCampuses(this.value);">
+									<option value="">Select City</option>
+									<th:block th:each="city:${cityList}">
+										<option th:value="${city.cityId}" th:text="${city.cityName}"></option>
+									</th:block>
+								</select>
+							</div>
+							<div class="col-md-4">
+								<label>Campus</label><select class="form-control" name="campus"
+									id="CityCampusId" onchange="getBuilding(this.value)">
+									<option value="">Select Campus</option>
+									<th:block th:each="campus:${campusList}">
+										<option th:value="${campus.campusId}" th:text="${campus.campusName}"></option>
+									</th:block>
+								</select>
+							</div>
+							
+							<div class="col-md-4">
+								<label>Building Name:</label><select class="form-control" name="building"
+									id="buildingId" onchange="getBuildingBlocks(this.value);">
+									<option value="">Select Building Name</option>
+									<th:block th:each="building:${buildingList}">
+										<option th:value="${building.Id}" th:text="${building.buildingName}"></option>
+									</th:block>
+								</select>
+							</div>
+							
+								<div class="col-md-4">
+								<label>BlockName:</label><select class="form-control" name="buildingblock"
+									id="blockId" >
+									<option value="">Select Block Name</option>
+									<th:block th:each="buildingblock:${blockList}">
+										<option th:value="${buildingblock.Id}" th:text="${buildingblock.blockName}"></option>
+									</th:block>
+								</select>
+							</div>
+							
+							
+						<div class="col-md-2">
+						<button type="button" class="btn btn-info" id="searchBtnId"
+							onclick="campusReport();">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;getReport
+						</button>
+					</div>	
+					
+					</div>
+					</form>
+					</div>
+					</div>
+						<div  id="studentDeatailsGridId"></div>
+					</div>
+				
+							
+</body>
+
+<script src="assets/pages/scripts/table-datatables-scroller.min.js"
+		type="text/javascript"></script>
+	<script th:inline="javascript">
+	
+	  function getCityCampuses(city) {
+		  alert(city);
+          $.ajax({
+              type : "GET",
+              url : "/scaits/getVijCityCampuses",
+              data : {
+                  city : city
+              },
+              dataType : 'text',
+              success : function(data) {
+                  var prePopulate = JSON.parse(data);
+                  var select = $('#CityCampusId');
+                  select.find('option').remove();
+                  $.each(prePopulate, function(key, value) {
+                      $('<option>').val(key).text(value).appendTo(select);
+                  });
+
+              }
+          });
+      }
+	  
+	  function getBuilding(campus) {
+		  alert(campus);
+          $.ajax({
+              type : "GET",
+              url : "/scaits/getVijCampusBuilding",
+              data : {
+            	  campus : campus
+              },
+              dataType : 'text',
+              success : function(data) {
+                  var prePopulate = JSON.parse(data);
+                  var select = $('#buildingId');
+                  select.find('option').remove();
+                  $.each(prePopulate, function(key, value) {
+                      $('<option>').val(key).text(value).appendTo(select);
+                  });
+
+              }
+          });
+      }
+	  
+	  
+	  function getBuildingBlocks(building) {
+		  alert(building);
+          $.ajax({
+              type : "GET",
+              url : "/scaits/getVijBuildingBlocks",
+              data : {
+            	  building : building
+              },
+              dataType : 'text',
+              success : function(data) {
+                  var prePopulate = JSON.parse(data);
+                  var select = $('#blockId');
+                  select.find('option').remove();
+                  $.each(prePopulate, function(key, value) {
+                      $('<option>').val(key).text(value).appendTo(select);
+                  });
+
+              }
+          });
+      }
+	  
+	  function campusReport() {
+			alert('hi');
+			$.ajax({
+				type : "GET",
+				url : "/scaits/vijRoomAllotmentData",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+	  </script>
+</html>

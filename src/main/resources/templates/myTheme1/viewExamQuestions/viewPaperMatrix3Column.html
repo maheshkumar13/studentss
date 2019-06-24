@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<style>
+.questionClass {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+}
+</style>
+<body> <tr>
+ 	<td width="60px" valign="top"><b>Question:</b></td>
+	<td colspan="8" valign="top" style= "word-wrap: break-word">
+		<s:property value="question.questionText" escape="false"/>
+	</td>
+</tr>
+<tr>
+	<td width="60px">&nbsp;</td>
+	<td width="250px" valign="top">
+	<table>
+	<tr><td><b>Column A</b></td></tr>
+	<tr><td valign="top">
+	<ol type="A" start="1">
+	<s:iterator value="question.matrix" status="matrixStat">
+	<s:if test="columnA.trim().length()>0">
+	<li><s:property value="columnA" escape="false"/></li>
+	</s:if>
+	</s:iterator>
+	</ol>
+	</td></tr>
+	</table>
+	</td>
+
+	<td width="250px" valign="top">
+	<table>
+	<tr><td><b>Column B</b></td></tr>
+	<tr><td align="left" valign="top">
+	<ol type="A" start="16">
+	<s:iterator value="question.matrix" status="matrixStat">
+	<s:if test="columnB.trim().length()>0">
+	<li><s:property value="columnB" escape="false"/></li>
+	</s:if>
+	</s:iterator>
+	</ol>
+	</td></tr>
+	</table>
+	</td>
+	
+	<td width="250px" valign="top">
+	<table>
+	<tr><td><b>Column C</b></td></tr>
+	<tr><td align="left" valign="top">
+	<ol type="A" start="7">
+	<s:iterator value="question.matrix" status="matrixStat">
+	<s:if test="columnC.trim().length()>0">
+	<li><s:property value="columnC" escape="false"/></li>
+	</s:if>
+	</s:iterator>
+	</ol>
+	</td></tr>
+	</table>
+	</td>
+
+</tr>
+<s:if test="question.matrix[0].choices[0].choiceText.trim().length()>0">
+<tr><td width="60px">A)</td><td colspan="5">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[0].choiceText.trim().length()>0">
+	<li style="float: left; width:120px; padding: 2px 0px;">-><s:property value="question.matrix[#matrixStat.index].choices[0].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</s:if>
+<s:if test="question.matrix[0].choices[1].choiceText.trim().length()>0">
+<tr><td width="60px">B)</td><td colspan="5">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[1].choiceText.trim().length()>0">
+	<li style="float: left; width:120px; padding: 2px 0px;">-><s:property value="question.matrix[#matrixStat.index].choices[1].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</s:if>
+<s:if test="question.matrix[0].choices[2].choiceText.trim().length()>0">
+<tr><td width="60px">C)</td><td colspan="5">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[2].choiceText.trim().length()>0">
+	<li style="float: left; width:120px; padding: 2px 0px;">-><s:property value="question.matrix[#matrixStat.index].choices[2].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</s:if>
+<s:if test="question.matrix[0].choices[3].choiceText.trim().length()>0">
+<tr><td width="60px">D)</td><td colspan="5">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[3].choiceText.trim().length()>0">
+	<li style="float: left; width:120px; padding: 2px 0px;">-><s:property value="question.matrix[#matrixStat.index].choices[3].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</s:if>
+<tr>
+	<td width="60px"><b>Answer:</b></td>
+	<td colspan="8">(<b>
+		<s:if test="%{question.matrix[0].choices[0].correctAnswer}">A</s:if>
+		<s:if test="%{question.matrix[0].choices[1].correctAnswer}">B</s:if>
+		<s:if test="%{question.matrix[0].choices[2].correctAnswer}">C</s:if>
+		<s:if test="%{question.matrix[0].choices[3].correctAnswer}">D</s:if>
+	</b>)</td>
+</tr>
+<tr>
+    <td width="60px" valign="top"><b>Solution:</b></td>
+    <td colspan="4" style= "word-wrap: break-word"><s:property value="question.solution" escape="false"/></td>    
+</tr> --%>
+
+<tr>
+ 	<td width="80px" valign="top"><b>Question:</b></td>
+	<td colspan="8" style= "word-wrap: break-word">
+		<s:property value="question.questionText" escape="false"/>
+	</td>
+</tr>
+<tr>
+	<td width="80px">&nbsp;</td>
+	<td width="280px" valign="top">
+	<table width="100%">
+	<tr><td align="left" width="180px" style="word-wrap:break-word"><b>Column A</b></td><td align="left" width="180px" style="word-wrap:break-word"><b>Column B</b></td><td align="left" width="180px" style="word-wrap:break-word"><b>Column C</b></td></tr>
+	<s:iterator value="question.matrix" status="matrixStat" var="mv">
+	<tr><td valign="middle" align="left" width="180px" style="word-wrap:break-word">
+	<s:if test="columnA.trim().length()>0">
+	<ol type="A" start="<s:property value="%{#matrixStat.index +1}"/>">
+	<li><s:property value="columnA" escape="false"/></li>
+	</ol>
+	</s:if>
+	</td>
+	<td valign="middle" align="left" width="180px" style="word-wrap:break-word">
+	<s:if test="columnB.trim().length()>0">
+	<ol type="A" start="<s:property value="%{#matrixStat.index +16}"/>">
+	<li><s:property value="columnB" escape="false"/></li>
+	</ol>
+	</s:if>
+	</td>
+	<td valign="middle" align="left" width="180px" style="word-wrap:break-word">
+	<s:if test="columnC.trim().length()>0">
+	<ol type="A" start="<s:property value="%{#matrixStat.index +7}"/>">
+	<li><s:property value="columnC" escape="false"/></li>
+	</ol>
+	</s:if>
+	</td>
+	</tr>
+	</s:iterator>
+	</table>
+	</td>
+</tr>
+<s:if test="question.matrix[0].choices[0].choiceText.trim().length()>0">
+<table>
+<tr><td width="20px">A)</td><td colspan="2">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[0].choiceText.trim().length()>0">
+	<li style="float: left; width:100px; padding: 2px 0px;"><b>--></b><s:property value="question.matrix[#matrixStat.index].choices[0].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</table>
+</s:if>
+<s:if test="question.matrix[0].choices[1].choiceText.trim().length()>0">
+<table>
+<tr><td width="20px">B)</td><td colspan="2">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[1].choiceText.trim().length()>0">
+	<li style="float: left; width:100px; padding: 2px 0px;"><b>--></b><s:property value="question.matrix[#matrixStat.index].choices[1].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</table>
+</s:if>
+<s:if test="question.matrix[0].choices[2].choiceText.trim().length()>0">
+<table>
+<tr><td width="20px">C)</td><td colspan="2">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[2].choiceText.trim().length()>0">
+	<li style="float: left; width:100px; padding: 2px 0px;"><b>--></b><s:property value="question.matrix[#matrixStat.index].choices[2].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</table>
+</s:if>
+<s:if test="question.matrix[0].choices[3].choiceText.trim().length()>0">
+<table>
+<tr><td width="20px">D)</td><td colspan="2">
+<ol style="list-style-type: upper-alpha; ">
+<s:iterator value="question.matrix" status="matrixStat">
+<s:if test="question.matrix[#matrixStat.index].choices[3].choiceText.trim().length()>0">
+	<li style="float: left; width:100px; padding: 2px 0px;"><b>--></b><s:property value="question.matrix[#matrixStat.index].choices[3].choiceText" escape="false"/></li>
+</s:if>
+</s:iterator> 
+</ol>
+</td></tr>
+</table>
+</s:if>
+</body>
+	

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta charset="utf-8" />
+<body>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<tr>
+				<td width="6%"><b>Assertion</b></td>
+				<td><span
+					th:utext=${@currentUser.getQuestionText(question.assertionText)}></span>
+				</td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Reason</b></td>
+				<td><span
+					th:utext=${@currentUser.getQuestionText(question.reasoningText)}></span>
+				</td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Choices</b></td>
+				<td><b>A)</b> Assertion is True, Reason is True and Reason is
+					correct explanation of Assertion<br> <b>B)</b> Assertion is
+					True, Reason is True but Reason is not correct explanation of
+					Assertion<br> <b>C)</b> Assertion is True, Reason is False<br>
+					<b>D)</b> Assertion is False, Reason is True</td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Answer</b></td>
+				<td><span style="color: #8E44AD !important; font-weight: bold;"
+					th:utext="${@currentUser.getQuestionText(question.answer)}"></span></td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Solution</b></td>
+				<td><span
+					th:utext="${@currentUser.getQuestionText(question.solution)}"
+					style="color: #337ab7;"></span></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

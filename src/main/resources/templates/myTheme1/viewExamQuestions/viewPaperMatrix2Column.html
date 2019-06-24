@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+	<style>
+	@charset "utf-8";
+/* CSS Document */
+
+@media  (min-width:768px) and (max-width:980px){
+	
+  #main{
+	   margin:0 auto;
+	
+	margin:12px 8px;
+	border:1px solid #333;	
+	}
+	
+.container {
+	max-width: 100%;
+	 margin:0 auto;
+}
+img{ width: 100%;
+    height: auto;
+	}
+.cont-col-1{
+	max-width:100%;
+	float:left;
+	height:auto;
+	float:left;padding:3px;margin:3px 0;
+}
+.cont-col-2{
+	float:left;
+	max-width:100%;
+	height:auto;
+	float:left;padding:3px;margin:3px 0;
+}
+/*.cont-col-2-1{
+	float:left;
+	height:auto;
+	max-width:100%;
+}*/
+.ansblock{
+	 float:left;
+	height:18px;
+	width:90px
+	}
+}
+
+
+@media  (min-width:568px) and (max-width:768px){
+ #main{
+	 margin:0 auto;
+	max-width:100%;
+	height:auto;
+	margin:8px 4px;
+	border:1px solid #333;	
+	 
+    overflow: hidden;
+	}
+	
+.container {
+	max-width: 100%;
+	 margin:0 auto;
+}
+img{ width: 100%;
+    height: auto;}
+
+.cont-col-1{
+	max-width:100%;
+	float:left;
+	height:auto;
+	float:left;padding:6px;margin:6px 0;
+}
+.cont-col-2{
+	float:left;
+	max-width:100%;
+	height:auto;
+	float:left;padding:6px;margin:6px 0;
+}
+.cont-col-2-1{
+	float:left;
+	height:auto;
+	max-width:100%;
+}
+.ansblock{
+	 float:left;
+	height:18px;
+	width:80px
+	}
+
+}
+
+@media (max-width:540px){
+
+ #main{
+	 margin:0 auto;
+	max-width:100%;
+	height:auto;
+	margin:8px 4px;
+	border:1px solid #333;	
+	overflow: hidden;
+	}
+	
+.container {
+	max-width: 100%;
+}
+img{ width: 100%;
+    height: auto;
+	}
+.cont-col-1{
+	max-width:100%;
+	float:left;
+	height:auto;
+	float:left;
+	padding:2px;margin:2px 0;
+}
+.cont-col-2{
+	float:left;
+	max-width:100%;
+	height:auto;
+	float:left;padding:2px;margin:2px 0;
+}
+.cont-col-2-1{
+	float:left;
+	height:auto;
+	max-width:100%;
+}
+.ansblock{
+	 float:left;
+	height:18px;
+	width:80px
+	}
+
+}
+	
+	@charset "utf-8";
+/* CSS Document */
+body {
+	padding: 0;
+	margin: 0;
+	background: #ffffff;
+}
+*{margin:0 ;padding:0;
+}
+#main{
+	max-width:994px;
+	height:660px;	
+	margin:22px auto;
+	background:#fff;
+	border:1px solid #333;
+}
+p {
+	font:normal 14px/22px arial;
+}
+
+a {
+	text-decoration: none;
+}
+.container {
+	max-width: 980px;
+	margin: 0 auto;
+}
+
+.cont-col-1{
+	width:230px;float:left;
+	height:auto;
+	float:left;padding:6px;margin:6px 0;
+}
+.cont-col-2{
+	max-width:100%;
+	height:auto;
+	float:left;padding:6px;margin:6px 0;
+}
+.cont-col-2-1{
+	float:left;
+	height:110px;
+	width:300px;
+	margin:0px 0px 12px 0px;
+}
+.topmargin{ margin:18px 0px 0px 0px;}
+.ansblock{
+	 float:left;
+	height:22px;
+	width:120px;
+	
+	}
+.nav-answer{
+	list-style:none;
+	
+	}
+.nav-answer li{
+	padding:4px 0px;
+}
+	
+.clear{clear:both;}
+	
+	
+	</style>
+
+<meta charset="utf-8" />
+<body>
+		 <div id="main">
+        
+            
+            <div class="container ">
+             <div class="cont-col-1 topmargin">
+           <h4>Question:</h4>
+
+            </div>
+             <div class="cont-col-2 topmargin">
+           <p>
+            	<h5 class=""
+				th:utext=${@currentUser.getQuestionText(question.questionText)}></h5>
+            </p>
+		</div>
+            </div><!--containerE -->
+            <div class="clear"></div>
+            <div class="container">
+             <div class="cont-col-1">
+          &nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+             <div class="cont-col-2">
+           		<div class="cont-col-2-1">
+                	
+                    <div><b>Column A</b></div>
+					
+					
+										
+                		<ul class="nav-answer" th:each="matrixVal,matrixStat:${question.matrix}" th:if="${matrixVal.columnA.trim().length() &gt; 0}">
+						<ol  type="A" start="%{matrixStat.index+1}">
+                           <li th:utext="${matrixVal.columnA}"></li>
+                             </ol>                           
+               			</ul> 
+           
+                </div>
+                <div class="cont-col-2-1">
+                	
+                    <div><b>Column B</b></div>
+					
+					
+					<ul class="nav-answer" th:each="matrixVal,matrixStat1:${question.matrix}" th:if="${matrixVal.columnB.trim().length() &gt; 0}">
+						<ol  type="P" start="%{matrixStat1.index+16}">
+                           <li th:utext="${matrixVal.columnB}"></li>
+                             </ol>                           
+               			</ul> 
+					
+					              		
+                     </div>
+            </div>
+               <div class="clear"></div>
+    	</div><!--container E-->
+        <div class="container" th:if="${question.matrix[0].choices[0].choiceText.trim().length()>0}">
+             <div class="cont-col-1">
+           		<h4>A)</h4>
+
+            	</div>
+             <div class="cont-col-2">
+			 <div th:each="matrixVal,matrixStat:${question.matrix}" >
+							<div th:if="${question.matrix[matrixStat.index].choices[0].choiceText.trim()}">
+          </div></div> 
+          
+		</div>
+            </div>
+			
+			
+            <div class="clear"></div>
+			
+       <div class="container" th:if="${question.matrix[0].choices[1].choiceText.trim().length()>0}">
+             <div class="cont-col-1">
+           		<h4>B)</h4>
+
+            	</div>
+             <div class="cont-col-2">
+			 <div th:each="matrixVal,matrixStat:${question.matrix}" >
+							<div th:if="${question.matrix[matrixStat.index].choices[1].choiceText.trim()}">
+          </div></div> 
+          
+		</div>
+            </div>
+			
+			
+            <div class="clear"></div>
+			<div class="container" th:if="${question.matrix[0].choices[2].choiceText.trim().length()>0}">
+             <div class="cont-col-1">
+           		<h4>C)</h4>
+
+            	</div>
+             <div class="cont-col-2">
+			 <div th:each="matrixVal,matrixStat:${question.matrix}" >
+							<div th:if="${question.matrix[matrixStat.index].choices[2].choiceText.trim()}">
+          </div></div> 
+          
+		</div>
+            </div>
+			
+            
+            <div class="clear"></div>
+            <div class="container" th:if="${question.matrix[0].choices[3].choiceText.trim().length()>0}">
+             <div class="cont-col-1">
+           		<h4>D)</h4>
+
+            	</div>
+             <div class="cont-col-2">
+			 <div th:each="matrixVal,matrixStat:${question.matrix}" >
+							<div th:if="${question.matrix[matrixStat.index].choices[3].choiceText.trim()}">
+          </div></div> 
+          
+		</div>
+            </div><!--containerE -->
+        <!--mainE --></div>
+</body>
+</html>

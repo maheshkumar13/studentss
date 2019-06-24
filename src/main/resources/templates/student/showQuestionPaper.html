@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+
+<head>
+</head>
+<body>
+
+	<div th:each="examSubject,examSubjectStatus:${examSubjects}">
+
+		<u><p class="text-center bold" th:text=${examSubject.subject.name}
+				style="color: #2F72B7;"></p></u>
+
+		<div th:each="question,questionStatus:${examSubject.questions}">
+
+			<div th:if="${question.questionType.id==1}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperSingleAnswer(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==2}">
+			    <div
+					th:replace="myTheme1/viewExamQuestions/viewPaperMoreThanOneAnswer(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==3}">
+					<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperIntegerAnswer(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==4}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperAssertionReason(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==5}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperStatementIStatementII(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==6}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperAscendingDescending(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==7}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperIncreasingDecreasing(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==8}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperMatrix2Column(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==9}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperMatrix3Column(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==10}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperSubjective(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==11}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperComprehensive(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==12}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperReasoning(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==13}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperReasoningComprehensive(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==14}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperFigureFindingReason(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==15}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperSubjectiveVerb(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==16}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperReasoningNewChoicesComprehensive(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+
+			<div th:if="${question.questionType.id==17}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperModifiedStatementIStatementII(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==18}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperIPESubjectiveVerb(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+
+			<div th:if="${question.questionType.id==19}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperQuestionTextAssertionReason(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==20}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperModifiedStatementIStatementIIStatementIII(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+
+			<div th:if="${question.questionType.id==21}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperModifiedQuestionStatementIStatementIIStatementIII(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==22}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperTrueFalse(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==23}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperYesNo(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==24}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperFillInTheBlank(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<div th:if="${question.questionType.id==25}">
+				<div
+					th:replace="myTheme1/viewExamQuestions/viewPaperAssertionReasonfalse(question=${question},questionStatus=${#ids.seq('')})"></div>
+			</div>
+			<hr>
+		</div>
+	</div>
+
+
+
+</body>
+</html>

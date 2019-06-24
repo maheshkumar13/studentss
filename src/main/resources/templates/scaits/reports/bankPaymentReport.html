@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select {
+	margin-bottom: 15px
+}
+</style>
+</head>
+<body>
+	<form class="form-horizontal" action=" " method="post" id="formId">
+		<div class="portlet light portlet-fit bordered card-1">
+			<div class="portlet-title">
+				<span class="caption-subject ">Bank Payment Report</span>
+			</div>
+			<div class="portlet-body">
+				<div class="custom-div">
+
+					<div class="row">
+
+						<div class="col-md-4">
+							<label>From Date</label> <input type="text"
+								class="form-control  date-picker" name="paymentDate1Str"
+								id="fromDateId" placeholder="date">
+						</div>
+
+						<div class="col-md-4">
+							<label>To Date</label> <input type="text"
+								class="form-control  date-picker" name="paymentDate2Str" id="toDateId"
+								placeholder="date">
+						</div>
+						<div id="buttonI">
+							<div class="col-md-2">
+								<button type="button" class="btn btn-info" id="searchId"
+									onclick="reportFilters();">
+									<span class="glyphicon glyphicon-search"></span>&nbsp;getReport
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="studentTransferGridId"></div>
+
+		</div>
+	</form>
+</body>
+<script
+	src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+	type="text/javascript"></script>
+<script
+	src="../assets/pages/scripts/components-date-time-pickers.min.js"
+	type="text/javascript"></script>
+<script th:inline="javascript">
+	$("#fromDateId").datepicker({
+		format : 'dd-MM-yyyy'
+	});
+
+	$("#toDateId").datepicker({
+		format : 'dd-MM-yyyy'
+	});
+
+	function reportFilters() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/bankPaymentdata",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				$('#studentTransferGridId').html('');
+				$('#studentTransferGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+			}
+		});
+	}
+</script>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<script th:inline="javascript">
+
+      /*<![CDATA[*/
+	    
+         var loginEmpid= /*[[${currentUser.employeeId}]]*/;
+
+       /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+function getText(x,dateVal){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth(); 
+	var formattedDate = new Date(dateVal);
+	var d = formattedDate.getDate();
+	var m =  formattedDate.getMonth();
+	var y = formattedDate.getFullYear();
+	if(dd==d && mm==m){
+		 $.post( "https://webservice.scaits.net/attendance/Events", { edateTime: dateVal, userId: loginEmpid })
+		 .done(function(data, textStatus, jqXHR) {
+				$('#'+x.id).prop('title', '');	
+				$('#'+x.id).prop('title', data);	
+				    });	 
+	}
+}
+
+</script>
+<body>
+<div th:if="${datesInMonth.size()>0}">
+	<ul class="weekdays">
+		<li>Sun</li>
+		<li>Mon</li>
+		<li>Tue</li>
+		<li>Wed</li>
+		<li>Thu</li>
+		<li>Fri</li>
+		<li>Sat</li>
+	</ul>
+	<ul class="days">
+		
+		<div th:each="datesVar,datesStatus:${datesInMonth.entrySet()}">
+		
+			<div th:if="${datesVar.value.split('-')[0]!=''}">
+				
+				<li>
+				
+				<div th:if='${datesVar.value.split("&")[0].equals("AB")}'>
+						<h3>
+							<span class="label label-danger" th:id="${'absent'+datesVar.key}" 
+							th:onmouseover="${'javascript:getText(this,' + datesVar.value.split('&')[3] +')'}"
+							title="Absent"  >
+							<span th:text="${datesVar.key}"></span>
+							</span>
+						</h3>
+					</div>
+					<div th:if='${datesVar.value.split("&")[0].equals("HD") || datesVar.value.split("&")[0].equals("PD")}'>
+						<h3>
+							<span class="label label-info" th:id="${'halfDay'+datesVar.key}" 
+							th:onmouseover="${'javascript:getText(this,' + datesVar.value.split('&')[3] +')'}"
+							th:title="${'Half Day , INTIME : '+datesVar.value.split('&')[1]+',OUTTIME : '+datesVar.value.split('&')[2]}"
+							>
+							<span th:text="${datesVar.key}"></span>
+							</span>
+						</h3>
+					</div>
+					 <div th:if='${datesVar.value.split("&")[0].equals("PR") || datesVar.value.split("&")[0].equals("MP") || datesVar.value.split("&")[0].equals("PW") || datesVar.value.split("&")[0].equals("PH") || datesVar.value.split("&")[0].equals("OD")}'>
+						<h3>
+							<span class="label label-primary"  
+							th:id="${'present'+datesVar.key}" 
+							th:onmouseover="${'javascript:getText(this,' + datesVar.value.split('&')[3] +')'}"
+							th:title="${'INTIME : '+datesVar.value.split('&')[1]+',OUTTIME : '+datesVar.value.split('&')[2]}"
+							 ><span th:text="${datesVar.key}"></span></span>
+						</h3>
+					</div>
+					 <div th:if='${datesVar.value.split("&")[0].equals("WO")}'>
+						<h3>
+							<span class="label label-warning" 
+							th:id="${'weekoff'+datesVar.key}" 
+							th:onmouseover="${'javascript:getText(this,' + datesVar.value.split('&')[3] +')'}"
+							title="Week Off"><span th:text="${datesVar.key}"></span></span>
+						</h3>
+					</div>
+					<div th:if='${datesVar.value.split("&")[0].equals("H")}'>
+						<h3>
+							<span class="label label-success"
+							th:id="${'holiday'+datesVar.key}" 
+							th:onmouseover="${'javascript:getText(this,' + datesVar.value.split('&')[3] +')'}" 
+							title="Holiday"><span th:text="${datesVar.key}"></span></span>
+						</h3>
+					</div>
+					<div th:if='${datesVar.value.split("&")[0].equals("IN")}'>
+						<h3>
+							<span class="label label-info" 
+							th:id="${'intime'+datesVar.key}" 
+							th:onmouseover="${'javascript:getText(this,' + datesVar.value.split('&')[3] +')'}"
+							th:title="${'INTIME : '+datesVar.value.split('&')[1]}"
+							><span th:text="${datesVar.key}"></span></span>
+						</h3>
+					</div>
+					 <div th:if='${datesVar.value.split("&")[0].equals("L")}'>
+						<h3>
+							<span style="background-color: #7f58bc;" class="label label-info"
+							th:id="${'leave'+datesVar.key}" 
+							th:onmouseover="${'javascript:getText(this,' + datesVar.value.split('&')[3] +')'}" 
+								title="Leave"><span th:text="${datesVar.key}"></span></span>
+						</h3>
+					</div>
+				</li>
+			</div>
+			<div th:if="${!(datesVar.value.split('-')[0]!='')}">
+				<li>&nbsp;</li>
+			</div>
+
+		</div>
+
+	</ul>
+	<div class="container">
+		<h3>
+			<span class="label label-primary">Present&nbsp;<span
+				class="badge">
+				<span th:text="${noOfPresents}"></span>
+				</span></span> <span
+				class="label label-danger">Absent&nbsp;<span class="badge">
+				<span th:text="${noOfAbsents}"></span>
+				</span></span> <span
+				style="background-color: #7f58bc;" class="label label-info">Leave&nbsp;<span
+				class="badge">
+				<span th:text="${noOfLeaves}"></span>
+				</span></span> <span
+				class="label label-info">Half Day&nbsp;<span class="badge">
+				<span th:text="${noOfHalfDays}"></span>
+				</span></span> <span class="label label-success">Holiday&nbsp;<span
+				class="badge">
+				<span th:text="${noOfHolidays}"></span>
+				</span></span> <span
+				class="label label-warning">Week Off&nbsp;<span class="badge">
+				<span th:text="${noOfWeekOffs}"></span>
+				</span>
+			</span>
+		</h3>
+	</div>
+</div>
+<div th:if="${!(datesInMonth.size()>0)}">
+	<p class="h4" align="center">No Attendance Data Found</p>
+</div>
+</body></html>

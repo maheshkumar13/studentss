@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+/****************WIZARD***********************/
+.form-wizard .steps {
+	padding: 0;
+	margin-bottom: 5px;
+}
+
+.custom-well .form-group {
+	margin: 0px !important;
+	margin-bottom: 15px !important;
+}
+
+.custom-well {
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+		!important;
+	background: #ffffff;
+	padding: 0 20px !important;
+	margin-top: 20px;
+	border-radius: 4px !important
+}
+
+.form-wizard .steps>li>a {
+	color: #666;
+	padding: 10px 15px;
+}
+
+.form-wizard .steps>li>a:hover {
+	background-color: #f1f1f1 !important;
+	color: #32c5d2;
+}
+
+.form-wizard .steps>li.active>a {
+	color: #555;
+	cursor: default;
+	background-color: #fff !important;
+	border-bottom: 3px solid #32c5d2;
+}
+</style>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="portlet light bordered" id="form_wizard_1">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-files-o"></i> <span
+							class="caption-subject font-green bold uppercase">
+							School Application Sale </span>
+					</div>
+					<div class="actions">
+						<a class="btn btn-circle btn-icon-only btn-default" title="Search"
+							href="javascript:;"> <i class="fa fa-filter"></i>
+						</a> <a class="btn btn-circle btn-icon-only btn-default"
+							href="javascript:;"> <i class="icon-wrench"></i>
+						</a> <a class="btn btn-circle btn-icon-only btn-default"
+							href="javascript:;"> <i class="icon-trash"></i>
+						</a>
+					</div>
+				</div>
+				<div class="portlet-body form">
+					<form action="">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="col-md-2">
+									<select class="form-control" id="academicId">
+										<option value="">Select Academic Year</option>
+										<th:block th:each="academic:${academics}">
+											<option th:value="${academic.id}"
+												th:text="${academic.academicYear}"></option>
+										</th:block>
+									</select>
+								</div>
+								
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										placeholder="School AppNo" id="txtSchAppNo" />
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control number"
+										placeholder="Application No" maxlength="10" id="txtAppnos" />
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										placeholder="Student Name" id="txtStudentName" />
+								</div>
+								<div class="col-md-2">
+									<input type="text" class="form-control"
+										placeholder="Parent Name" id="txtParentName" />
+								</div>
+								<div class="col-md-2">
+									<button type="button" class="btn btn-info" id="searchBtnId">
+										<span class="glyphicon glyphicon-search"></span>&nbsp;Search
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="clearfix"></div>
+					<hr>
+					<div class="clearfix"></div>
+					<div id="studentsGridId" class="row"></div>
+					<div id="applicationDivId" class="custom-well"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script>
+			$("#searchBtnId")
+					.click(
+							function() {
+
+								var sb = null;
+								sb = document.getElementById("txtAppnos").value
+										.trim()
+										+ document.getElementById("txtSchAppNo").value
+												.trim()
+										+ document
+												.getElementById("txtStudentName").value
+												.trim()
+										+ document
+												.getElementById("txtParentName").value
+												.trim();
+
+								if ($("#academicId").val() == "") {
+									alert("Please Select Academic Year");
+									$("#academicId").focus();
+									return false;
+								} else if (sb == "") {
+									alert("Please enter the any fileds");
+									document.getElementById("txtAppnos")
+											.focus();
+									return false;
+								} else if (isNaN(document
+										.getElementById("txtAppnos").value
+										.trim())) {
+									alert("Please Enter Numerics Only For Application No");
+									document.getElementById("txtAppnos").value = '';
+									document.getElementById("txtAppnos")
+											.focus();
+									return false;
+								}
+								if ($('#txtAppnos').val() != ""
+										&& $('#txtAppnos').val().length < 9) {
+									alert("Please enter full application no.");
+									document.getElementById("txtAppnos")
+											.focus();
+									return false;
+								} else {
+									$("#studentsGridId").show();
+									$
+											.ajax({
+												type : "GET",
+												url : "/application/searchSchoolApplications",
+												data : {
+													academic : $("#academicId")
+															.val(),
+													appNo : $("#txtAppnos")
+															.val(),
+													schoolAppNo : $("#txtSchAppNo")
+															.val(),
+													studentName : $(
+															"#txtStudentName")
+															.val(),
+													parentName : $(
+															"#txtParentName")
+															.val()
+												},
+												success : function(data) {
+													$('#studentsGridId').html(
+															data);
+													$("#applicationDivId")
+															.slideUp();
+													$("#downId").show();
+												},
+												error : function(jqXHR,
+														exception, textStatus) {
+													alert('Uncaught Error.\n'
+															+ jqXHR.responseText);
+
+												},
+											});
+								}
+							});
+
+			function getAppDetails(appNo) {
+				$.ajax({
+					type : "GET",
+					url : "/application/getSchoolApplicationInfo",
+					data : {
+						schoolAppForm : appNo
+					},
+					success : function(data) {
+						$("#applicationDivId").show();
+						$('#applicationDivId').html(data);
+						if($('#applicationDivId').is(":hidden")){
+							$("#applicationDivId").show();
+						}
+						
+						if($('#downId').is(":hidden")){
+							$("#downId").show();
+						}
+						
+					},
+					error : function(jqXHR, exception, textStatus) {
+						alert('Uncaught Error.\n' + jqXHR.responseText);
+					},
+				});
+
+				$("#studentsGridId").slideUp();
+			}
+
+			$('.number').keyup(function(event) {
+				if (isNaN($(this).val())) {
+					showToastr("Please Enter Numericals", "error");
+					$(this).val('');
+				}
+			});
+		</script>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+ 
+<style>
+input, select { margin-bottom:10px}
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Co Pocket Money Cancel</div>
+		</div>
+		
+		<div class="portlet-body">
+		  <div class="custom-div">
+			<form class="form-horizontal" action=" " method="post" id="formId">
+				<div class="row">
+					<div class="col-md-3 ">
+						
+							<label class="control-label" for="join">Join Into</label>
+							
+								<select class="form-control" name="studyClass" id="JoinIntoId"
+									onchange="return joinInto(this.value); ">
+									<option value="0">select join Into</option>
+									<th:block th:each="studyClass:${classList}">
+										<option th:value="${studyClass.id}"
+											th:text="${studyClass.displayName}"></option>
+									</th:block>
+								</select>
+							
+						
+					</div>
+					<div class="col-md-3 ">
+						
+							<label class="control-label " for="year">Join Year</label>
+							
+								<select class="form-control" name="selectedAcademic"
+									id="JoinYearId" onchange="loadStream();">
+									<option value="0">Select join year</option>
+									<th:block th:each="academicYear:${academicList}">
+										<option th:value="${academicYear.id}"
+											th:text="${academicYear.joinYear}">Join year</option>
+									</th:block>
+								</select>
+							
+						
+					</div>
+					<div class="col-md-3 ">
+					
+							<label class="control-label " for="year">Issue Date</label>
+						
+								<input type="text" class="form-control" name="selectedDate"
+									id="fixedStartDateId" placeholder="Issue Date">
+							
+						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 ">
+					
+							<label class="control-label " for="batch">Reason</label>
+							
+								<select class="form-control" name="bulkpocReason" id="reasonId"
+									onchange="loadSubHead(this.value);">
+									<option value="0">Select Reason</option>
+									<th:block th:each="reason:${reasonList}">
+										<option th:value="${reason.id}" th:text="${reason.pocReason}"></option>
+									</th:block>
+								</select>
+						
+					
+					</div>
+					<div class="col-md-4 " id="subHead">
+					
+							<label class="control-label " for="batch">SubReason</label>
+						
+								<select class="form-control" name="bulkpocSubReason" id="subHeadId">
+									<option value="0">Select SubHead</option>
+									<th:block th:each="moneySub:${moneySubList}">
+										<option th:value="${moneySub.id}"
+											th:text="${moneySub.subheadName}"></option>
+									</th:block>
+								</select>
+							
+					
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 ">
+					
+							<label class="control-label " for="batch">Stream</label>
+							
+								<select class="form-control" name="stream" id="streamId"
+									onchange="loadProgram();">
+									<option value="0">Select Stream</option>
+									<th:block th:each="stream:${streamList}">
+										<option th:value="${stream.id}" th:text="${stream.streamName}"></option>
+									</th:block>
+								</select>
+							
+						
+					</div>
+					<div class="col-md-4 ">
+					
+							<label class="control-label " for="program">Program</label>
+							
+								<select class="form-control" name="program" id="programId"
+									onchange="loadCourseTrack();">
+									<option value="0">Select Program</option>
+									<th:block th:each="program:${programList}">
+										<option th:value="${program.id}"
+											th:text="${program.programName}"></option>
+									</th:block>
+								</select>
+							
+						
+					</div>
+					<div class="col-md-4 ">
+						
+							<label class="control-label" for="batch">Course Track</label>
+						
+								<select class="form-control" name="campusTrack" id="courseId"
+									onchange="loadbatches();">
+									<option value="0">Select Course</option>
+									<th:block th:each="courseTrack:${courseTrackList}">
+										<option th:value="${courseTrack.courseTrackId}"
+											th:text="${courseTrack.courseTrackName}"></option>
+									</th:block>
+								</select>
+							
+						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4 ">
+					
+							<label class="control-label " for="batch">Batch</label>
+							
+								<select class="form-control" name="courseBatch" id="batchId"
+									onchange="loadSections();">
+									<option value="0">Select Batch</option>
+									<th:block th:each="courseBatch:${batchList}">
+										<option th:value="${courseBatch.id}"
+											th:text="${courseBatch.batchName}"></option>
+									</th:block>
+								</select>
+							
+						
+					</div>
+
+					<div class="col-md-4">
+						
+							<label class="control-label " for="section">Section</label>
+							
+								<select class="form-control" name="bulkStudentSection"
+									id="sectionId" onchange="loadBulkStudentList();">
+									<option value="0">Select Section</option>
+									<th:block th:each="section:${sectionList}">
+										<option th:value="${section.id}"
+											th:text="${section.sectionName}"></option>
+									</th:block>
+								</select>
+						
+					
+					</div>
+				</div>
+			</form>
+		</div>
+	   </div>
+	
+		<div id="coPocketMoneyCancleId"></div>
+	</div>
+</body>
+ 
+<script
+	src="../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"
+	type="text/javascript"></script>
+<script
+	src="../assets/pages/scripts/components-date-time-pickers.min.js"
+	type="text/javascript"></script>
+<script th:inline="javascript">
+	$("#fixedStartDateId").datetimepicker({
+		format : 'dd-mm-yyyy hh:ii'
+	});
+	$('#amountId').bind('input propertychange', function() {
+		$(this).val($(this).val().replace(/[^0-9]/g, ''));
+	});
+	$(document).ready(
+			function() {
+				$('#loader').css('display', 'none');
+				$('#campus').css('display', 'none');
+				$('#subHead').css('display', 'none');
+				$("#streamId,#programId,#courseId,#batchId,#sectionId").prop(
+						"disabled", true);
+			});
+	function dispalyStream() {
+		$("#streamId,#programId,#courseId,#batchId,#sectionId").prop(
+				"disabled", false);
+	}
+	function joinInto(joinInto) {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getJoinYear",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#JoinYearId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+				$("select#reasonId").val('0');
+			}
+		});
+	}
+	function loadStream() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getStream",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#streamId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+				$("select#reasonId").val('0');
+			}
+		});
+	}
+
+	function loadProgram() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getPrograms",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#programId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+				$("select#courseId").val('0');
+				$("select#batchId").val('0');
+				$("select#sectionId").val('0');
+			}
+		});
+	}
+	function loadCourseTrack() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getCourses",
+			data : $("#formId").serialize(),
+			dataType : 'text',
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#courseId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+				$("select#batchId").val('0');
+				$("select#sectionId").val('0');
+			}
+		});
+	}
+	function loadbatches() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getbatches",
+			data : $("#formId").serialize(),
+			dataType : 'text',
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#batchId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+				$("select#sectionId").val('0');
+			}
+		});
+	}
+	function loadSections() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getsections",
+			data : $("#formId").serialize(),
+			dataType : 'text',
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#sectionId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+			}
+		});
+	}
+
+	function loadsubreasonId(reason) {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getSubReason",
+			data : $("#formId").serialize(),
+			dataType : 'text',
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#subReasonId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+					if (reason == 0) {
+						$('#subReason').css('display', 'none');
+					} else {
+						$('#subReason').css('display', 'block');
+					}
+				});
+			}
+		});
+	}
+	function loadSubHead(reason) {
+		var reasonValues = [ 1, 12, 15, 22, 88, 114, 115 ];
+		for (var i = 0; i < reasonValues.length; i++) {
+			if (reasonValues[i] == reason) {
+				$.ajax({
+							type : "GET",
+							url : "/scaits/getSubHead",
+							data : $("#formId").serialize(),
+							success : function(data) {
+								var prePopulate = JSON.parse(data);
+								var select = $('#subHeadId');
+								select.find('option').remove();
+								$.each(prePopulate,function(key, value) {
+													$('<option>').val(key)	.text(value).appendTo(select);
+													if (reason == 0) {
+														$('#subHead').css('display','none');
+														$("#streamId,#programId,#courseId,#batchId,#sectionId").prop("disabled",true);
+													} else {
+														$('#subHead').css('display',	'block');
+													}
+												});
+
+								$("select#subReasonId").val('0');
+
+							}
+						});
+			} else {
+				if (reason == 0) {
+					$('#subHead').css('display', 'none');
+					$("#streamId,#programId,#courseId,#batchId,#sectionId")
+							.prop("disabled", true);
+				} else {
+					$('#subHead').css('display', 'none');
+					$("#streamId,#programId,#courseId,#batchId,#sectionId")
+							.prop("disabled", false);
+				}
+			}
+			$("select#streamId").val('0');
+			$("select#programId").val('0');
+			$("select#courseId").val('0');
+			$("select#batchId").val('0');
+			$("select#sectionId").val('0');
+		}
+	}
+	function loadBulkStudentList() {
+		if ($("#JoinIntoId").val() == "0" || $("#JoinIntoId").val() == "") {
+			showToastr("Please Select Join into", "error");
+			$("#JoinIntoId").focus();
+			return false;
+		} else if ($("#JoinYearId").val() == "0"
+				|| $("#JoinYearId").val() == "") {
+			showToastr("Please Select Join year", "error");
+			$("#JoinYearId").focus();
+			return false;
+		} else if ($("#fixedStartDateId").val() == "0"
+				|| $("#fixedStartDateId").val() == "") {
+			showToastr("Please Select Date", "error");
+			$("select#sectionId").val('0');
+			$("#fixedStartDateId").focus();
+			return false;
+		} else if ($("#streamId").val() == "0" || $("#streamId").val() == "") {
+			showToastr("Please Select Stream", "error");
+			$("#streamId").focus();
+			return false;
+		} else if ($("#programId").val() == "0" || $("#programId").val() == "") {
+			showToastr("Please Select Program", "error");
+			$("#programId").focus();
+			return false;
+		} else if ($("#courseId").val() == "0" || $("#courseId").val() == "") {
+			showToastr("Please Select Course Track", "error");
+			$("#courseId").focus();
+			return false;
+		} else if ($("#batchId").val() == "0" || $("#batchId").val() == "") {
+			showToastr("Please Select Batch", "error");
+			$("#batchId").focus();
+			return false;
+		} else {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getCOPocketMoneyCancleGrid",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#coPocketMoneyCancleId').html('');
+					$('#coPocketMoneyCancleId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+
+	}
+</script>
+</html>
+

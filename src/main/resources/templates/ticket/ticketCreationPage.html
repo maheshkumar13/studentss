@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+
+.select2-container--bootstrap .select2-selection--single {
+    margin-bottom: 13px;
+}
+
+label {
+	font-weight: bold;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover
+	{
+	background: #228be6 !important;
+	color: #ffffff;
+	display: block;
+	border-bottom: 3px solid #228be6 !important;
+}
+
+.nav-tabs>li.active>a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(34, 139, 230, 0);
+	border-top-color: #228be6;
+	border-width: 10px;
+	margin-left: -10px;
+}
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject ">Create new Ticket</span>
+			</div>
+		</div>
+		<div class="portlet-body">
+			<ul class="nav nav-tabs custom-tab-active">
+				<li class="active"><a href="#tab_1_1" data-toggle="tab">
+						New Ticket</a></li>
+				<li><a href="#tab_1_2" data-toggle="tab"
+					onclick="getTableData()"> View Status </a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade active in" id="tab_1_1">
+					<form th:action="@{/scaits/saveTicket}" id="ticketFormId"
+						method="post" enctype="multipart/form-data">
+						<div class="custom-div">
+							<div class="row">
+								<input id="ticket" name="ticket" hidden="true">
+								<div class="col-md-4">
+									<label>City</label> <select name="city" id="city"
+										class="form-control select2" onchange="getCampus()">
+										<option value="0">Select City</option>
+										<th:block th:each="city:${cityList}">
+											<option th:value="${city.cityId}" th:text="${city.cityName}"></option>
+										</th:block>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Campus</label> <select name="campus" id="campus"
+										class="form-control select2" onchange="getCategory()">
+										<option value="0">Select Campus</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Category</label> <select name="category" id="category"
+										class="form-control select2" onchange="getAsset()">
+										<option value="0">Select Category</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Asset</label> <select name="asset" id="asset"
+										class="form-control select2" onchange="getAsset()">
+										<option value="0">Select Asset</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>AssetCode</label> <input name="assetCode" id="assetCode"
+										type="text" class="form-control">
+								</div>
+								<div class="col-md-4">
+									<label>Mode</label> <select name="ticketMode" id="ticketMode"
+										class="form-control select2">
+										<option value="0">Select TicketMode</option>
+										<option value="byPhone">byPhone</option>
+										<option value="byEmail">byEmail</option>
+										<option value="byPerson">byPerson</option>
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<div class="col-md-4">
+									<label>Raised By</label> <input id="ticketRaisedBy" type="text"
+										class="form-control"> <input name="ticketRaisedBy"
+										id="ticketRaisedValId" type="hidden" class="form-control">
+								</div>
+								<div class="col-md-4">
+									<label>PhoneNo</label><input name="phoneNo" id="phoneNo"
+										type="text" class="form-control number">
+								</div>
+								<div class="col-md-4">
+									<label>Email</label> <input name="email" id="email" type="text"
+										class="form-control">
+								</div>
+								<div class="col-md-4">
+									<label> Date</label> <input name="startDate" id="startDate"
+										type="text" class="form-control date-picker">
+								</div>
+								<div class="col-md-4">
+									<label>Priority</label><select name="priority" id="priority"
+										class="form-control select2" onchange="getSession()">
+										<option value="0">Select Priority</option>
+										<option value="High">High</option>
+										<option value="Medium">Medium</option>
+										<option value="Low">Low</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Assigned To</label><input id="ticketAssignedTo"
+										type="text" class="form-control"> <input
+										name="ticketAssignedTo" id="ticketAssignedValId" type="hidden"
+										class="form-control">
+								</div>
+								<div class="col-md-8">
+									<label>Remarks</label> <input type="text" class="form-control"
+										name="remarks" id="remarks">
+								</div>
+								<div class="col-md-4">
+									<label>Session</label><select name="session" id="session"
+										class="form-control select2">
+										<option value="0">Select session</option>
+									</select>
+								</div>
+								<div class="clearfix"></div>
+								<div class="col-md-4">
+									<label>Attach file</label>
+									<div class="clearfix"></div>
+									<div class="fileinput fileinput-new" data-provides="fileinput">
+										<div class="input-group input-large">
+											<div
+												class="form-control uneditable-input input-fixed input-medium"
+												data-trigger="fileinput">
+												<i class="fa fa-file fileinput-exists"></i>&nbsp; <span
+													class="fileinput-filename"> </span>
+											</div>
+											<span class="input-group-addon btn btn-file"
+												style="background: #ffffff; color: #ea6676"> <span
+												class="fileinput-new"> <i class="fa fa-paperclip"
+													style="margin-right: 7px"></i>Select
+											</span> <span class="fileinput-exists"> <i
+													class="fa fa-exchange" style="margin-right: 7px"></i>Change
+											</span> <input type="file" name="uplodeFile" id="uplodeFile"
+												accept="image/gif, image/jpeg">
+											</span> <a href="javascript:;"
+												class="input-group-addon btn fileinput-exists"
+												data-dismiss="fileinput" title="Remove"
+												style="background: #ea6676; color: #ffffff"> <i
+												class="fa fa-trash-o"
+												style="margin-right: 7px; color: #ffffff"></i>Remove
+											</a>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix" style="margin-bottom: 30px"></div>
+								<div class="col-md-12 portlet-footer">
+									<button type="button" class="btn-pri"
+										onClick="saveTicketDetails()">Save</button>
+								</div>
+							</DIV>
+						</div>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="tab_1_2">
+				   <div th:replace="ticket/ticketCreationInnerPage.html"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function() {
+        $(".select2").select2();
+     });
+	/*   var FromEndDate = new Date();
+      $("#startDate").datetimepicker({
+          format : 'dd-mm-yyyy hh:ii',
+          startDate : '-1m',
+          endDate : FromEndDate,
+          autoclose : true
+      }); */
+
+    function getCampus() {
+        $.ajax({
+            type : "GET",
+            url : "/scaits/getcampusList",
+            data : $("#ticketFormId").serialize(),
+            success : function(data) {
+            	 var prePopulate = JSON.parse(data);
+                 var select = $('#campus');
+                 select.find('option').remove();
+                 $.each(prePopulate, function(key, value) {
+                     $('<option>').val(key).text(value).appendTo(select);
+                 });
+            }
+        });
+    }
+
+    function getCategory() {
+        $.ajax({
+            type : "GET",
+            url : "/scaits/getCategoryList",
+            data : $("#ticketFormId").serialize(),
+            success : function(data) {
+                var prePopulate = JSON.parse(data);
+                var select = $('#category');
+                select.find('option').remove();
+                $.each(prePopulate, function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $("select#asset").val('0');
+            }
+        });
+    }
+
+    function getAsset() {
+        $.ajax({
+            type : "GET",
+            url : "/scaits/getAssetList",
+            data : $("#ticketFormId").serialize(),
+            success : function(data) {
+                var prePopulate = JSON.parse(data);
+                var select = $('#asset');
+                select.find('option').remove();
+                $.each(prePopulate, function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+
+                });
+            }
+        });
+    }
+    function getSession() {
+        $.ajax({
+            type : "GET",
+            url : "/scaits/getSessionList",
+            data : $("#ticketFormId").serialize(),
+            success : function(data) {
+                var prePopulate = JSON.parse(data);
+                var select = $('#session');
+                select.find('option').remove();
+                $.each(prePopulate, function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+
+                });
+            }
+        });
+    }
+
+    function saveTicketDetails() {
+        if ($("#city").val() == "0" || $("#city").val() == "") {
+            showToastr("Please Select City", "error");
+            $("#city").focus();
+            return false;
+        } else if ($("#campus").val() == "0") {
+            showToastr("Please Select Campus", "error");
+            $("#campus").focus();
+            return false;
+        } else if ($("#category").val() == "0") {
+            showToastr("Please Select Category", "error");
+            $("#category").focus();
+            return false;
+        } else if ($("#asset").val().trim() != ""   && isNaN($("#asset").val().trim())) {
+            showToastr("Please Select Asset ","error");
+            $("#asset").focus();
+            return false
+        } else if ($("#ticketRaisedBy").val() == "") {
+            showToastr("Please Enter TicketRaisedBy", "error");
+            $("#ticketRaisedBy").focus();
+            return false;
+        } else if ($("#phoneNo").val().trim() != ""
+                && $("#phoneNo").val().trim().length != 10) {
+            showToastr("Please Enter 10 Digits For Mobile Number", "error");
+            $("#phoneNo").focus();
+            return false
+        } else if (isNaN($("#phoneNo").val().trim())) {
+            showToastr("Please Enter Numerical Values For Mobile Number",
+                    "error");
+            $("#phoneNo").focus();
+            return false;
+        } else if ($("#email").val() != "" && !validateEmail($("#email").val())) {
+            showToastr("Please Enter Valid Email Id", "error");
+            $("#email").focus();
+            return false
+        } else if ($("#ticketAssignedTo").val() == "") {
+            showToastr("Please Enter TicketAssignedTo", "error");
+            $("#ticketAssignedTo").focus();
+            return false;
+        } else if ($("#remarks").val() == "") {
+            showToastr("Please Select Remarks", "error");
+            $("#remarks").focus();
+            return false;
+        } else if ($("#session").val() == "0") {
+            showToastr("Please Select Session", "error");
+            $("#session").focus();
+            return false;
+        } else if (confirm("Are you sure you want to submit ?")) {
+            var form = $('#ticketFormId')[0];
+            var data = new FormData(form);
+            pageOverlay(0);
+            $.ajax({
+                type : 'post',
+                enctype : 'multipart/form-data',
+                url : $("#ticketFormId").attr("action"),
+                data : data,
+                processData : false,
+                contentType : false,
+                success : function(data) {
+                       $('#city').val(0);
+                        $('#campus').val(0);
+                        $('#category').val(0);
+                        $('#asset').val(0);
+                        $('#assetCode').val('');
+                        $('#ticketMode').val(0);
+                        $('#ticketRaisedBy').val('');
+                        $('#ticketRaisedValId').val('');
+                        $('#phoneNo').val('');
+                        $('#email').val('');
+                        $('#startDate').val('');
+                        $('#priority').val(0);
+                        $('#ticketAssignedTo').val('');
+                        $('#ticketAssignedValId').val('');
+                        $('#remarks').val('');
+                        $('#session').val(0);
+                        $('#uplodeFile').val('');
+                    pageOverlay(1);
+                    showToastr("Ticket Successfully Saved.", "success");
+                },
+                error : function() {
+                    showToastr("Unable to load details.", "error");
+                    pageOverlay(1);
+                }
+            });
+
+        }
+    }
+    function getTableData() {
+        $.ajax({
+            type : "GET",
+            url : "/scaits/getTickets",
+            success : function(data) {
+                $('#tab_1_2').html(data);
+            },
+            error : function() {
+                alert('Error occured');
+            }
+        });
+    }
+
+    function editUserTicket(id) {
+             pageOverlay(0);
+        $.ajax({
+            type : "get",
+            url : "/scaits/updateTicketCreation",
+            data : {
+                id : id
+            },
+            success : function(data) {
+                $('a[href="#tab_1_1"]').click();
+                var prePopulate = JSON.parse(data);
+                $('#ticket').val(prePopulate[0]);
+                var select = $('#city');
+                select.find('option').remove();
+                $.each(prePopulate[1], function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $('#city').val(prePopulate[2]);
+                 var select = $('#campus');
+                select.find('option').remove();
+                $.each(prePopulate[3], function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $('#campus').val(prePopulate[4]);
+                var select = $('#category');
+                select.find('option').remove();
+                $.each(prePopulate[5], function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $('#category').val(prePopulate[6]);
+                var select = $('#asset');
+                select.find('option').remove();
+                $.each(prePopulate[7], function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $('#asset').val(prePopulate[8]);
+                $('#assetCode').val(prePopulate[9]);
+               
+                var select = $('#ticketMode');
+                select.find('option').remove();
+                $.each(prePopulate[10], function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $('#ticketMode').val(prePopulate[11]);
+              
+                 $('#ticketRaisedBy').val(prePopulate[12]);
+                $('#ticketRaisedValId').val(prePopulate[13]);
+                $('#phoneNo').val(prePopulate[14]);
+                $('#email').val(prePopulate[15]);
+                $('#startDate').val(prePopulate[16]);
+                var select = $('#priority');
+                select.find('option').remove();
+                $.each(prePopulate[17], function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $('#priority').val(prePopulate[18]);
+                $('#ticketAssignedTo').val(prePopulate[19]);
+                $('#ticketAssignedValId').val(prePopulate[20]);
+                $('#remarks').val(prePopulate[21]);
+                var select = $('#session');
+                select.find('option').remove();
+                $.each(prePopulate[22], function(key, value) {
+                    $('<option>').val(key).text(value).appendTo(select);
+                });
+                $('#session').val(prePopulate[23]);
+                $('#uplodeFile').val(prePopulate[24]); 
+             
+                     pageOverlay(1);
+            },
+            error : function() {
+                alert('Error occured');
+                   pageOverlay(1);
+            }
+        });
+    }
+    
+    function checkPhoto(target) {
+
+        if (target.files[0].type != "image/jpeg") {
+            document.getElementById("uplodeFile").innerHTML = "Please upload JPG Image upto 100KB only";
+            showToastr("Please upload JPG Image upto 100KB only", "error");
+            document.getElementById("uplodeFile").value = "";
+            return false;
+        }
+
+        if (target.files[0].size > 102350) {
+            document.getElementById("uplodeFile").innerHTML = "Image too big (max 35kb)";
+            showToastr("Image too big(max 100kb)", "error");
+            document.getElementById("uplodeFile").value = "";
+            return false;
+        }
+    }
+    function validateEmail($email) {
+        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        return emailReg.test($email);
+    }
+
+    function textCounter(field, countfield, maxlimit) {
+        if (field.value.length > maxlimit) {
+            field.value = field.value.substring(0, maxlimit);
+            field.blur();
+            field.focus();
+            return false;
+        } else {
+            countfield.value = maxlimit - field.value.length;
+        }
+    }
+    $(function() {
+        $("#ticketRaisedBy").autocomplete({
+            source : function(request, response) {
+                $.ajax({
+                    url : "/scaits/getAutoRaisedEmp",
+                    dataType : "json",
+                    data : {
+                        term : request.term,
+                    },
+                    success : function(data) {
+                        response(data);
+                    }
+                });
+            },
+            focus : function(event, ui) {
+                $("#ticketRaisedBy").val(ui.item.value);
+                return false;
+            },
+            select : function(event, ui) {
+                $("#ticketRaisedBy").val(ui.item.value);
+                $("#ticketRaisedValId").val(ui.item.key);
+
+                return false;
+            }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+            return $("<li>").append("<a>" + item.value + "</a>").appendTo(ul);
+        };
+    });
+
+    $(function() {
+        $("#ticketAssignedTo").autocomplete({
+            source : function(request, response) {
+                $.ajax({
+                    url : "/scaits/getAutoAssignedEmp",
+                    dataType : "json",
+                    data : {
+                        term : request.term,
+                        category : document.getElementById('category').value
+                    },
+                    success : function(data) {
+                        response(data);
+                    }
+                });
+            },
+            focus : function(event, ui) {
+                $("#ticketAssignedTo").val(ui.item.value);
+                return false;
+            },
+            select : function(event, ui) {
+                $("#ticketAssignedTo").val(ui.item.value);
+                $("#ticketAssignedValId").val(ui.item.key);
+
+                return false;
+            }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+            return $("<li>").append("<a>" + item.value + "</a>").appendTo(ul);
+        };
+    });
+    $('.number').keyup(function(event) {
+        if (isNaN($(this).val())) {
+            showToastr("Please Enter Numericals", "error");
+            $(this).val('');
+        }
+    });
+    
+
+
+		
+	</script>
+</body>
+
+</html>

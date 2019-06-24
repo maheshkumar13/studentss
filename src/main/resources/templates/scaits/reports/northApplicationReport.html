@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+<form class="form-horizontal" action=" " method="post" id="formId">
+
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">North Application Details Report</div>
+		</div>
+		<div class="row" id="campusDiv" th:if="${campusList.size()>1}"></div>
+		
+	<div id="studentDeatailsGridId"></div>
+	</div>
+	</form>
+		</body>
+<script th:inline="javascript">
+
+$(document).ready(function () {
+	reportFilters();
+}); 
+				function reportFilters() {
+		
+			$.ajax({
+				type : "GET",
+				url : "/scaits/northApplicationReportdata",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+				}
+			});
+		}
+				</script>
+				</html>
+			

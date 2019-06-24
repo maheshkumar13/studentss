@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<style>
+.dataTables_wrapper {
+	padding-bottom: 0px;
+}
+</style>
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+  
+   var monthNum= /*[[${monthVal}]]*/;
+   var campus= /*[[${campusVal}]]*/;
+   var totalDays= /*[[${totalDays}]]*/;
+   var atdList= /*[[${monthlyAttendancebos.size()}]]*/;
+ /*]]>*/
+</script>
+<script type="text/javascript">
+var notValid=0;
+
+$(document).ready(function() {
+	var table = $('#deanAtdCloseId').DataTable({
+		scrollY : "300px",
+		scrollX : true,
+		scrollCollapse : false,
+		paging : false
+	});
+	
+	var monthShortNames = [ "January", "February", "March", "April", "May", "June",
+	            			"July", "August", "September", "October", "November", "December" ];
+
+	            		$("#monthNameId").html(monthShortNames[parseInt(monthNum) - 1]);
+	            		$("#totalDaysId").html(totalDays);
+});
+
+function saveAttendanceClose(){
+	 $('#deanAtdCloseId').DataTable().search('').draw(false);
+	
+		 for(var i=0;i<parseInt(atdList);i++){
+			 if(notValid!=0){
+					document.getElementById("lopSelId"+notValid).focus();
+					notValid=0;
+					return false;
+				}
+			 if(parseFloat(document.getElementById("lopSelId"+i).value)!=parseFloat(document.getElementById("proposedLOP1"+i).value)){
+					if(document.getElementById("selDescriptionId"+i).value==""){
+						alert("Please Enter Description");
+						document.getElementById("selDescriptionId"+i).focus();
+						return false;
+					}
+				} 
+		 }
+		if(confirm("Are you sure you want to close monthly attendance daysheet?")){
+			saveForm();
+		}else{
+			return false;
+		}
+		
+}
+function saveForm(){
+	 
+	 var data = $('#saveDeanMonthDayAttendanceCloseFormId').serializeArray();
+	 data.push({name: 'buildingVal', value: null});
+	 data.push({name: 'campusVal', value: campus});
+	$.ajax({
+		type : 'POST',
+		url :  $('#saveDeanMonthDayAttendanceCloseFormId').attr('action'),
+		data : data,
+		dataType : 'json',
+		success : function(data) {
+			
+			if(data.indexOf("FEEDBACK-") != -1 && data.indexOf("SUCCESFULLY DONE") != -1){
+				alert("successfully done");
+				document.getElementById("saveDeanMonthDayAttendanceCloseFormId").reset();
+				$('#deanSelMonthCampusPopupId').modal('toggle'); 
+				showPage('/scaits/showDeanMonthlyEmpAttendanceClose');
+				
+			}else if(data!="" && data.indexOf("FEEDBACK-") != -1 && data.length<=100){
+				msg = data.substring(data.indexOf("-", 9) + 1);
+				alert(msg);
+			}
+		}
+	});
+	return false;
+}
+
+function isNumberKey(evt)
+{
+   var charCode = (evt.which) ? evt.which : evt.keyCode;
+  
+	if ((charCode >= 48 && charCode <= 57)
+		|| charCode == 8 || charCode == 9
+		|| charCode == 46
+		|| (charCode >= 37 && charCode <= 40))
+      return true;
+
+   return false;
+}
+
+function checkLopDays(selVal,valueSelected,txt){
+	
+	if (txt.indexOf(".")!=-1 ) {
+		var substr = txt.split(".")[1];
+		if(substr=="00" || substr=="50" || substr=="0" || substr=="5"){
+			
+		}else{
+			document.getElementById("lopSelId"+selVal).value=valueSelected;
+			document.getElementById("lopSelId"+selVal).focus();
+	    	toastrMessageError('Please enter Valid decimal places, we have Accept Only 00,50 after Decimal Places,Please Contact Support Team ');
+		}
+		}
+	
+	if(checklopSel(parseFloat(document.getElementById("lopSelId"+selVal).value),parseFloat(document.getElementById("lopId"+selVal).value))){
+		notValid=0;
+		return true;
+	}else{
+		alert("LOP Should Not Greater Than Leaves");
+		notValid=selVal;
+		document.getElementById("lopSelId"+selVal).value=valueSelected;
+		document.getElementById("lopSelId"+selVal).focus();
+		return false;
+	}
+}
+
+
+function checklopSel(lopSelId,lopId){
+	if(lopId<lopSelId){
+		return false;
+	}else if(lopId==lopSelId){
+		return true;
+	}else{
+		return true;
+	}
+}
+
+
+
+	
+	
+	 function getUserAttendance(userId, month,status,year) {
+			$.ajax({
+				url : '/empManagementSystem-ajax/empMonthWiseEmpAtd?empVal='
+						+ userId + "&yearVal=" + year+ "&monthVal=" + month+ "&atdType=" + status,
+				success : function(data) {
+					document.getElementById("deanPopUpData").innerHTML = data;
+				}
+			});
+		}
+	 
+	
+</script>
+</head>
+<body>
+	<div class="panel panel-success">
+		<div class="panel-heading">
+			<strong>Monthly Attendance Close By Dean/AGM</strong> - Last Monthly
+			Attendance Day Sheet Closed For(
+			<p th:text="${campusName}"></p>
+			):<strong>
+				<p th:text="${#dates.format(monthLatDaySheetClosedOn, 'MMM-yyyy')}"></p>
+			</strong>
+			<div th:if="${message==null}">
+				|Monthly Attendance Day Sheet Close Can be Done For : <strong>
+					<p
+						th:text="${#dates.format(monthDaySheetToBeClosedOn, 'MMM-yyyy')}"></p>
+				</strong>
+			</div>
+			<div th:if="${message!=null}">
+				|<span style="color: yellow;">
+					<p th:text="${message}"></p>
+				</span>
+			</div>
+			<br>
+
+		</div>
+		<div class="panel-body">
+			<div class="row" id="contentId">
+				<div class="col-lg-12">
+					<div
+						th:if="${monthlyAttendancebos!=null && monthlyAttendancebos.size()>0}">
+						<div style="font-size: 20px; padding-left: 20px;">
+							<span class="label label-info">Total Employees&nbsp;<span
+								class="badge">
+									<span th:text="${monthlyAttendancebos.size()}"></span>
+							</span></span> <span class="label label-danger"><span id="monthNameId"></span>&nbsp;<span
+								class="badge" id="totalDaysId"></span></span> 
+						</div>
+						<div class="form-group">
+								<form id="saveDeanMonthDayAttendanceCloseFormId"
+						class="form-horizontal"
+						th:action="@{/scaits/saveDeanMonthDayAttendanceClose}"
+						method="post">
+
+								<div class="table-responsive"
+									style="width: 98%; padding-left: 18px; margin-top: 10px;">
+									<table
+										class="table table-striped table-bordered table-hover dataTables-example"
+										id="deanAtdCloseId">
+										<thead>
+											<tr>
+												<th>SNO</th>
+												<th>PAYROLL ID</th>
+												<th>NAME</th>
+												<th>DESIGNATION</th>
+												<th>STATUS</th>
+												<th>No Of Working Days</th>
+												<th>No Of Holidays</th>
+												<th>No Of Present</th>
+												<th>No Of OnDuty</th>
+												<th>No Of Leaves</th>
+												<th>LOP By Principal</th>
+												<th>LOP Principal Remarks</th>
+												<th>Proposed LOP</th>
+												<th>Remarks</th>
+												<!-- <th>Reverse LOP</th> -->
+												<th>Campus</th>
+												<th>Building</th>
+											</tr>
+										</thead>
+										<tbody>
+
+												<tr
+										th:each="campusWiseAttedanceVar,campusListNo : ${monthlyAttendancebos}">
+										
+													<input type="hidden" th:value="${campusWiseAttedanceVar.id}" th:name="${'monthlyAttendancebos['+campusListNo.index+']'}" id="idsVal" />
+														
+													<td><p th:text="${campusListNo.index+1}"></p></td>
+													<td><p th:text="${campusWiseAttedanceVar.employee.payRollId}"></p></td>
+													<td><p th:text="${campusWiseAttedanceVar.employee.userName}"></p></td>
+													<td>
+													<p th:text="${campusWiseAttedanceVar.employee.designation}"></p>
+													</td>
+													<td>
+													<div th:if='${campusWiseAttedanceVar.employee.status.equalsIgnoreCase("LEFT")}'>
+															<div th:if="${campusWiseAttedanceVar.employee.dol!=null}">
+																<p th:text="${campusWiseAttedanceVar.employee.status}"></p> ON 
+																<p th:text="${#dates.format(campusWiseAttedanceVar.employee.dol, 'dd-MM-yyyy')}"></p>
+															</div>
+															<div th:if="${campusWiseAttedanceVar.employee.dol==null}">
+																<p th:text="${campusWiseAttedanceVar.employee.status}"></p>
+															</div>
+													</div>
+													<div th:if='${!(campusWiseAttedanceVar.employee.status.equalsIgnoreCase("LEFT"))}'>
+															<p th:text="${campusWiseAttedanceVar.employee.status}"></p>
+													</div>
+													</td>
+													<td>
+													<p th:text="${campusWiseAttedanceVar.noWorkingDays}"></p>
+													</td>
+													<td>
+													<p th:text="${campusWiseAttedanceVar.noOfHoliday+campusWiseAttedanceVar.NO_WEEK_OFF}"></p>
+													</td>
+
+													<td>
+													<p th:text="${campusWiseAttedanceVar.noOfPresent}"></p>
+													</td>
+													<td>
+													<p th:text="${campusWiseAttedanceVar.noOfOnDuty}"></p>
+													</td>
+													<td><input type="text" class="form-control"
+														style="width: 75px;" 
+														th:value="${campusWiseAttedanceVar.noOfLeaves+campusWiseAttedanceVar.noOfAbsent}"
+														th:id="${'lopId'+campusListNo.index}"
+														ondrop="return false" ondrag="return false"
+														autocomplete="off" readonly="readonly" maxlength="2" /></td>
+													<td><input type="text" class="form-control"
+														style="width: 75px;" th:value="${campusWiseAttedanceVar.proposedLOP1}"
+														th:id="${'proposedLOP1'+campusListNo.index}"
+														ondrop="return false" ondrag="return false"
+														autocomplete="off" readonly="readonly" maxlength="2" /></td>
+													<td>
+													<p th:text="${desc1}"></p>
+													</td>
+
+													<td><input type="text" class="form-control"
+														style="width: 75px;" th:name="${'lopList['+campusListNo.index+']'}"
+														th:value="${campusWiseAttedanceVar.proposedLOP1}"
+														th:id="${'lopSelId'+campusListNo.index}"
+														ondrop="return false" ondrag="return false"
+														autocomplete="off" maxlength="4" onkeypress="return isNumberKey(event)" 
+														th:onchange="${'javascript:checkLopDays(' + campusListNo.index +',' + campusWiseAttedanceVar.proposedLOP1+',this.value)'}"
+														 /></td>
+													<td>
+														<div id="dvSessionDesr_%{#campusListNo.index}">
+															<input class="form-control"
+																th:name="${'description['+campusListNo.index+']'}"
+															placeholder="Remarks" th:id="${'selDescriptionId'+campusListNo.index}"
+															type="text" maxlength="200" />
+														</div>
+													</td>
+													<td><p th:text="${campusWiseAttedanceVar.employee.campus.campusName}"></td>
+													<td><p th:text="${campusWiseAttedanceVar.employee.building.buildingName}"></td>
+												</tr>
+										</tbody>
+									</table>
+								</div>
+							</form>
+						</div>
+
+						<div class="row">
+							<div class="form-group">
+								<button type="button" class="btn btn-primary btn-sm"
+									onclick="return	saveAttendanceClose();"
+									style="margin-left: 45%;" id="submitId">
+									Approved By Dean/AGM (
+									<p th:text="${currentUser.userName}"></p>
+									)
+								</button>
+							</div>
+
+						</div>
+					</div>
+					<div
+						th:if="${monthlyAttendancebos==null || monthlyAttendancebos.size()==0}">
+						<p align="center">
+							<b>No Records Found....</b>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal inmodal fade" id="deanMonthAtdModal" tabindex="-1"
+			role="dialog" aria-hidden="true">
+
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+							<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title">Monthly Employee Attendance</h4>
+					</div>
+					<div class="modal-body" id="deanPopUpData"></div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>

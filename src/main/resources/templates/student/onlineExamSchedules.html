@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{student/studentDecorator}">
+<head>
+</head>
+<body>
+	<!-- BEGIN AVIALABLE EXAM PAGE BASE CONTENT -->
+	<div layout:fragment="page_content">
+		<div
+			th:if="${(availableSchedules==null || availableSchedules.size()==0) && (incompleteExams==null || incompleteExams.size()==0)}">
+			<div class="alert alert-danger" th:text="'No Schedules Available to '+ ${examType.examTypeName}"></div>
+		</div>
+		<div class="row">
+			<!-- BEGIN EXAMPLE TABLE PORTLET-->
+			<div class="portlet box green" th:if="${availableSchedules.size()>0}">
+				<div class="portlet-title">
+					<div class="caption">
+						<span th:text="${examType.examTypeName}"></span> Exam Schedules
+					</div>
+				</div>
+				<div class="portlet-body" style="width: 100%;">
+					<div class="row">
+						<div class="col-md-12">
+							<!-- BEGIN EXAMPLE TABLE PORTLET-->
+							<table
+								class="table table-striped table-bordered table-hover order-column"
+								id="">
+								<thead>
+									<tr>
+										<th>Exam Name</th>
+										<th>Exam Time</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="availableSchedule:${availableSchedules}">
+										<td th:text="${availableSchedule.examName}"></td>
+										<td th:text="${availableSchedule.duration}">Minutes</td>
+										<td>
+											<button th:if="${examType.id==2}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openJeeAdvancedPage(' + availableSchedule.id  +',this)'}">Take
+												Exam</button>
+
+											<button th:if="${examType.id==3}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openEamcetPage(' + availableSchedule.id  +',this)'}">Take
+												Exam</button>
+
+											<button th:if="${examType.id==4}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openBitsatPage(' + availableSchedule.id  +',this)'}">Take
+												Exam</button>
+
+											<button th:if="${examType.id==5}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openNeetPage(' + availableSchedule.id  +',this)'}">Take
+												Exam</button>
+
+											<button th:if="${examType.id==12}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openAiimsPage(' + availableSchedule.id  +',this)'}">Take
+												Exam</button>
+
+											<button th:if="${examType.id==22}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openJipmerPage(' + availableSchedule.id  +',this)'}">Take
+												Exam</button>
+											<button th:if="${examType.id==26}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openIasPage(' + availableSchedule.id  +',this)'}">Take
+												Exam</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END  AVIALABLE EXAM EXAMPLE TABLE PORTLET-->
+
+		<div class="row">
+			<!-- BEGIN INCOMPLETE EXAM EXAMPLE TABLE PORTLET-->
+			<div class="portlet box green"
+				th:if="${incompleteExams!=null && incompleteExams.size()>0}">
+				<div class="portlet-title">
+					<div class="caption">
+						<span th:text="${examType.examTypeName}"></span> Exam Schedules
+						--> Incomplete
+					</div>
+				</div>
+				<div class="portlet-body" style="width: 100%;">
+					<div class="row">
+						<div class="col-md-12">
+							<!-- BEGIN EXAMPLE TABLE PORTLET-->
+							<table
+								class="table table-striped table-bordered table-hover order-column"
+								id="">
+								<thead>
+									<tr>
+										<th>Exam Name</th>
+										<th>Exam Time</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="incompleteExam:${incompleteExams}">
+										<td th:text="${incompleteExam.schedule.examName}"></td>
+										<td th:text="${(incompleteExam.timeRemaining/60)}">Minutes</td>
+										<td>
+											<button th:if="${examType.id==2}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openJeeAdvancedPage(' + incompleteExam.schedule.id  +',this)'}">Resume
+												Exam</button>
+
+											<button th:if="${examType.id==3}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openEamcetPage(' + incompleteExam.schedule.id  +',this)'}">Resume
+												Exam</button>
+
+											<button th:if="${examType.id==4}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openBitsatPage(' + incompleteExam.schedule.id  +',this)'}">Resume
+												Exam</button>
+
+											<button th:if="${examType.id==5}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openNeetPage(' + incompleteExam.schedule.id  +',this)'}">Resume
+												Exam</button>
+
+											<button th:if="${examType.id==12}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openAiimsPage(' + incompleteExam.schedule.id  +',this)'}">Resume
+												Exam</button>
+
+											<button th:if="${examType.id==22}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openJipmerPage(' + incompleteExam.schedule.id  +',this)'}">Resume
+												Exam</button>
+											<button th:if="${examType.id==26}" type="button"
+												class="btn btn-primary btn-xs"
+												th:onclick="${'javascript:openIasPage(' + incompleteExam.schedule.id  +',this)'}">Resume
+												Exam</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END INCOMPLETE EXAM EXAMPLE TABLE PORTLET-->
+</body>
+</html>

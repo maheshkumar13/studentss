@@ -1,0 +1,55 @@
+.page-header.navbar .page-logo .logo-default {margin: 16px 10px 0;}
+.btn + .btn { margin-left:5px}
+.page-header.navbar .page-logo {
+    float: left;
+    display: block;
+    width: auto;
+    height: 35px;
+    padding-left: 0 !important; 
+    padding-right: 10px;
+}
+@media (min-width:320px) and (max-width:768px){
+
+.page-header.navbar .search-form.open {
+    z-index: 3;
+     left: 0; 
+     right: 0; 
+    position: absolute;
+    width: auto!important;
+    margin: 6px 0 0;	
+	width:200px
+	
+}
+
+.page-header.navbar .page-actions {
+     float: right;
+     margin-right: 0; 
+}
+.page-header.navbar .page-actions {
+    margin: 0;
+    padding: 0;
+    float: left;
+}
+
+.page-logo img { max-width:180px !important}
+
+
+
+
+}
+
+@media (min-wisth:320px) and (max-width:360px) {
+	.page-logo img { max-width:180px !important}
+	}
+	
+@media (max-width: 990px) and (min-width: 768px) {
+.page-header.navbar .search-form.open {
+    z-index: 3;
+    left: 0;
+    right: -4px;
+    position: absolute;
+    width: auto!important;
+    margin: 20px 368px;
+    width: 200px;
+}
+

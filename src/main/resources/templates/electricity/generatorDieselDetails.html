@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+label {
+ font-weight:bold;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover
+	{
+	background: #228be6 !important;
+	color: #ffffff;
+	display: block;
+	border-bottom: 3px solid #228be6 !important;
+}
+
+.nav-tabs>li.active>a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(34, 139, 230, 0);
+	border-top-color: #228be6;
+	border-width: 10px;
+	margin-left: -10px;
+}
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject ">Generator Diesel Details</span>
+			</div>
+
+		</div>
+
+		<div class="portlet-body">
+			<ul class="nav nav-tabs custom-tab-active">
+				<li class="active"><a href="#tab_1_1" 
+					data-toggle="tab"> Create</a></li>
+				<li><a href="#tab_1_2" data-toggle="tab"
+					onclick="getTableData()"> View Status </a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade active in" id="tab_1_1">
+					<div class="custom-div">
+						<form th:action="@{/scaits/saveGeneratorDiesel}" id="formId"
+							method="post" enctype="multipart/form-data">
+							<div class="row">
+								<div class="col-md-4">
+									<label>Building Name</label> <select class="form-control p-0"
+										id="building" name="building" onchange="return loadScno(); ">
+										<option value="0">Select Building</option>
+										<option th:each="buildings:${buildingList}"
+											th:value="${buildings.id}" th:text="${buildings.buildingName}"
+											th:selected="${building!=null &&  buildings.id==building}"></option>
+									</select>
+								</div>
+
+
+								<div class="col-md-4">
+									<label>Generator SNo</label> <select class="form-control"
+										name="genSNo" id="genSNo" onchange="getStock()">
+										<option value="0">Select Service</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Prev Purchase Date</label> <input
+										name="dieselPriousPurchaseDate" id="dieselPriousPurchaseDate"
+										class="form-control" readonly type="text" value="" />
+								</div>
+
+
+								<div class="col-md-4">
+									<label> Diesel Stock </label> <input name="dieselStock"
+										id="dieselStock" class="form-control " type="text" value=""
+										readonly />
+								</div>
+
+								<div class="col-md-4">
+									<label>Diesel Purchase Date</label><input
+										name="purchaseDateStr" id="purchaseDateStr"
+										class="form-control " type="text" value="" 
+										onchange="checkPurchaseDate()" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Diesel Purchase Qty </label> <input name="purchaseQty"
+										id="purchaseQty" class="form-control" type="text" value=""
+										onchange="sumData()" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Amount </label><input name="amount" id="amount"
+										class="form-control " type="text" value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Current Diesel Qty </label><input name="currentQty"
+										id="currentQty" class="form-control " type="text" value=""
+										readonly />
+								</div>
+
+								<div class="col-md-4">
+									<label>Remarks </label><input name="remarks" id="remarks"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control " type="text" value="" />
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="tab_1_2">
+					<div th:replace="electricity/monthlyEleConDetailsInnerPage.html"></div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet-footer">
+			<div class="row" id="button">
+				<div class="col-md-12">
+					<button type="button" class="btn-pri" onClick="saveGeneratorDiesel()">Insert</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn-pri" onclick="resetFields()">Reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script
+		src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+		type="text/javascript"></script>
+	<script type="text/javascript">
+	   $(document).ready(function() {
+           $("a").click(function() {
+               $('#button').show();
+           });
+       });
+       $("#purchaseDateStr").datepicker({
+           format : 'dd-mm-yyyy',
+           autoclose: true
+       });
+            function loadScno() {
+                $.ajax({
+                       type : "get",
+                      url : "/scaits/getGenList",
+                      data : $("#formId").serialize(),
+                    success : function(data) {
+                        var prePopulate = JSON.parse(data);
+                        var select = $('#genSNo');
+                        select.find('option').remove();
+                        $.each(prePopulate, function(key, value) {
+                            $('<option>').val(key).text(value).appendTo(select);
+                        });
+                    }
+                });
+            }
+              function getStock() {
+                    $.ajax({
+                           type : "get",
+                          url : "/scaits/getStock",
+                          data : $("#formId").serialize(),
+                        success : function(data) {
+                            var prePopulate = JSON.parse(data);
+                                $('#dieselPriousPurchaseDate').val(prePopulate[0]);
+                                $('#dieselStock').val(prePopulate[1]);
+                        }
+                    });
+                }
+              
+              function getTableData() {
+                  pageOverlay(0);
+                  $.ajax({
+                      type : "GET",
+                      url : "/scaits/getGeneratorDeaselInfo",
+                      success : function(data) {
+                          pageOverlay(1);
+                          $('#tab_1_2').html(data);
+                           $('#button').hide();
+                      },
+                      error : function() {
+                          pageOverlay(1);
+                          alert('Error occured');
+                      }
+                  });
+              }
+              
+          function saveGeneratorDiesel() {
+            if ($('#building').val()==0) {
+                showToastr("Please select building","error");
+                $('#building').focus();
+                return false;
+            } else if ($('#genSNo').val() == "") {
+                showToastr("Please enter  Generator SNo ","error");
+                $('#genSNo').focus();
+                return false;
+            } else if ($('#dieselStock').val() == "") {
+                showToastr("Please enter  DieselStock " ,"error");
+                $('#dieselStock').focus();
+                return false;
+            } else if ($('#purchaseDateStr').val() == "") {
+                showToastr("Please enter  PurchaseDate ","error");
+                $('#purchaseDateStr').focus();
+                return false;
+            } else if ($('#purchaseQty').val() == "") {
+                showToastr("Please enter  PurchaseQty","error");
+                $('#purchaseQty').focus();
+                return false;
+            } else if ($('#amount').val() == "") {
+                showToastr("Please enter  amount","error");
+                $('#amount').focus();
+                return false;
+            } else if ($('#amount').val() == 0) {
+                showToastr("Please enter  valied amount","error");
+                $('#amount').focus();
+                return false;
+            } else if ($('#currentQty').val() =="") {
+                showToastr("Please enter  currentQty","error");
+                $('#currentQty').focus();
+                return false;
+            } else if ($('#remarks').val() =="") {
+                showToastr("Please enter  Remarks","error");
+                $('#remarks').focus();
+                return false;
+            } else if (confirm("Do you want to insert this record")) {
+                $.ajax({
+                    type : "post",
+                    url : "/scaits/saveGeneratorDiesel",
+                    data : $("#formId").serialize(),
+                    success : function(data) {
+                    	  if (data.indexOf("ERROR-") != -1) {
+                              showToastr(data, "error");
+                          } else if (data.indexOf("FEEDBACK-1") != -1) {
+                              resetFields();
+                               alert("Successfully Done!!!");
+                          }
+                      
+                          pageOverlay(1);
+                    },
+                    error : function() {
+                        alert('Error occured');
+                        pageOverlay(1);
+                    }
+                });
+            } else {
+                return false;
+            }
+        }
+                            $(document).ready(function(){
+             $("#purchaseQty").keypress(function(event){
+                var Charcode = (event.which)?event.which:event.keyCode;
+                if(Charcode >=48 && Charcode <= 57 || Charcode==8 || Charcode==9  || Charcode==46 || Charcode >=37 && Charcode <= 40) 
+                        return true;
+                    else
+                        return false;
+             });
+        });
+        $(document).ready(function(){
+             $("#amount").keypress(function(event){
+                var Charcode = (event.which)?event.which:event.keyCode;
+                if(Charcode >=48 && Charcode <= 57 || Charcode==8 || Charcode==9  || Charcode==46 || Charcode >=37 && Charcode <= 40) 
+                        return true;
+                    else
+                        return false;
+             });
+        });
+           function sumData(){
+              if($('#building').val() == 0){
+                  showToastr("Please Select Building", "error");
+                    $('#purchaseQty').val('');
+                    $('#currentQty').val('');
+                      $('#building').focus();
+                      return false;
+              }else if($('#genSNo').val() == 0){
+                  showToastr("Please Select Generator Type", "error");
+                  $('#purchaseQty').val('');
+                  $('#currentQty').val('');
+                    $('#genSNo').focus();
+                    return false;
+               }else if($('#purchaseQty').val() ==""){
+                  showToastr("Please Enter Purchase Quantity", "error");
+                  $('#currentQty').val('');
+                    $('#genSNo').focus();
+              }   else{
+                var currentQty=(parseFloat($('#purchaseQty').val())+parseFloat($('#dieselStock').val()));
+                $('#currentQty').val(currentQty);
+                }
+           }
+           function checkPurchaseDate(){
+               if($('#dieselPriousPurchaseDate').val()!=''){
+               if($('#dieselPriousPurchaseDate').val() >= $('#purchaseDateStr').val()){
+                   showToastr("PurchaseDate should grather than PriousPurchaseDate.","error");
+                     $('#purchaseDateStr').val('');
+                     $('#purchaseDateStr').focus();
+                }
+           }
+           } 
+        function  resetFields(){
+
+        	$('#building').val(0);
+        	   $('#genSNo').val(0);
+        	   $('#dieselPriousPurchaseDate').val('');
+        	   $('#dieselStock').val('');
+        	   $('#purchaseDateStr').val('');
+        	   $('#purchaseQty').val('');
+        	   $('#amount').val('');
+        	   $('#currentQty').val('');
+        	   $('#remarks').val('');
+        	
+        	
+           }
+           
+    </script>
+</body>
+
+</html>
+

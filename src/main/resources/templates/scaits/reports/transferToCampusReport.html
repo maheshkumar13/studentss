@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Transfer to Campus  Report</div>
+		</div>
+		<div class="portlet-body">
+			<div class="custom-div">
+				<form class="form-horizontal" action=" " method="post" id="formId">
+					<div class="row">
+									<div class="col-md-4">
+								<label class="control-label" for="join">Join into</label> <select
+									class="form-control" name="studyClass" id="joinIntoId"
+									onchange="return joinInto(this.value); ">
+									<option value="0">Select Join Into</option>
+									<th:block th:each="studyClass:${classList}">
+										<option th:value="${studyClass.id}"
+											th:text="${studyClass.displayName}"></option>
+									</th:block>
+								</select>
+
+							</div>
+
+		
+	<div class="col-md-4 ">
+
+							<label class="control-label  " for="year">Join year:</label> <select
+								class="form-control" name="SelectedAcademic" id="JoinYearId">
+								<option value="0">Select join year</option>
+								<th:block th:each="academicYear:${academicList}">
+									<option th:value="${academicYear.id}"
+										th:text="${academicYear.joinYear}"></option>
+								</th:block>
+							</select>
+
+						</div>
+						<div class="col-md-2">
+						<button type="button" class="btn btn-info" id="searchBtnId"
+							onclick="campusReport();">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;getReport
+						</button>
+					</div>
+						</div>
+						</form>
+						</div>
+						</div>
+						</div>
+						   <div id="studentDeatailsGridId"></div>
+						</body>
+						<script type="text/javascript">
+						function joinInto(joinInto) {
+							$.ajax({
+								type: "GET",
+								url: "/scaits/loadJoinYear",
+								data: $("#formId").serialize(),
+								success: function (data) {
+									var prePopulate = JSON.parse(data);
+									var select = $('#JoinYearId');
+									select.find('option').remove();
+									$.each(prePopulate, function (key, value) {
+										$('<option>').val(key).text(value).appendTo(select);
+									});
+									
+								}
+							});
+						}
+						
+						function campusReport() {
+							$.ajax({
+								type : "GET",
+								url : "/scaits/transferToOtherCampusReportData",
+								data : $("#formId").serialize(),
+								success : function(data) {
+									$('#studentDeatailsGridId').html('');
+									$('#studentDeatailsGridId').html(data);
+								},
+								error : function() {
+									alert('Error occured');
+									pageOverlay(1);
+								}
+							});
+						}
+
+						</script>
+						</html>
+						

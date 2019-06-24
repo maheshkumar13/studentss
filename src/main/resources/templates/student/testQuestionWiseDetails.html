@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<head>
+</head>
+<body>
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">Question Details</h3>
+		</div>
+		<div class="panel-body">
+			<div class="note note-info">
+				<div class="mt-comments">
+					<div class="mt-comment">
+						<div class="mt-comment-img">
+							<div class="questionClassSelected">
+								<i class="fa fa-check pull-right"
+									th:if="${offlineExamSummary.correct==1}" style="color: green;"></i>
+
+								<i class="fa fa-remove pull-right"
+									th:if="${offlineExamSummary.wrong==1}" style="color: red;"></i>
+								<i class="fa fa-circle pull-right" style="color: #cecece;"
+									th:if="${offlineExamSummary.unattempt==1}"></i> <span
+									th:text="${offlineExamSummary.qno}"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				th:replace="myTheme1/viewQuestions(question=${offlineExamSummary.question})"></div>
+		</div>
+	</div>
+	<div class="modal fade" id="basic" tabindex="-1" role="basic"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true"></button>
+					<h4 class="modal-title">
+						<div th:each="cat:${offlineExamSummary.question.categories}">
+
+							<div th:text="${cat.path}"></div>
+
+						</div>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div
+						th:replace="myTheme1/viewQuestions(question=${offlineExamSummary.question})"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn dark btn-outline"
+						data-dismiss="modal">Close</button>
+					<!-- <button type="button" class="btn green">Save changes</button> -->
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<style>.inmodal .modal-title {font-size: 18px; line-height: 8px;}</style>
+
+
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+  
+   var monthSelectedVal= /*[[${monthVal}]]*/;
+   var currMonthSelectedVal =/*[[${CurrentDateMonth}]]*/; 
+ /*]]>*/
+</script>
+
+<script type="text/javascript">
+	var monthName = null;
+
+	function getHrSelMonthWise(selMonthVal) {
+		
+		$
+				.ajax({
+					url : "/scaits/getHrSelMonthWiseAtdClose?monthVal="
+							+ selMonthVal + "&status=" + 4,
+					dataType : 'text',
+					success : function(data) {
+						monthName = document.getElementById("hrMonSelValId").options[document
+								.getElementById("hrMonSelValId").selectedIndex].text;
+						$('#hrSelMonthWiseDivId').html(data);
+
+					},
+					error : function() {
+						alert('Unable to load details');
+					}
+				});
+		return false;
+
+	}
+
+	$(document)
+			.ready(
+					function() {
+
+						if (monthSelectedVal != null && monthSelectedVal != ''
+								&& parseInt(monthSelectedVal) > 0) {
+							getHrSelMonthWise(monthSelectedVal);
+						} else {
+							getHrSelMonthWise(currMonthSelectedVal);
+						}
+
+					});
+
+	function getHrSelMonthAndCampusPopup(campusId, monthVal) {
+		if (monthVal == null || monthVal == '') {
+			monthVal = document.getElementById("hrMonSelValId").value;
+		}
+		$.ajax({
+			url : "/scaits/hrMonthlyEmpAttendanceClose?campusVal="
+					+ campusId + "&monthVal=" + monthVal,
+			dataType : 'text',
+			success : function(data) {
+				$('#hrSelMonthCampusPopupDataId').html(data);
+			},
+			error : function() {
+				alert('Unable to load details');
+			}
+		});
+	}
+</script>
+</head>
+<body>
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<strong>Monthly Attendance Close By HR</strong>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-xs-3" style="margin: 15px;">
+				<select id="hrMonSelValId" class="chosen-select" name="monthVal"
+					onchange="getHrSelMonthWise(this.value);">
+					<option value="0">Select Month</option>
+					<option value="1"
+						th:selected="${monthVal==1 || (monthVal==1 && CurrentDateMonth==1) || (monthVal==0 && CurrentDateMonth==1)}"
+						>JANUARY</option>
+					<option value="2"
+					th:selected="${monthVal==2 || (monthVal==2 && CurrentDateMonth==2) || (monthVal==0 && CurrentDateMonth==2)}"
+						>FEBRUARY</option>
+					<option value="3"
+					th:selected="${monthVal==3 || (monthVal==3 && CurrentDateMonth==3) || (monthVal==0 && CurrentDateMonth==3)}"
+						>MARCH</option>
+					<option value="4"
+					th:selected="${monthVal==4 || (monthVal==4 && CurrentDateMonth==4) || (monthVal==0 && CurrentDateMonth==4)}"
+						>APRIL</option>
+					<option value="5"
+					th:selected="${monthVal==5 || (monthVal==5 && CurrentDateMonth==5) || (monthVal==0 && CurrentDateMonth==5)}"
+						>MAY</option>
+					<option value="6"
+					th:selected="${monthVal==6 || (monthVal==6 && CurrentDateMonth==6) || (monthVal==0 && CurrentDateMonth==6)}"
+						>JUNE</option>
+					<option value="7"
+					th:selected="${monthVal==7 || (monthVal==7 && CurrentDateMonth==7) || (monthVal==0 && CurrentDateMonth==7)}"
+						>JULY</option>
+					<option value="8"
+					th:selected="${monthVal==8 || (monthVal==8 && CurrentDateMonth==8) || (monthVal==0 && CurrentDateMonth==8)}"
+						>AUGUST</option>
+					<option value="9"
+					th:selected="${monthVal==9 || (monthVal==9 && CurrentDateMonth==9) || (monthVal==0 && CurrentDateMonth==9)}"
+						>SEPTEMBER</option>
+					<option value="10"
+						th:selected="${monthVal==10 || (monthVal==10 && CurrentDateMonth==10) || (monthVal==0 && CurrentDateMonth==10)}">OCTOBER</option>
+					<option value="11"
+					th:selected="${monthVal==11 || (monthVal==11 && CurrentDateMonth==11) || (monthVal==0 && CurrentDateMonth==11)}"
+						>NOVEMBER</option>
+					<option value="12"
+					th:selected="${monthVal==12 || (monthVal==12 && CurrentDateMonth==12) || (monthVal==0 && CurrentDateMonth==12)}"
+						>DECEMBER</option>
+				</select>
+			</div>
+		</div>
+
+		<div id="hrSelMonthWiseDivId"></div>
+	</div>
+</div>
+<div class="modal inmodal fade" id="hrSelMonthCampusPopupId"
+	tabindex="-1" role="dialog" aria-hidden="true" >
+	<div class="modal-dialog modal-lg" >
+		<div class="modal-content">
+			<div class="modal-header" style="height: 30px;">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">Monthly Attendance Close By HR</h4>
+			</div>
+			<div class="modal-body" id="hrSelMonthCampusPopupDataId"></div>
+		</div>
+	</div>
+</div>
+</body></html>

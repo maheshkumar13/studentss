@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<script type="text/javascript">
+	var table = $("#studentDetailsTableId").DataTable();
+	table.destroy();
+	var table = $("#studentDetailsTableId").DataTable({
+		"scrollY" : "25vh",
+		"paging" : false,
+		"ordering" : false,
+		"info" : false,
+		"dom" : "frt"
+	});
+</script>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-bordered table-striped table-hover"
+				id="studentDetailsTableId">
+				<thead>
+					<tr style="background: #3598dc; color: #fff;">
+						
+						<th>SSC Number</th>
+						<th>Student Name</th>
+						<th>Parent Name</th>
+						<th>School Name</th>
+						<th>Application No</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="schoolStu,status:${schoolStudens}">
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+schoolStu.id+')'}"
+							th:text="${schoolStu.scsNo}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+schoolStu.id+')'}"
+							th:text="${schoolStu.studentFullName!=null?schoolStu.studentFullName:''}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+schoolStu.id+')'}"
+							th:text="${schoolStu.parentName!=null?schoolStu.parentName:''}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+schoolStu.id+')'}"
+							th:text="${schoolStu.sscForwardingSchoolName!=null?schoolStu.sscForwardingSchoolName:''}"></a></td>
+						<td><a
+							th:onclick="${'javascript:getAppDetails('+schoolStu.id+')'}"
+							th:text="${(schoolStu.applicationNo!=null && schoolStu.applicationNo.appNo!=null)?schoolStu.applicationNo.appNo:''}"></a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

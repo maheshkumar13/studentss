@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+
+	<div class="portlet box green">
+		<div class="portlet-title">
+			<div class="caption">Questions Statistics</div>
+		</div>
+		<!-- <div class="portlet-body" style="width: 100%;">
+
+
+			<table class="table table-bordered table-striped table-hover"
+				id="queStatTableId">
+				<thead>
+					<tr>
+						<th>S.No</th>
+						<th th:if="${queStatEntry.zoneFilter}" th:text="${'Zone'}"></th:if>
+						<th th:if="${queStatEntry.typeFilter}"
+							th:text="${'Question Type'}"></th:if>
+						<th th:if="${queStatEntry.objectiveFilter}"
+							th:text="${'Question Objective'}"></th:if>
+						<th th:if="${queStatEntry.difficultyFilter}"
+							th:text="${'Difficulty Level'}"></th:if>
+						<th th:if="${queStatEntry.timeFilter}" th:text="${'Created Time'}">
+							</th:if>
+						<th th:if="${queStatEntry.authorFilter}" th:text="${'Creator'}">
+							</th:if>
+						<th th:if="${queStatEntry.statusFilter}" th:text="${'Status'}">
+							</th:if>
+						<th th:if="${queStatEntry.referenceBookFilter}"
+							th:text="${'Reference Book'}"></th:if>
+						<th th:if="${queStatEntry.yearFilter}" th:text="${'Exam Year'}">
+							</th:if>
+						<th th:if="${queStatEntry.campusFilter}" th:text="${'Campus'}">
+							</th:if>
+						<th th:if="${queStatEntry.categoryFilter}" th:text="${'Category'}">
+							</th:if>
+						<th>Count</th>
+				</thead>
+				<tbody>
+					<tr th:each="questionStatsResult,status:${stats}">
+						<td th:text="${status.index+1}"></td>
+
+						<td th:if="${queStatEntry.zoneFilter}"
+							th:text="${questionStatsResult.zone}"></td>
+						<td th:if="${queStatEntry.typeFilter}"
+							th:text="${questionStatsResult.questionType!=null?questionStatsResult.questionType.name:''}"></td>
+						<td th:if="${queStatEntry.objectiveFilter}"
+							th:text="${questionStatsResult.questionObjective!=null?questionStatsResult.questionObjective.name:''}"></td>
+						<td th:if="${queStatEntry.difficultyFilter}"
+							th:text="${questionStatsResult.difficultyLevel!=null?questionStatsResult.difficultyLevel.name:''}"></td>
+						<td th:if="${queStatEntry.timeFilter}"
+							th:text="${#dates.format(questionStatsResult.createdTime, 'dd-MM-yyyy')}"></td>
+						<td th:if="${queStatEntry.authorFilter}"
+							th:text="${questionStatsResult.author!=null?questionStatsResult.author.loginId:''}"></td>
+						<td th:if="${queStatEntry.statusFilter}"
+							th:text="${questionStatsResult.status}"></td>
+						<td th:if="${queStatEntry.referenceBookFilter}"
+							th:text="${questionStatsResult.referenceBook!=null?questionStatsResult.referenceBook.referenceBook:''}"></td>
+						<td th:if="${queStatEntry.yearFilter}"
+							th:text="${questionStatsResult.examYear}"></td>
+						<td th:if="${queStatEntry.campusFilter}"
+							th:text="${questionStatsResult.campus}"></td>
+						<td th:if="${queStatEntry.categoryFilter}"
+							th:text="${questionStatsResult.category!=null?questionStatsResult.category.name:''}"></td>
+						<td><a th:text="${questionStatsResult.count}"
+							th:onclick="${'javascript:showSubQuestions(' +questionStatsResult.category.id +')'}"></a></td>
+
+
+
+					</tr>
+				</tbody>
+			</table>
+		</div> -->
+
+		<div class="portlet-body">
+				<div class="table-responsive">
+					<table id="catQuesTableId"
+						class="table table-bordered display nowrap" style="width: 100%">
+						<thead>
+							<tr>
+							<tr>
+								<th>S.No</th>
+						<th th:if="${queStatEntry.zoneFilter}" th:text="${'Zone'}"></th:if>
+						<th th:if="${queStatEntry.typeFilter}"
+							th:text="${'Question Type'}"></th:if>
+						<th th:if="${queStatEntry.objectiveFilter}"
+							th:text="${'Question Objective'}"></th:if>
+						<th th:if="${queStatEntry.difficultyFilter}"
+							th:text="${'Difficulty Level'}"></th:if>
+						<th th:if="${queStatEntry.timeFilter}" th:text="${'Created Time'}">
+							</th:if>
+						<th th:if="${queStatEntry.authorFilter}" th:text="${'Creator'}">
+							</th:if>
+						<th th:if="${queStatEntry.statusFilter}" th:text="${'Status'}">
+							</th:if>
+						<th th:if="${queStatEntry.referenceBookFilter}"
+							th:text="${'Reference Book'}"></th:if>
+						<th th:if="${queStatEntry.yearFilter}" th:text="${'Exam Year'}">
+							</th:if>
+						<th th:if="${queStatEntry.campusFilter}" th:text="${'Campus'}">
+							</th:if>
+						<th th:if="${queStatEntry.categoryFilter}" th:text="${'Category'}">
+							</th:if>
+						<th>Count</th>
+							</tr>
+
+						</thead>
+						<tbody id="reportTableId">
+							<tr th:each="questionStatsResult,status:${stats}">
+						<td th:text="${(pageNumber*pageSize)+(status.index+1)}"></td>
+
+						<td th:if="${queStatEntry.zoneFilter}"
+							th:text="${questionStatsResult.zone}"></td>
+						<td th:if="${queStatEntry.typeFilter}"
+							th:text="${questionStatsResult.questionType!=null?questionStatsResult.questionType.name:''}"></td>
+						<td th:if="${queStatEntry.objectiveFilter}"
+							th:text="${questionStatsResult.questionObjective!=null?questionStatsResult.questionObjective.name:''}"></td>
+						<td th:if="${queStatEntry.difficultyFilter}"
+							th:text="${questionStatsResult.difficultyLevel!=null?questionStatsResult.difficultyLevel.name:''}"></td>
+						<td th:if="${queStatEntry.timeFilter}"
+							th:text="${#dates.format(questionStatsResult.createdTime, 'dd-MM-yyyy')}"></td>
+						<td th:if="${queStatEntry.authorFilter}"
+							th:text="${questionStatsResult.author!=null?questionStatsResult.author.loginId:''}"></td>
+						<td th:if="${queStatEntry.statusFilter}"
+							th:text="${questionStatsResult.status}"></td>
+						<td th:if="${queStatEntry.referenceBookFilter}"
+							th:text="${questionStatsResult.referenceBook!=null?questionStatsResult.referenceBook.referenceBook:''}"></td>
+						<td th:if="${queStatEntry.yearFilter}"
+							th:text="${questionStatsResult.examYear}"></td>
+						<td th:if="${queStatEntry.campusFilter}"
+							th:text="${questionStatsResult.campus}"></td>
+						<td th:if="${queStatEntry.categoryFilter}"
+							th:text="${questionStatsResult.category!=null?questionStatsResult.category.name:''}"></td>
+						<td><a th:text="${questionStatsResult.count}"
+							th:onclick="${'javascript:showSubQuestions(' +questionStatsResult.category.id +')'}"></a></td>
+
+
+
+					</tr>
+						</tbody>
+
+					</table>
+				</div>
+				<div class="row">
+					<strong>Total Results:</strong><span th:text="${totalResults}"></span>
+					<ul class="pagination pull-right">
+						<li th:class="${pageNumber== 0} ? disabled"><a
+							th:onclick="@{'javascript:showReport(0)'}">First</a></li>
+						<li th:class="${pageNumber== 0} ? disabled"><a
+							th:onclick="@{${pageNumber==0}?'':'javascript:showReport('+${pageNumber-1}+')'}">Previous</a></li>
+						<li th:each="number,status:${pageNos}"
+							th:class="${(pageNumber==number)?'active':''}"><a
+							th:onclick="@{'javascript:showReport('+${number}+')'}"
+							th:text="${number+1}"></a></li>
+						<li
+							th:class="${((pageNumber==(lastPageNumber) ||pageNumber==(lastPageNumber-1) ) &&pageNumber>=10) || (pageNumber==(lastPageNumber) &&pageNumber<10 )} ? disabled"><a
+							th:onclick="@{${pageNumber<(lastPageNumber)}?'javascript:showReport('+${pageNumber+1}+')':''}">Next</a></li>
+						<li
+							th:class="${((pageNumber==(lastPageNumber) ||pageNumber==(lastPageNumber-1) ) &&pageNumber>=10) || (pageNumber==(lastPageNumber) &&pageNumber<10 )} ? disabled"><a
+							th:onclick="@{'javascript:showReport('+${lastPageNumber}+')'}">Last</a></li>
+					</ul>
+				</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#queStatTableId").DataTable({});
+			});
+		</script>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<title>Bill</title>
+<link
+	th:href="@{/assets/global/plugins/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet" type="text/css" />
+<style>
+.table-custom {
+	width: 100%;
+	font-size: 12px;
+	text-transform: uppercase
+}
+
+.table-custom td {
+	padding: 7px
+}
+
+.sign {
+	border-top: 1px solid #000;
+	padding: 5px 20px;
+	display: block;
+	margin-top: 5px
+}
+
+.sign-img {
+	max-height: 24px !important;
+}
+
+hr {
+	border-color: #000;
+	margin: 7px 0;
+}
+
+thead, td, th {
+	border-color: #000 !important
+}
+
+th {
+	border-top: 1px solid #000 !important;
+}
+
+.txtAdmit {
+	font-size: 18px;
+	font-weight: bold;
+	padding: 0 30px;
+	line-height: 35px;
+	margin: 0;
+	border: 1px solid #000;
+	border-radius: 40px;
+	margin-top: 10px;
+	margin-bottom: 30px;
+}
+
+.bold {
+	font-weight: bold
+}
+
+.line25 {
+	line-height: 20px
+}
+
+label {
+	display: inline-block;
+	max-width: 100%;
+	margin-bottom: 0 !important;
+	font-weight: 700;
+}
+
+.table {
+	font-size: 12px;
+}
+
+@media print {
+	button {
+		visibility: hidden
+	}
+	body {
+		margin: 40px 0;
+		font-size: 14px
+	}
+	@page {
+		margin: 0 40px;
+	}
+	.table-custom td {
+		padding: 5px 7px
+	}
+}
+</style>
+
+
+
+
+</head>
+
+<body>
+	<div id="customers">
+		<div class="container">
+		
+		
+		
+		<div th:each="currentReceipt,varReceiptList:${printReceiptUtilList}">
+		
+			<div class="row">
+				<div class="col-md-12">
+					
+					<div th:if="${currentReceipt.organization.id==3}">
+							<div align="center">
+								<h3><p th:text="${currentReceipt.organization.getOrganizationName()}" /></h3>
+							</div>
+						</div>
+						<div th:if="${currentReceipt.organization.id==5}">
+							<div align="center">
+								<h3><p th:text="${currentReceipt.organization.getOrganizationName()}" /></h3>
+								<h5>Sri Chaitanya Educational Institutions</h5>
+							</div>
+						</div>
+						<div th:if="${currentReceipt.organization.id==7}">
+							<div align="center">
+								<h3><p th:text="${currentReceipt.organization.getOrganizationName()}" /></h3>
+							</div>
+						</div>
+						
+						<div th:if="${(currentReceipt.organization.id!=3 && currentReceipt.organization.id!=5 && currentReceipt.organization.id!=7)}">
+							<div align="center">
+							<h3>Sri Chaitanya Educational Institutions</h3>
+								<h5><p th:text="${currentReceipt.organization.getOrganizationName()}" /></h5>
+								
+							</div>
+						</div>
+						
+						
+				</div>
+				<div class="col-md-12">
+					<div
+						style="width: 100%; height: auto; padding: 5px; margin-bottom: 10px; border-top: 1px solid #666666; border-bottom: 1px solid #666666;">
+						<label><p th:text="${'Receipt No: '+currentReceipt.preprintedReceipt}" /></label> <label class="pull-right">
+							<p th:text="${'Date: '+#dates.format(new java.util.Date(), 'dd-MM-yyyy hh:mm:ss')}"></p></label>
+					</div>
+				</div>
+
+
+				<div class="clearfix" style="margin-bottom: 10px"></div>
+				<div class="col-xs-6">
+					<table class="table-custom">
+						<tr>
+							<td style="width: 35%">Admn.No</td>
+							<td style="width: 5%">:</td>
+							<td style="width: 60%"><p th:text="${currentReceipt.application.appNo}"></p></td>
+						</tr>
+						<tr>
+							<td>City/State</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.proposedCampus.city.cityName+'/'+currentReceipt.proposedCampus.state.stateName}"></p></td>
+						</tr>
+						<tr>
+							<td>Student Name</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.application.getStudentSurname().substring(0,1)+' '+currentReceipt.application.studentName}"></p></td>
+						</tr>
+						<tr>
+							<td>Course</td>
+							<td>:</td>
+							<td>
+								<p th:if="${currentReceipt.chequeDDNO==null}" th:text="${currentReceipt.courseDisplayName}"></p>
+								<p th:if="${currentReceipt.chequeDDNO!=null}" th:text="${currentReceipt.course.courseTrackName}"></p>
+							</td>
+						</tr>
+						<tr>
+							<td>Resi/Days</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.proposedCampus.campusType}"></p></td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-xs-6">
+					<table class="table-custom">
+						<tr>
+							<td style="width: 30%">Campus Name</td>
+							<td style="width: 10%">:</td>
+							<td style="width: 60%"><p th:text="${currentReceipt.proposedCampus.campusName}"></p></td>
+						</tr>
+						<tr>
+							<td>S/o./D/o.</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.application.parentName}"></p></td>
+						</tr>
+						<tr>
+							<td>Group</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.course.groupName}"></p></td>
+						</tr>
+						<tr>
+							<td>Medium</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.course.medium}"></p></td>
+						</tr>
+						<tr>
+							<td>Sex</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.application.gender}"></p></td>
+						</tr>
+						<tr th:if="${currentReceipt.proposedCampus.Id!=currentReceipt.paidCampus.Id}">
+							<td>Paid Campus</td>
+							<td>:</td>
+							<td><p th:text="${currentReceipt.paidCampus.campusName}"></p></td>
+						</tr>
+						
+					</table>
+				</div>
+
+				<div class="clearfix" style="margin-bottom: 20px"></div>
+
+				<div class="col-md-12" th:if="${currentReceipt.stateGSTCode==null}">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Description of Product/Service</th>
+								<th>Pay Mode</th>
+								<th class="text-right">Total Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><p th:text="${currentReceipt.generatedReceiptNO+'/'+currentReceipt.subheadCode}"></p></td>
+								<td><p th:text="${currentReceipt.payMode}"></p></td>
+								<td class="text-right"><p th:text="${#numbers.formatDecimal(currentReceipt.amount, 0, 'DEFAULT', 2, 'DEFAULT')}"></p></td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="2" class="bold">Total Amount</td>
+								<td class="text-right bold"><p th:text="${#numbers.formatDecimal(currentReceipt.amount, 0, 'DEFAULT', 2, 'DEFAULT')}"></p></td>
+							</tr>
+							<tr>
+								<td colspan="3" class="text-center"><p th:text="${'Total Advance Received (In words) - '+currentReceipt.amountinwords}"></p></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				
+				<div class="col-md-12" th:if="${currentReceipt.stateGSTCode!=null}">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Description of Product/Service</th>
+								<th>Pay Mode</th>
+								<th class="text-right">Total Amount</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><p th:text="${currentReceipt.generatedReceiptNO+'/'+currentReceipt.subheadCode}"></p></td>
+								<td><p th:text="${currentReceipt.payMode}"></p></td>
+								<td class="text-right"><p th:text="${#numbers.formatDecimal(currentReceipt.amount, 0, 'DEFAULT', 2, 'DEFAULT')}"></p></td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="2" class="bold">Total Amount</td>
+								<td class="text-right bold"><p th:text="${#numbers.formatDecimal(currentReceipt.amount, 0, 'DEFAULT', 2, 'DEFAULT')}"></p></td>
+							</tr>
+							<tr>
+								<td colspan="3" class="text-center"><p th:text="${'Total Advance Received (In words) - '+currentReceipt.amountinwords}"></p></td>
+							</tr>
+							<tr th:if="${currentReceipt.chequeDDNO==null && currentReceipt.acknowledgementReceipt!=null}">
+								<td colspan="3" class="text-center"><p th:text="${'Acknowledgement receipt no :  '+currentReceipt.acknowledgementReceipt+'(Chq/DD/Card No :'+currentReceipt.acknowledgementChequeDDCardNo+')'}"></p></td>
+							</tr>
+							<tr th:if="${currentReceipt.chequeDDNO!=null}">
+							<td colspan="3" class="text-center"><p th:text="${'Fee receipt will be issued on realization to '+currentReceipt.payMode}"></p></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+
+				
+
+			</div>
+			
+			<div th:if="${varReceiptList.index==0}">
+			<br/>
+				<br/>
+				<br/>
+				<br/>
+				<br/>
+				</div>
+			</div>
+			
+			
+			<button type="button" class="btn btn-default printMe">PRINT</button>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</div>
+	</div>
+
+	<script th:src="@{/assets/global/plugins/jquery.min.js}"
+		type="text/javascript"></script>
+	<script
+		th:src="@{/assets/global/plugins/bootstrap/js/bootstrap.min.js}"
+		type="text/javascript"></script>
+	<script>
+$('.printMe').click(function(){
+      window.print();
+});
+</script>
+</body>
+</html>

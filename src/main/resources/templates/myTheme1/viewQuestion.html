@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="portlet light portlet-fit bordered calendar">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class=" icon-book-open font-blue"></i> <span
+							class="caption-subject font-blue sbold ">Question details</span>
+					</div>
+					<div class="pull-right">
+						<button class="btn btn-circle btn-info" type="button"
+							onclick="printDiv()" th:if="${errorMsg==null}">
+							<i class="fa fa-print" style="margin-right: 7px"></i>Print
+						</button>
+						<button class="btn btn-circle btn-default" type="button">
+							<i class="fa fa-external-link" style="margin-right: 7px"></i>Export
+						</button>
+						<button class="btn btn-circle btn-default" type="button"
+							th:id="${url}" onclick="showPage(this.id)">
+							<i class="glyphicon glyphicon-arrow-left"
+								style="margin-right: 7px"></i>Back
+						</button>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="row">
+						<div class="col-md-4">
+							<table class="table table-striped">
+								<tbody>
+									<tr>
+										<td style="width: 30%">Question type</td>
+										<td style="width: 5%">:</td>
+										<td
+											th:text="${question.questionType!=null?question.questionType.name:''}"></td>
+									</tr>
+									<tr>
+										<td>Question ID</td>
+										<td>:</td>
+										<td th:text="${question.id}"></td>
+									</tr>
+									<tr>
+										<td>Question Class</td>
+										<td>:</td>
+										<td
+											th:text="${question.queClass!=null?question.queClass.className:''}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-4">
+							<table class="table table-striped">
+								<tbody>
+									<tr>
+										<td style="width: 30%">Question Objective</td>
+										<td style="width: 5%">:</td>
+										<td
+											th:text="${question.questionObjective!=null?question.questionObjective.name:''}"></td>
+									</tr>
+									<tr>
+										<td>Question Creator</td>
+										<td>:</td>
+										<td
+											th:text="${question.author!=null?question.author.loginId:''}"></td>
+									</tr>
+									<tr>
+										<td>Difficulty Level</td>
+										<td>:</td>
+										<td
+											th:text="${question.difficultyLevel!=null?question.difficultyLevel.name:''}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-4">
+							<table class="table table-striped">
+								<tbody>
+									<tr>
+										<td style="width: 30%">Status</td>
+										<td style="width: 5%">:</td>
+										<td th:text="${question.status!=null?question.status:''}"></td>
+									</tr>
+									<tr>
+										<td>Keywords</td>
+										<td>:</td>
+										<td th:text="${question.keywords}"></td>
+									</tr>
+									<tr>
+										<td>Reference Book</td>
+										<td>:</td>
+										<td
+											th:text="${question.referenceBook!=null?question.referenceBook.referenceBook:''}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="clearfix"></div>
+						<hr>
+						<div class="clearfix"></div>
+						<div class="col-md-12">
+							<div id="printDivId">
+								<div th:if="${question.questionType.id==1}">
+									<th:block
+										th:replace="myTheme1/viewQuestions/viewSingleAnswer(question=${question})"></th:block>
+								</div>
+								<div th:if="${question.questionType.id==2}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewMoreThanOneAnswer(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==3}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewIntegerAnswer(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==4}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewAssertionReason(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==5}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewStatementIStatementII(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==6}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewAscendingDescending(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==7}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewIncreasingDecreasing(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==8}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewMatrix2Column(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==9}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewMatrix3Column(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==10}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewSubjective(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==11}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewComprehensive(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==12}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewReasoning(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==13}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewReasoningComprehensive(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==14}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewFigureFindingReason(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==15}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewSubjectiveVerb(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==16}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewReasoningNewChoicesComprehensive(question=${question})"></div>
+								</div>
+
+								<div th:if="${question.questionType.id==17}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewModifiedStatementIStatementII(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==18}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewIPESubjectiveVerb(question=${question})"></div>
+								</div>
+
+								<div th:if="${question.questionType.id==19}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewQuestionTextAssertionReason(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==20}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewModifiedStatementIStatementIIStatementIII(question=${question})"></div>
+								</div>
+
+								<div th:if="${question.questionType.id==21}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewModifiedQuestionStatementIStatementIIStatementIII(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==22}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewTrueFalse(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==23}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewYesNo(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==24}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewFillInTheBlank(question=${question})"></div>
+								</div>
+								<div th:if="${question.questionType.id==25}">
+									<div
+										th:replace="myTheme1/viewQuestions/viewAssertionReasonfalse(question=${question})"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			function printDiv() {
+				var divToPrint = document.getElementById('printDivId');
+				var newWin = window.open('', 'Print-Window');
+				newWin.document.open();
+				newWin.document.write('<html><body onload="window.print()">'
+						+ divToPrint.innerHTML + '</body></html>');
+				newWin.document.close();
+				setTimeout(function() {
+					newWin.close();
+				}, 10);
+			}
+		</script>
+	</th:block>
+</body>
+</html>

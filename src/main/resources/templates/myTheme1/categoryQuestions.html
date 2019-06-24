@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="col-md-9">
+		<div class="panel panel-primary">
+			<div class="panel-heading" th:text="${category.name+' Questions'}"></div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped table-hover"
+						id="catQuesTableId">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Question Type</th>
+								<th>Question Text</th>
+								<th>Difficulty</th>
+								<th>Question Class</th>
+								<th>Created Time</th>
+								<th>Author</th>
+								<th>Keywords</th>
+								<th>Objective</th>
+								<th>Status</th>
+								<th>Video</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="question,status:${categoryQuestions}">
+								<td><a
+									th:href="${'javascript:editQuestion('+question.id+')'}"><i
+										class="fa fa-edit"></i></a><span th:text="${question.id}"></span></td>
+								<td th:text="${question.questionType.name}"></td>
+								<td th:utext="${(question.questionType.name eq 'Assertion Reason' || question.questionType.name eq 'Statement I,Statement II')?question.assertionText:(question.questionType.name eq 'Comprehensive'?question.paragraphText:(question.questionText!=null?question.questionText:''))}"></td>
+								<td th:text="${question.difficultyLevel!=null?question.difficultyLevel.name:''}"></td>
+								<td th:text="${question.queClass.className}"></td>
+								<td
+									th:text="${question.createdTime!=null?#dates.format(question.createdTime, 'dd-MM-yyyy'):''}"></td>
+								<td th:text="${question.author.loginId}"></td>
+								<td th:text="${question.keywords}"></td>
+								<td th:text="${question.questionObjective.name}"></td>
+								<td th:text="${question.status}"></td>
+								<td><input type="checkbox"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#catQuesTableId").DataTable();
+			});
+
+			function editQuestion(question) {
+				showPage('/qb/viewQuestion?q=' + question+"&url=/qb/questionList",false);
+			}
+		</script>
+	</th:block>
+</body>
+</html>

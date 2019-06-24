@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light card-1 portlet-fit portlet-form bordered">
+		<div class="portlet-title">
+			<div class="caption">Exam Schedules</div>
+		</div>
+		<form action="#" id="examReportFormId">
+			<input type="hidden" name="examScheduleValId" id="examScheduleValId">
+		</form>
+		<div class="portlet-body" style="padding: 20px">
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN EXAMPLE TABLE PORTLET-->
+					<table class="table table-striped table-bordered table-hover"
+						id="schTabId">
+						<thead>
+							<tr>
+								<th>Exam Type</th>
+								<th>Exam Name</th>
+								<th>Exam Time</th>
+								<th>Result</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="examSchedule,examScheduleStatus:${examScheduleList}">
+								<td th:text="${examSchedule.pattern.examType.examTypeName}"></td>
+								<td th:text="${examSchedule.examName}"></td>
+								<td th:text="${examSchedule.duration+' Minutes'}"></td>
+								<td style="white-space: nowrap;"><button
+										class="btn btn-pri-sm"
+										th:onclick="${'javascript:downloadExamMarksReport('+examSchedule.id+')'}">Marks</button>
+									<button class="btn btn-sec-sm"
+										th:onclick="${'javascript:downloadExamReport('+examSchedule.id+')'}">Response</button>
+									<button class="btn btn-oth-sm"
+										th:onclick="${'javascript:downloadDatFiles('+examSchedule.id+')'}">Dat
+										files</button>
+								<button
+										class="btn btn-oth-sm"
+										th:onclick="${'javascript:downloadSubjectWiseMarksReport('+examSchedule.id+')'}">Subject wise Marks</button>		
+										</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#schTabId").DataTable();
+			});
+
+			function downloadExamMarksReport(scheduleId) {
+				var serverurl = "/reports/examSubjectResult";
+				$('#examScheduleValId').val(scheduleId);
+				document.getElementById("examReportFormId").action = serverurl
+				document.getElementById("examReportFormId").submit();
+			}
+			
+			function downloadSubjectWiseMarksReport(scheduleId) {
+				var serverurl = "/reports/examSubjectwiseResult";
+				$('#examScheduleValId').val(scheduleId);
+				document.getElementById("examReportFormId").action = serverurl
+				document.getElementById("examReportFormId").submit();
+			}
+			function downloadExamReport(scheduleId) {
+				var serverurl = "/reports/examResult";
+				$('#examScheduleValId').val(scheduleId);
+				document.getElementById("examReportFormId").action = serverurl
+				document.getElementById("examReportFormId").submit();
+			}
+			function downloadDatFiles(scheduleId) {
+				var serverurl = "/reports/examScheduleDatFiles";
+				$('#examScheduleValId').val(scheduleId);
+				document.getElementById("examReportFormId").action = serverurl
+				document.getElementById("examReportFormId").submit();
+			}
+		</script>
+	</th:block>
+</body>
+</html>

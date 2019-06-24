@@ -1,0 +1,3206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<link
+	href="../assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css"
+	rel="stylesheet" type="text/css" />
+<script
+	src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+	type="text/javascript"></script>
+
+
+<link href="../assets/global/plugins/select2/css/select2.min.css"
+	rel="stylesheet" type="text/css" />
+<link
+	href="../assets/global/plugins/select2/css/select2-bootstrap.min.css"
+	rel="stylesheet" type="text/css" />
+<!-- END PAGE LEVEL PLUGINS -->
+
+<script th:inline="javascript">
+
+      /*<![CDATA[*/
+	    
+         var appYr= /*[[${appVal.appYear}]]*/;
+         var appAcademic= /*[[${academic.id}]]*/;
+         var appStatus=/*[[${appVal.appStatus}]]*/;
+         var appNo=/*[[${appVal.appNo}]]*/;
+         var appMerit=/*[[${appVal.concessionReason!=null?appVal.concessionReason.reason:''}]]*/;
+         var appBasedOn=/*[[${appVal.basedOn}]]*/;
+         var appType=/*[[${appVal.appType}]]*/;
+         
+         var appSscHtNo=/*[[${appVal.sscHtNo}]]*/;
+         var appSscData=/*[[${appVal.sscData!=null?appVal.sscData.id:''}]]*/;
+         
+         var appAmountPaymentMode=/*[[${appAmountPaymentMode}]]*/;
+         var appFeePaymentMode=/*[[${appFeePaymentMode}]]*/;
+         var campusType=/*[[${appVal.proposedCampus!=null?appVal.proposedCampus.studyType:''}]]*/;
+         
+         var  sscAdmNumber=/*[[${appVal.schAdmNo!=null?appVal.schAdmNo:''}]]*/;
+         
+         var concessionGivenBy=/*[[${appVal.appType!=null?appVal.appType:''}]]*/;
+         var amountMandatory=/*[[${appVal.amountMandatory}]]*/;
+        var applicationStatus=/*[[${appVal.transType}]]*/;
+        
+        
+        var studentSscHtNo=/*[[${appVal.sscHtNo}]]*/;
+        var studentName=/*[[${appVal.studentName}]]*/;
+        
+        var secondPayment=/*[[${(appVal.payments!=null && appVal.payments.size()>0)?appVal.payments.size():0}]]*/;
+        
+        var empCampusCardPayment=/*[[${currentUser.campus.cardPayment}]]*/;
+         
+
+       /*]]>*/
+</script>
+
+<script type="text/javascript">
+
+
+$("#campusTypeid").val(campusType);
+ 
+ var selectedClass=1;
+ var courseOrgConcession=0;
+ var totalDDAmount=0;
+ var totalCardAmount=0;
+ 
+ var validationChk=true;
+ function validateTab(tabId) {
+		if (tabId == 1) {
+			return verifyTab1();
+			document.getElementById("tabId2").className ="tab-pane active";
+			document.getElementById("tab2").className ="active";
+		} else if (tabId == 2) {
+			return verifyTab2();
+			document.getElementById("tabId3").className ="tab-pane active";
+			document.getElementById("tab3").className ="active";
+		} else if (tabId == 3) {
+			return verifyTab3();
+			document.getElementById("tabId4").className ="tab-pane active";
+			document.getElementById("tab4").className ="active";
+		} else if (tabId == 4) {
+			return verifyTab4();
+			document.getElementById("tabId5").className ="tab-pane active";
+			document.getElementById("tab5").className ="active";
+		} else if (tabId == 5) {
+			return verifyTab5();
+			document.getElementById("tabId6").className ="tab-pane active";
+			document.getElementById("tab6").className ="active";
+		} else if (tabId == 6) {
+			return verifyTab6();
+		}
+	}
+ function validateSubmit(tabId) {
+		if (tabId == 1) {
+			return verifyTab1();
+		} else if (tabId == 2) {
+			return verifyTab2();
+		} else if (tabId == 3) {
+			return verifyTab3();
+		} else if (tabId == 4) {
+			return verifyTab4();
+		} else if (tabId == 5) {
+			return verifyTab5();
+		} else if (tabId == 6) {
+			return verifyTab6();
+		}
+	}
+ 
+ if(concessionGivenBy=="CAMP"){
+	 	 sb=document.getElementById("txt1ndCon").value.trim()+document.getElementById("txt2ndCon").value.trim()+document.getElementById("txtdescriptionreason").value.trim()+document.getElementById("autoEmployeeId").value.trim()+document.getElementById("emplyee_result").value.trim();
+} else if(concessionGivenBy=="REG"){
+	 	sb=document.getElementById("txt1ndCon").value.trim()+document.getElementById("txt2ndCon").value.trim()+document.getElementById("txtdescriptionreason").value.trim()+document.getElementById("autoEmployeeId").value.trim()+document.getElementById("emplyee_result").value.trim()+document.getElementById("autoEmployeeId1").value.trim()+document.getElementById("emplyee_result1").value.trim();
+}
+
+	function verifyTab1() {
+		
+		if (document.getElementById("otherSscId").checked == true && document.getElementById("txtschoolhtnumber").value== "") {
+            alert("Enter SSC hallticketno.");
+            document.getElementById('txtschoolhtnumber').focus();
+            return false;
+        } 
+	   else if (document.getElementById("sscId")!=null && !sscAdmNumber.startsWith("SCS") && document.getElementById("sscId").checked &&  document.getElementById("hall_result")!=null && document.getElementById("hall_result").value== "") {
+            alert("Please Enter valid SSC hallticketno.");
+            document.getElementById('txtsschtnumber').focus();
+            return false;
+        }else if (appYr=="2019" && $("#aadharCardId").val() == "") {
+			alert("Please Enter Aadhar Card Number");
+			$("#aadharCardId").focus();
+			return false;
+	    }else if ($("#aadharCardId").val() != "" && $("#aadharCardId").val().length<12) {
+		alert("Please Enter Valid Aadhar Card Number");
+		$("#aadharCardId").focus();
+		return false;
+	    } else if ($("#dobId").val() == "") {
+			alert("Please Enter Dob");
+			$("#dobId").focus();
+			return false;
+		} else if ($("#surnameId").val() == "") {
+			alert("Please Enter Surname");
+			$("#surnameId").focus();
+			return false;
+		} else if ($("#studentNameId").val() == "") {
+			alert("Please Enter Student Name");
+			$("#studentNameId").focus();
+			return false;
+		} else if ($("#parentNameId").val() == "") {
+			alert("Please Enter Parent Name");
+			$("#parentNameId").focus();
+			return false;
+		}else if(document.getElementById('rbMale').checked == false && document.getElementById('rbFeMale').checked ==false ){
+       	 alert("Please select gender");
+         document.getElementById('rbMale').focus();
+         return false;
+    	 
+     }else if(document.getElementById('rbMale').checked == "true"){
+		 if($("#campusTypeid").val()=='F'){
+			 alert("This campus allows only female.");
+			 document.getElementById('rbMale').focus();
+			 return false;
+		 }
+		 
+	 }else if(document.getElementById('rbFeMale').checked == "true"){
+		 if($("#campusTypeid").val()=='M'){
+			 alert("This campus allows only male.");
+			 document.getElementById('rbFeMale').focus();
+			 return false;
+		 }
+		 
+	 } else if(document.getElementById('rbMobile').checked == false && document.getElementById('rbPhone').checked ==false ){
+    	 alert("Please select Phone type");
+         document.getElementById('rbPhone').focus();
+         return false;
+    	 
+     } else if ($("#phoneNumberId").val() == "") {
+			alert("Please Enter Phone Number");
+			$("#phoneNumberId").focus();
+			return false;
+		}else if(document.getElementById('rbMobile').checked == true &&
+       		 (( document.getElementById("phoneNumberId").value).length >10 || (document.getElementById("phoneNumberId").value).length <10)) 
+        {
+              alert("Please enter valid phoneno .");
+              document.getElementById('phoneNumberId').focus();
+              return false;
+        }else {
+			return true;
+		}
+		
+	}
+	function verifyTab2() {
+		
+		
+		
+		if ($("select#joinedIntoId").val()==0) {
+			alert("Please Select Proposed Campus");
+			$("#joinedIntoId").focus();
+			return false;
+		}else if ($("select#ddlJoinedClass").val()==0) {
+			alert("Please Select Joined Class");
+			$("#ddlJoinedClass").focus();
+			return false;
+		}else if ($("select#coursesListId").val()==0) {
+			alert("Please select course name");
+			$("#coursesListId").focus();
+			return false;
+		}else if ($("select#ddlBatch").val()==0) {
+			alert("Please select Batch name");
+			$("#ddlBatch").focus();
+			return false;
+		}else if (document.getElementById("txtadditionalCoursefee").value != "" && document.getElementById('txtCourseFee').value!="" && 
+       		 parseInt(document.getElementById("txtadditionalCoursefee").value)>parseInt(document.getElementById("txtCourseFee").value)) {
+       	 alert("Please Enter Valid Additional Course Fee Amount");
+            document.getElementById('txtadditionalCoursefee').focus();
+            return false;
+        }
+		
+		if(document.getElementById('rbMale').checked == true && $("#campusTypeid").val()!="BOTH"){
+				 if($("#rbMale").val()!=$("#campusTypeid").val()){
+					 alert("This campus allows only female.");
+					 document.getElementById('rbMale').focus();
+					 return false;
+				 }
+				 
+			 }
+		
+		if(document.getElementById('rbFeMale').checked == true && $("#campusTypeid").val()!="BOTH"){
+				 if($("#rbFeMale").val()!=$("#campusTypeid").val()){
+					 alert("This campus allows only male.");
+					 document.getElementById('rbFeMale').focus();
+					 return false;
+				 }
+			 }
+		
+		if(document.getElementById('messTypeId')!=null && document.getElementById('messTypeId').style.visibility=="visible" && (!document.getElementById("vegId").checked && !document.getElementById("nonVegId").checked)){
+			 alert("Please Check Mess Type(Veg or Non Veg).");
+			 document.getElementById('vegId').focus();
+			 return false;
+		 }else {
+			return true;
+		}
+	}
+	function verifyTab3() {
+		if ($("select#ddlSchoolStatesid").val()==0) {
+			alert("please select school State");
+			$("#ddlSchoolStatesid").focus();
+			return false;
+		}else if ($("select#ddlDistrictid").val()==0) {
+			alert("Please Select school district");
+			$("#ddlDistrictid").focus();
+			return false;
+		}else if ($("select#ddlSyllabusid").val()==0) {
+			alert("please select school Type");
+			$("#ddlSyllabusid").focus();
+			return false;
+		} else if (document.getElementById("autoSchoolId").value == "") {
+            alert("please select schoolname.");
+            document.getElementById('autoSchoolId').focus();
+            return false;
+        } else if (document.getElementById("newSchoolId").value == "" && document.getElementById("autoSchoolId").value != "") {
+            alert("please select valid schoolname.");
+            document.getElementById('autoSchoolId').focus();
+            return false;
+        }else {
+			return true;
+		}
+	}
+	
+	function verifyTab4() {
+		var e = document.getElementById("ddlreason");  
+		 var selectedReasonVal = e.options[e.selectedIndex].text;
+		 
+		 var selectedBasedOnVal="";
+		 if(document.getElementById("basedOnId")!=null){
+			 selectedBasedOnVal = document.getElementById("basedOnId").options[document.getElementById("basedOnId").selectedIndex].text; 
+		 }
+		 
+		 if(concessionGivenBy=="CAMP"){
+			 	 sb=document.getElementById("txt1ndCon").value.trim()+document.getElementById("txt2ndCon").value.trim()+document.getElementById("txtdescriptionreason").value.trim()+document.getElementById("autoEmployeeId").value.trim()+document.getElementById("emplyee_result").value.trim();
+		} else if(concessionGivenBy=="REG"){
+			 	sb=document.getElementById("txt1ndCon").value.trim()+document.getElementById("txt2ndCon").value.trim()+document.getElementById("txtdescriptionreason").value.trim()+document.getElementById("autoEmployeeId").value.trim()+document.getElementById("emplyee_result").value.trim()+document.getElementById("autoEmployeeId1").value.trim()+document.getElementById("emplyee_result1").value.trim();
+		}
+		
+		if(document.getElementById("txt1ndCon").value=="" && document.getElementById("txt2ndCon").value=="" && sb!=""   ){
+            alert("Enter 1st year concession.");
+            document.getElementById('txt1ndCon').focus();
+            return false;
+        } else if (document.getElementById("ddlreason").selectedIndex != 0 && sb=="") {
+       	 alert("Enter 1st year concession.");
+            document.getElementById('txt1ndCon').focus();
+            return false;
+        } else if (document.getElementById("txtdescriptionreason").value != "" && sb=="") {
+       	 alert("Enter 1st year concession.");
+            document.getElementById('txt1ndCon').focus();
+            return false;
+        }  else if(SumNumericvalues(document.getElementById("txt1ndCon").value)==false){
+            alert("Enter 1st year concession.");
+            document.getElementById('txt1ndCon').focus();
+            return false;
+        } else if (concessionGivenBy=="CAMP" && document.getElementById("txt1ndCon").value!="" && document.getElementById("txtGivenBy").value== "") {
+            alert("Please select given by.");
+            document.getElementById('txtGivenBy').focus();
+            return false;
+        } else if ( concessionGivenBy=="REG" && document.getElementById("txt1ndCon").value!="" && document.getElementById("autoEmployeeId1").value== "") {
+            alert("Please select given by.");
+            document.getElementById('autoEmployeeId1').focus();
+            return false;
+        } else if (concessionGivenBy=="REG" && document.getElementById("emplyee_result1").value == "" && document.getElementById("txt1ndCon").value !="" ) {
+            alert("please select employee name.");
+            document.getElementById('autoEmployeeId1').focus();
+            return false;
+        } else if (document.getElementById("txt1ndCon").value !="" && document.getElementById("autoEmployeeId").value== "") {
+            alert("Please select authorized by.");
+            document.getElementById('autoEmployeeId').focus();
+            return false;
+        } else if (document.getElementById("emplyee_result").value == "" && document.getElementById("txt1ndCon").value !="" ) {
+            alert("please select employee name.");
+            document.getElementById('autoEmployeeId').focus();
+            return false;
+        } else if (document.getElementById("txt1ndCon").value !="" && document.getElementById("ddlreason").selectedIndex == 0) {
+            alert("Please select the reason.");
+            document.getElementById('ddlreason').focus();
+            return false;
+        } else if (selectedReasonVal=="MERIT" && document.getElementById("basedOnId").selectedIndex == 0 ) {
+       	 alert("Please select Merit reason.");
+            document.getElementById('basedOnId').focus();
+            return false;
+        }else if (selectedReasonVal=="MERIT" && selectedBasedOnVal=="X_MARKS" && document.getElementById("tenthMarksId").value == "" ) {
+       	 alert("Please Enter Tenth Marks");
+            document.getElementById('talentTestMarksId').focus();
+            return false;
+        }else if (selectedReasonVal=="MERIT" && selectedBasedOnVal=="ADMISSION_TEST" && document.getElementById("talentTestMarksId").value == "" ) {
+          	 alert("Please Enter TalentTestMarks");
+             document.getElementById('talentTestMarksId').focus();
+             return false;
+         }else if (selectedReasonVal=="STAFF" && document.getElementById("emplyee_result4").value == "" ) {
+       	 alert("Please select Referral Employee");
+            document.getElementById('autoRefeEmployeeId').focus();
+            return false;
+        }else if (document.getElementById("txt1ndCon").value !="" && document.getElementById("txtdescriptionreason").value == "") {
+            alert("Please enter the description.");
+            document.getElementById('txtdescriptionreason').focus();
+            return false;
+        } else if (SumNumericvalues(document.getElementById("txt2ndCon").value)==false) {
+            alert("Enter 2nd year concession.");
+            document.getElementById('txt2ndCon').focus();
+            return false;
+        } else if ( concessionGivenBy=="CAMP" && document.getElementById("txt2ndCon").value!="" && document.getElementById("txtGivenBy").value== "") {
+            alert("Please select given by.");
+            document.getElementById('txtGivenBy').focus();
+            return false;
+        } else if ( concessionGivenBy=="REG" && document.getElementById("txt2ndCon").value!="" && document.getElementById("autoEmployeeId1").value== "") {
+            alert("Please select given by.");
+            document.getElementById('txtGivenBy').focus();
+            return false;
+        } else if (concessionGivenBy=="REG" && document.getElementById("emplyee_result1").value == "" && document.getElementById("txt2ndCon").value !="" ) {
+            alert("please select employee name.");
+            document.getElementById('autoEmployeeId1').focus();
+            return false;
+        } else if (document.getElementById("txt2ndCon").value !="" && document.getElementById("autoEmployeeId").value=="") {
+            alert("please select authorized by.");
+            document.getElementById('autoEmployeeId').focus();
+            return false;
+        } else if (document.getElementById("txt2ndCon").value !="" && document.getElementById("ddlreason").selectedIndex == 0) {
+            alert("Please select the reason.");
+            document.getElementById('ddlreason').focus();
+            return false;
+        } else if (document.getElementById("txt2ndCon").value !="" && document.getElementById("txtdescriptionreason").value == "") {
+       	 alert("Please enter the description.");
+            document.getElementById('txtdescriptionreason').focus();
+            return false;
+        } else if (document.getElementById("emplyee_result").value == "" && document.getElementById("txt2ndCon").value !="" ) {
+            alert("please select employee name.");
+            document.getElementById('autoEmployeeId').focus();
+            return false;
+        }else {
+			return true;
+		}
+	}
+	
+	function verifyTab5() {
+		 if (document.getElementById("addressDnoId").value== "") {
+             alert("Enter Door number.");
+             document.getElementById('addressDnoId').focus();
+             return false;
+         } else if (document.getElementById("txtcommStreet").value== "") {
+             alert("Enter Street.");
+             document.getElementById('txtcommStreet').focus();
+             return false;
+         } else if (document.getElementById("txtcommLand").value== "") {
+             alert("Enter Landmark.");
+             document.getElementById('txtcommLand').focus();
+             return false;
+         } else if (document.getElementById("txtcommArea").value== "") {
+             alert("Enter Area.");
+             document.getElementById('txtcommArea').focus();
+             return false;
+         } else if (document.getElementById("address1_result").value == "") {
+  			alert("Please Select Pincode");
+  			document.getElementById('txtpinCode').focus();
+  			return false;
+  		} else if (document.getElementById("txtpinCode").value == "") {
+  			alert("Please Select Pincode");
+  			document.getElementById('txtpinCode').focus();
+  			return false;
+  		} else if (document.getElementById("ddlCityDistName").value == "") {
+        	 alert("Please Select Valid Pincode");
+             document.getElementById('ddlCityDistName').focus();
+             return false;
+         }else if(document.getElementById("pincodeState").value!="" && document.getElementById("ddlMandalName").selectedIndex == 0){
+        	 alert("Please Select Mandal");
+             document.getElementById('ddlMandalName').focus();
+             return false;
+	   	 }else  if (document.getElementById("pincodeState").value!="" && document.getElementById("ddlCityName").selectedIndex == 0) {
+       	     alert("Please Select City Name");
+             document.getElementById('ddlCityName').focus();
+             return false;
+  		}else {
+			return true;
+		}
+	}
+	function verifyTab6() {
+		
+		var paydetails=document.getElementById("txtPROPrePrintedReceiptId").value.trim()+document.getElementById("dtpPROPaymentDateId").value.trim()+document.getElementById("txtPROAmountId").value.trim();
+		 if ((paydetails!= "" && (amountMandatory=="0" || amountMandatory=="6") )|| (applicationStatus.search('BK') && ((amountMandatory=="0" || amountMandatory=="6") || ((amountMandatory=="1" || amountMandatory=="7") 
+				 && document.getElementById("appFeechkid").checked==false)) && !(document.getElementById("txtPROPrePrintedReceiptId").value== ""
+   		  && document.getElementById("txtPROAmountId").value=="" && document.getElementById("dtpPROPaymentDateId").value== ""))) {
+            if (document.getElementById("txtPROAmountId").value== "") {
+              	alert("Enter Amount.");
+              	document.getElementById('txtPROAmountId').focus();
+              	return false;
+        	 } else if(SumNumericvalues(document.getElementById("txtPROAmountId").value)==false){
+           	alert("Please enter valied amount.");
+       	    document.getElementById('txtPROAmountId').focus();
+   	        return false;
+        	 }else if (document.getElementById("dtpPROPaymentDateId").value== "") {
+                alert("Enter Payment Date.");
+                document.getElementById('dtpPROPaymentDateId').focus();
+                return false;
+            }
+        	 else if (document.getElementById("txtPROPrePrintedReceiptId").value== "") {
+	            alert("Enter Pre Printed Receipt No.");
+             	document.getElementById('txtPROPrePrintedReceiptId').focus();
+             	return false;
+         	}  else if(document.getElementById('raPRODDId')!=null && (document.getElementById('raPRODDId').checked == true || document.getElementById('raPROChequeId').checked == true)){
+         		 if(totalDDAmount==0){
+     				totalDDAmount=parseInt(document.getElementById("txtPROAmountId").value);
+     			 }else{
+     			totalDDAmount=parseInt(totalDDAmount)+parseInt(document.getElementById("txtPROAmountId").value);
+     			 }
+      			if (document.getElementById("txtPRODDBankNameId").value== "") {
+              		alert("Enter Bank name.");
+              		document.getElementById('txtPRODDBankNameId').focus();
+              		return false;
+          		}  else if (document.getElementById("txtPRODDBranchNameId").value== "") {
+              		alert("Enter Branch Name.");
+              		document.getElementById('txtPRODDBranchNameId').focus();
+              		return false;
+          		}  else if (document.getElementById("txtPRODDCityNameId").value== "") {
+	             	alert("Enter City Name.");
+  	            	document.getElementById('txtPRODDCityNameId').focus();
+              		return false;
+          		}  else if (document.getElementById("txtPRODDNumberId").value== "") {
+              		alert("Enter DD/CHEQUE Number.");
+              		document.getElementById('txtPRODDNumberId').focus();
+              		return false;
+          		}  else if (document.getElementById("dtpPRODDDateId").value== "") {
+              		alert("Enter DD/CHEQUE Date.");
+              		document.getElementById('dtpPRODDDateId').focus();
+              		return false;
+          		}else  if (document.getElementById("bankAccountVlaId").selectedIndex == 0) {
+             	     alert("Please Select Bank Account");
+                    document.getElementById('bankAccountVlaId').focus();
+                    return false;
+                }
+      			if(secondPayment==0 && document.getElementById("appFeechkid").checked==true){
+      				
+              			if(!applicationPaymentfee()){
+              				return false;
+              			}else{
+              				return true;
+              			}
+          		}
+          }  else if(document.getElementById('raPROCardId')!=null && (document.getElementById('raPROCardId').checked == true  && empCampusCardPayment=="false")){
+        		
+       		 if(totalCardAmount==0){
+       			 totalCardAmount=parseInt(document.getElementById("txtPROAmountId").value);
+   			 }else{
+   				 totalCardAmount=parseInt(totalCardAmount)+parseInt(document.getElementById("txtPROAmountId").value);
+   			 }
+       		
+    			if (document.getElementById("txtProApprNo").value== "") {
+            		alert("Enter Appr No.");
+            		document.getElementById('txtProApprNo').focus();
+            		return false;
+        		} else if (document.getElementById("txtProApprNo").value.length < 6) {
+					alert("Please Enter Valid Appr Code.");
+					document.getElementById("txtProApprNo").disabled = false;
+					return false;
+				}  else if (document.getElementById("datepickerProSwipe").value== "") {
+            		alert("Enter Card Swipe Date.");
+            		document.getElementById('datepickerProSwipe').focus();
+            		return false;
+        		} else if (document.getElementById("txtProInvoiceNo").value== "") {
+            		alert("Enter Invoice No");
+            		document.getElementById('txtProInvoiceNo').focus();
+            		return false;
+        		} else if (document.getElementById("txtProInvoiceNo").value.length < 6) {
+					alert("Please Enter Valid Invoice No.");
+					document.getElementById("txtProInvoiceNo").disabled = false;
+					return false;
+				}else if (document.getElementById("txtProMerchantId").selectedIndex == 0) {
+                    alert("Please select ProMerchant Id");
+                    document.getElementById('txtProMerchantId').focus();
+                    return false;
+                }else if (document.getElementById("txtProTerminal1Id").value== "") {
+	             	alert("Please Enter first 2 digits of Terminal Id.");
+	            	document.getElementById('txtProTerminal1Id').focus();
+            		return false;
+        		}  else if (document.getElementById("txtProTerminalId").selectedIndex == 0) {
+                   alert("Please select Terminal Id");
+                   document.getElementById('txtProTerminalId').focus();
+                   return false;
+               } else if( secondPayment==0 && document.getElementById("appFeechkid").checked==true){
+            			if(!applicationPaymentfee()){
+            				return false;
+            			}else{
+            				return true;
+            			}
+        		}
+        } else if(document.getElementById('raPROSelCardId')!=null && document.getElementById('raPROSelCardId').checked == true){
+     		
+   		 if(totalCardAmount==0){
+   			 totalCardAmount=parseInt(document.getElementById("txtPROAmountId").value);
+			 }else{
+				 totalCardAmount=parseInt(totalCardAmount)+parseInt(document.getElementById("txtPROAmountId").value);
+			 }
+   		
+			if (document.getElementById("txtProApprNo1").value== "") {
+        		alert("Enter Appr No.");
+        		document.getElementById('txtProApprNo1').focus();
+        		return false;
+    		} else if (document.getElementById("txtProApprNo1").value.length < 6) {
+				alert("Please Enter Valid Appr Code.");
+				document.getElementById("txtProApprNo1").disabled = false;
+				return false;
+			}  else if (document.getElementById("datepickerProSwipe1").value== "") {
+        		alert("Enter Card Swipe Date.");
+        		document.getElementById('datepickerProSwipe1').focus();
+        		return false;
+    		} else if (document.getElementById("txtProInvoiceNo1").value== "") {
+        		alert("Enter Invoice No");
+        		document.getElementById('txtProInvoiceNo1').focus();
+        		return false;
+    		} else if (document.getElementById("txtProInvoiceNo1").value.length < 6) {
+				alert("Please Enter Valid Invoice No.");
+				document.getElementById("txtProInvoiceNo1").disabled = false;
+				return false;
+			}else if (document.getElementById("autoPosProEmp").value== "") {
+            	alert("Please Select Pro Employee.");
+	            	document.getElementById('autoPosProEmp').focus();
+        		return false;
+    		}  else if (document.getElementById("posemplyee_result").value== "") {
+               alert("Please select Valid Pro Employee");
+               document.getElementById('autoPosProEmp').focus();
+               return false;
+           } else if( secondPayment==0 && document.getElementById("appFeechkid").checked==true){
+        			if(!applicationPaymentfee()){
+        				return false;
+        			}else{
+        				return true;
+        			}
+    		}
+    } else if(document.getElementById("appFeechkid").checked==true){
+    	if(!applicationPaymentfee()){
+			return false;
+		}else{
+			return true;
+		}
+    	
+    }else{
+    	return true;
+    }
+         
+       /* 	else if((secondPayment==0 && document.getElementById("appFeechkid").checked==true) && (amountMandatory==0 || amountMandatory==1 || amountMandatory==6 || amountMandatory==7)){
+       		
+	         	 if (document.getElementById("txtAppFeeAmountId").value== "") {
+	               	alert("Enter Application Fee Amount.");
+	               	document.getElementById('txtAppFeeAmountId').focus();
+	               	return false;
+	         	 } else if(SumNumericvalues(document.getElementById("txtAppFeeAmountId").value)==false){
+	            	alert("Please enter application Fee valied amount.");
+	        	    document.getElementById('txtAppFeeAmountId').focus();
+	    	        return false;
+	         	 } else if (document.getElementById("txtAppFeePrePrintedReceiptId").value== "") {
+		            alert("Enter Application Fee Pre Printed Receipt No.");
+	              	document.getElementById('txtAppFeePrePrintedReceiptId').focus();
+	              	return false;
+	          	} else if (document.getElementById("dtpAppFeeDateId").value== "") {
+	                alert("Enter Application Fee Payment Date.");
+	                document.getElementById('dtpAppFeeDateId').focus();
+	                return false;
+	            }
+       		 if(document.getElementById('raAppFeeDDId').checked == true || document.getElementById('raAppFeeChequeId').checked == true){
+       			 if(totalDDAmount==0){
+         				totalDDAmount=parseInt(document.getElementById("txtAppFeeAmountId").value);
+         			 }else{
+         			totalDDAmount=parseInt(totalDDAmount)+parseInt(document.getElementById("txtAppFeeAmountId").value);
+         			 }
+       			 
+	       			if (document.getElementById("txtAppFeeDDBankNameId").value== "") {
+	               		alert("Enter DD/CHEQUE Bank name.");
+	               		document.getElementById('txtAppFeeDDBankNameId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("txtAppFeeDDBranchNameId").value== "") {
+	               		alert("Enter DD/CHEQUE Bank Branch Name.");
+	               		document.getElementById('txtAppFeeDDBranchNameId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("txtAppFeeDDCityNameId").value== "") {
+		             	alert("Enter DD/CHEQUE Bank City Name.");
+	   	            	document.getElementById('txtAppFeeDDCityNameId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("txtAppFeeDDNumberId").value== "") {
+	               		alert("Enter DD/CHEQUE Number.");
+	               		document.getElementById('txtAppFeeDDNumberId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("dtpAppeFeeDDDateId").value== "") {
+	               		alert("Enter DD/CHEQUE Date.");
+	               		document.getElementById('dtpAppeFeeDDDateId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("appFeeBankAccountVlaId").selectedIndex == 0) {
+	               		alert("Enter Select App Fee Bank Account");
+	               		document.getElementById('appFeeBankAccountVlaId').focus();
+	               		return false;
+	           		} else {
+	        			return true;
+	        		}
+	           } 
+       		
+          	} */
+        	}
+		 
+	}
+	
+	
+	
+	function applicationPaymentfee(){
+		 if( secondPayment==0 && document.getElementById("appFeechkid").checked==true && (amountMandatory=="0" ||  amountMandatory=="1" || amountMandatory=="6" || amountMandatory=="7")){
+	         	 if (document.getElementById("txtAppFeeAmountId").value== "") {
+	               	alert("Enter Application Fee Amount.");
+	               	document.getElementById('txtAppFeeAmountId').focus();
+	               	return false;
+	         	 } else if(SumNumericvalues(document.getElementById("txtAppFeeAmountId").value)==false){
+	            	alert("Please enter application Fee valied amount.");
+	        	    document.getElementById('txtAppFeeAmountId').focus();
+	    	        return false;
+	         	 } else if (document.getElementById("txtAppFeePrePrintedReceiptId").value== "") {
+		            alert("Enter Application Fee Pre Printed Receipt No.");
+	              	document.getElementById('txtAppFeePrePrintedReceiptId').focus();
+	              	return false;
+	          	} else if (document.getElementById("dtpAppFeeDateId").value== "") {
+	                alert("Enter Application Fee Payment Date.");
+	                document.getElementById('dtpAppFeeDateId').focus();
+	                return false;
+	            }else if(document.getElementById('raAppFeeDDId')!=null && (document.getElementById('raAppFeeDDId').checked == true || document.getElementById('raAppFeeChequeId').checked==true)){
+    			 if(totalDDAmount==0){
+    				totalDDAmount=parseInt(document.getElementById("txtAppFeeAmountId").value);
+    			 }else{
+    			totalDDAmount=parseInt(totalDDAmount)+parseInt(document.getElementById("txtAppFeeAmountId").value);
+    			 }
+	       			if (document.getElementById("txtAppFeeDDBankNameId").value== "") {
+	               		alert("Enter DD/CHEQUE Bank name.");
+	               		document.getElementById('txtAppFeeDDBankNameId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("txtAppFeeDDBranchNameId").value== "") {
+	               		alert("Enter DD/CHEQUE Bank Branch Name.");
+	               		document.getElementById('txtAppFeeDDBranchNameId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("txtAppFeeDDCityNameId").value== "") {
+		             	alert("Enter DD/CHEQUE Bank City Name.");
+	   	            	document.getElementById('txtAppFeeDDCityNameId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("txtAppFeeDDNumberId").value== "") {
+	               		alert("Enter DD/CHEQUE Number.");
+	               		document.getElementById('txtAppFeeDDNumberId').focus();
+	               		return false;
+	           		}  else if (document.getElementById("dtpAppeFeeDDDateId").value== "") {
+	               		alert("Enter DD/CHEQUE Date.");
+	               		document.getElementById('dtpAppeFeeDDDateId').focus();
+	               		return false;
+	           		} else if (document.getElementById("appFeeBankAccountVlaId").selectedIndex == 0) {
+	               		alert("Enter Select App Fee Bank Account");
+	               		document.getElementById('appFeeBankAccountVlaId').focus();
+	               		return false;
+	           		} else {
+	      		 			return true;
+	 	       			}
+	           }else if(document.getElementById('raAppFeeCardId')!=null && (document.getElementById('raAppFeeCardId').checked == true)){
+	     			 if(totalCardAmount==0){
+	     				totalCardAmount=parseInt(document.getElementById("txtAppFeeAmountId").value);
+	      			 }else{
+	      				totalCardAmount=parseInt(totalCardAmount)+parseInt(document.getElementById("txtAppFeeAmountId").value);
+	      			 }
+	     			if (document.getElementById("txtAppFeeApprNo").value== "") {
+	             		alert("Enter App Fee Appr No.");
+	             		document.getElementById('txtAppFeeApprNo').focus();
+	             		return false;
+	         		} else if (document.getElementById("txtAppFeeApprNo").value.length < 6) {
+						alert("Please Enter Valid Appr No.");
+						document.getElementById("txtAppFeeApprNo").disabled = false;
+						return false;
+					} else if (document.getElementById("datepickerAppFeeSwipe").value== "") {
+	             		alert("Enter App Fee Card Swipe Date.");
+	             		document.getElementById('datepickerAppFeeSwipe').focus();
+	             		return false;
+	         		} else if (document.getElementById("txtAppFeeInvoiceNo").value== "") {
+	             		alert("Enter App Fee Invoice No");
+	             		document.getElementById('txtAppFeeInvoiceNo').focus();
+	             		return false;
+	         		} else if (document.getElementById("txtAppFeeInvoiceNo").value.length < 6) {
+						alert("Please Enter Valid Invoice No.");
+						document.getElementById("txtAppFeeInvoiceNo").disabled = false;
+						return false;
+					}else if (document.getElementById("txtAppFeeMerchantId").selectedIndex == 0) {
+	                     alert("Please select App Fee ProMerchant Id");
+	                     document.getElementById('txtAppFeeMerchantId').focus();
+	                     return false;
+	                 }else if (document.getElementById("txtAppFeeTerminal1Id").value== "") {
+		             	alert("Please Enter first 2 digits of Terminal Id.");
+	 	            	document.getElementById('txtAppFeeTerminal1Id').focus();
+	             		return false;
+	         		}  else if (document.getElementById("txtAppFeeTerminalId").selectedIndex == 0) {
+	                    alert("Please select App Fee Terminal Id");
+	                    document.getElementById('txtAppFeeTerminalId').focus();
+	                    return false;
+	                }else {
+	      		 			return true;
+	 	       			}
+	 	           }else if(document.getElementById('raAppFeeProCardId')!=null && (document.getElementById('raAppFeeProCardId').checked == true)){
+		     			 if(totalCardAmount==0){
+			     				totalCardAmount=parseInt(document.getElementById("txtAppFeeAmountId").value);
+			      			 }else{
+			      				totalCardAmount=parseInt(totalCardAmount)+parseInt(document.getElementById("txtAppFeeAmountId").value);
+			      			 }
+			     			if (document.getElementById("txtAppFeeApprNo1").value== "") {
+			             		alert("Enter App Fee Appr No.");
+			             		document.getElementById('txtAppFeeApprNo1').focus();
+			             		return false;
+			         		} else if (document.getElementById("txtAppFeeApprNo1").value.length < 6) {
+								alert("Please Enter Valid Appr No.");
+								document.getElementById("txtAppFeeApprNo1").disabled = false;
+								return false;
+							} else if (document.getElementById("datepickerAppFeeSwipe1").value== "") {
+			             		alert("Enter App Fee Card Swipe Date.");
+			             		document.getElementById('datepickerAppFeeSwipe1').focus();
+			             		return false;
+			         		} else if (document.getElementById("txtAppFeeInvoiceNo1").value== "") {
+			             		alert("Enter App Fee Invoice No");
+			             		document.getElementById('txtAppFeeInvoiceNo1').focus();
+			             		return false;
+			         		} else if (document.getElementById("txtAppFeeInvoiceNo1").value.length < 6) {
+								alert("Please Enter Valid Invoice No.");
+								document.getElementById("txtAppFeeInvoiceNo1").disabled = false;
+								return false;
+							}else if (document.getElementById("autoPosProEmpId").value== "") {
+				             	alert("Please Enter Pro Employee.");
+			 	            	document.getElementById('autoPosProEmpId').focus();
+			             		return false;
+			         		}  else if (document.getElementById("posemplyee_result1").value== "") {
+			                    alert("Please Enter Valid Pro Employee");
+			                    document.getElementById('autoPosProEmpId').focus();
+			                    return false;
+			                } else {
+			 	      		 			return true;
+			 	       			}
+			 	           }else {
+	 	      		 			return true;
+		 	       			}
+    		 
+          		} 
+	}
+	
+	
+	function Verify() {
+		//return verifyTab1();
+		//return verifyTab2();
+		//return verifyTab3();
+		//return verifyTab4();
+		//return verifyTab5();
+	//	verifyTab6();
+		var isValidSubmit=false;
+		//alert(isValidSubmit);
+		if (verifyTab1()==true
+		 && verifyTab2()==true
+		 && verifyTab3()==true
+		 && verifyTab4()==true
+		 && verifyTab5()==true
+		 && verifyTab6()==true) {
+			isValidSubmit=true;
+		}
+		
+		//alert(isValidSubmit);
+		if(isValidSubmit==false){
+			//alert(verifyTab1());
+			//alert(verifyTab2());
+			//alert(verifyTab3());
+			//alert(verifyTab4());
+			//alert(verifyTab5());
+			//alert(verifyTab6());
+		}
+		
+		
+		if(isValidSubmit){
+			if((studentSscHtNo!=null && studentSscHtNo!='') && (studentName!=null && studentName!='')){
+				if(confirm("Student Name :  "+ document.getElementById("studentNameId").value+" Parent Name :  " + document.getElementById("parentNameId").value + ". Are you sure you want to update record ?")){
+						return submitForm('submit_form') ;
+					} else 	{
+			 			return false;
+					}
+			}else{
+				if(confirm("Student Name :  "+ document.getElementById("studentNameId").value+" Parent Name :  " + document.getElementById("parentNameId").value + "Are you sure you want to insert record")){
+					return submitForm('submit_form') ;
+   	    		}else 	{
+		 			return false;
+				}
+			}
+			
+		}else{
+			return false;
+		}
+		
+	}
+	
+	
+	
+	function submitForm(formId) {
+		
+			$.ajax({
+				type : 'POST',
+				url : "/application/saveApplicationInformation",
+				data : $('#'+formId).serialize(),
+				success : function(data) {
+					
+					if(data.indexOf("ERROR-")!=-1) {
+						alert(data);
+					} else if(data.indexOf("FEEDBACK-1")!=-1) {
+						alert("Successfully Done!!!");
+						
+						printPayment();
+						
+						$("#tab1 *").attr("disabled","disabled");
+						$("#tab2 *").attr("disabled","disabled");
+						$("#tab3 *").attr("disabled","disabled");
+						$("#tab4 *").attr("disabled","disabled");
+						$("#tab5 *").attr("disabled","disabled");
+						$("#tab6 *").attr("disabled","disabled");
+						document.getElementById("submitId").style.display = "none";
+					}
+				},
+			error: function () {
+	            alert('Unable to load details');
+	        }
+			});
+			return false;
+		}
+	
+	 function SumNumericvalues(fieldName) {
+		 if (parseInt(fieldName) == 0)
+        { return false; }
+      return true;
+    }  	
+	 
+	 
+	 function printPayment(){
+		 
+		 $.ajax({
+				type : "GET",
+				url : "/application/getAppPaymentPrint",
+				data : {
+					pROPrePrintedReceipt : document.getElementById("txtPROPrePrintedReceiptId").value,
+					appFeePrePrintedReceipt : document.getElementById("txtAppFeePrePrintedReceiptId").value,
+					appNo : document.getElementById("appNoValId").value
+				},
+				success : function(data) {
+					$("#printId").show();
+						$('#printId').html(data);
+						
+					var divToPrint=document.getElementById('printId');
+
+					  var newWin=window.open('','Print-Window');
+
+					  //newWin.document.open();
+
+					  newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+					  newWin.focus();
+					  newWin.document.close();
+					  $("#printId").hide();
+				}
+			});
+		 
+		 
+	 }
+
+	var curTabCnt = 1;
+	$(document)
+			.ready(
+					function() {
+						$("#studentsGridId").slideUp();
+						$(
+								".button-previous,.button-submit,#studentsGridId")
+								.hide();
+						$("#tabId1").click();
+
+						$(".button-next").click(function() {
+							if (validateTab(curTabCnt)) {
+								curTabCnt++;
+								$("#tabId" + curTabCnt).click();
+							}
+						});
+
+						$(".button-previous").click(function() {
+							curTabCnt--;
+							$("#tabId" + curTabCnt).click();
+						});
+
+						
+						$('[id^="tabId"]')
+								.click(
+										function() {
+											curTabCnt = this.id
+													.substring(5);
+											if (curTabCnt == 1) {
+												$(".button-next")
+														.show();
+												$(
+														".button-previous,.button-submit")
+														.hide();
+											} else if (curTabCnt == 6) {
+												$(".button-next")
+														.hide();
+												$(
+														".button-previous,.button-submit")
+														.show();
+											} else {
+												$(".button-submit")
+														.hide();
+												$(
+														".button-previous,.button-next")
+														.show();
+											}
+										})
+
+						$('.number')
+								.keyup(
+										function(event) {
+											if (isNaN($(this).val())) {
+												showToastr(
+														"Please Enter Numericals",
+														"error");
+												$(this).val('');
+											}
+										});
+
+						$("#downId").click(function() {
+							$("#studentsGridId,#applicationDivId").slideToggle();
+						});
+					});
+					
+					
+				
+	
+	
+	var minyear=(new Date().getFullYear())-22;
+	var maxyear=(new Date().getFullYear())-12;
+	var mindate=new Date(minyear, 0, 1);
+	var maxyear=new Date(maxyear, 11, 31);
+	
+				
+	     $('#dobId').datepicker({
+				format : 'dd/mm/yyyy',
+				startDate: mindate,
+			    endDate: maxyear,
+				autoClose:true,
+				clearBtn: true
+			});	
+	     
+	     $('#dobId,#dtpPROPaymentDateId,#dtpPRODDDateId,#dtpAppFeeDateId,#dtpAppeFeeDDDateId').on('changeDate', function(ev){
+	    	    $(this).datepicker('hide');
+	    	});
+	     $('#dtpPROPaymentDateId').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});		
+	     $('#dtpPRODDDateId').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});		
+	     if(document.getElementById("datepickerProSwipe")!=""){
+	     $('#datepickerProSwipe').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});		
+	     
+	     $('#datepickerProSwipe').on('changeDate', function(ev){
+	    	    $(this).datepicker('hide');
+	    	});
+	     }
+	     if(document.getElementById("datepickerProSwipe1")!=""){
+	     $('#datepickerProSwipe1').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});	
+	     $('#datepickerProSwipe1').on('changeDate', function(ev){
+	    	    $(this).datepicker('hide');
+	    	});
+	     }
+	     
+	     $('#dtpAppFeeDateId').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});		
+	     $('#dtpAppeFeeDDDateId').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});		
+	     if(document.getElementById("datepickerAppFeeSwipe")!=""){
+	     $('#datepickerAppFeeSwipe').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});	
+	     $('#datepickerAppFeeSwipe').on('changeDate', function(ev){
+	    	    $(this).datepicker('hide');
+	    	});
+	     }
+	     if(document.getElementById("datepickerAppFeeSwipe1")!=""){
+	     $('#datepickerAppFeeSwipe1').datepicker({
+				format : 'dd/mm/yyyy',
+				endDate : '0d',
+				autoClose:true,
+				clearBtn: true
+			});	
+	     $('#datepickerAppFeeSwipe1').on('changeDate', function(ev){
+	    	    $(this).datepicker('hide');
+	    	});
+	     }
+	     function getSscDiv(flag) {
+	    	 
+	    	 if (flag == "SSC"){
+	    		 document.getElementById('sscDivId').style.visibility = 'visible';
+	 			document.getElementById('otherDivId').style.visibility = 'hidden';
+	 			document.getElementById("sscId").checked=true;
+		    	 document.getElementById("otherSscId").checked=false;
+	    	 }else if (flag == "OTHER"){
+	    		 document.getElementById('sscDivId').style.visibility = 'hidden';
+	 			document.getElementById('otherDivId').style.visibility = 'visible';
+	 			document.getElementById("sscId").checked=false;
+		    	 document.getElementById("otherSscId").checked=true;
+	    	 }
+	    	 
+	     }
+	     
+	     
+	     function getProposedCity() {
+	 		 $.ajax({
+					type : "GET",
+					url : "/application/getProposedCity",
+					data : {
+						campusVal : $("select#ddlcampusName").val()
+					},
+					success : function(data) {
+						$("#txtCityName").val(data);
+						
+						getJoinClass();
+						getCampusType();
+							getCourses();	
+							getAppCampusType();
+						
+					}
+				});
+	 	}
+	     
+	     function getAppCampusType() {
+	 		$.ajax({
+	 			type : "GET",
+				url : "/application/getAppCampusType",
+				data : {
+					campusVal : $("select#ddlcampusName").val()
+				},
+	 			success : function(data) {
+	                if(data=="RESIDENTIAL" || data=="DS AND RES"){
+	             	   document.getElementById('messTypeId').style.visibility = 'visible';
+	 				}else if(data=="DAYSCHOLAR"){
+	 					document.getElementById('messTypeId').style.visibility = 'hidden';
+	 				}
+	 				
+	 			}
+	 		});
+	 	}
+	     
+	     function getCampusType() {
+	    	 
+	    	 $.ajax({
+					type : "GET",
+					url : "/application/getCampusType",
+					data : {
+						campusVal : $("select#ddlcampusName").val()
+					},
+					success : function(data) {
+						$("#campusTypeid").val(data);
+					}
+				});
+	 	}
+	     
+	     function getJoinClass() {
+	    	 
+	    	 $.ajax({
+					type : "GET",
+					url : "/application/getJoinClass",
+					data : {
+						campusVal : $("select#ddlcampusName").val(),
+						academic : appAcademic
+					},
+					success : function(data) {
+						var select = $('#ddlJoinedClass');
+						select.find('option').remove();
+						$.each(data, function(key, value) {
+							$('<option>').val(key).text(value).appendTo(select);
+						});
+					}
+				});
+	     }
+	     function getCourses() {
+	    	 if($("select#ddlJoinedClass").val()!=0){
+	 		selectedClass = $("select#ddlJoinedClass").val();
+	 		
+	 		$.ajax({
+				type : "GET",
+				url : "/application/getCourses",
+				data : {
+					campusVal : $("select#ddlcampusName").val(),
+					academic : appAcademic,
+					studyClass: $("select#ddlJoinedClass").val()
+				},
+				success : function(data) {
+					var select = $('#coursesListId');
+					select.find('option').remove();
+					$.each(data, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+				}
+			});
+	    	 }
+	 	}
+	     
+	     
+	 	function getCourseAppFee() {
+			/* if(appStatus=="AT_CA"){ */
+				
+				 if($("select#ddlJoinedClass").val()==0){
+				alert("Please select join study class");
+				$("#ddlJoinedClass").focus();
+				return false;
+			}
+				 
+				 $.ajax({
+						type : "GET",
+						url : "/application/getCourseApplicationFee",
+						data : {
+							studyClass: $("select#ddlJoinedClass").val(),
+							campusTrack:document.getElementById("coursesListId").value,
+							campusVal : $("select#ddlcampusName").val(),
+							academic : appAcademic,
+							appNo:appNo
+						},
+						success : function(data) {
+							
+							if(data=="Not Valid"){
+								$('#ddlBatch').empty();
+								$('#ddlBatch').each(function() {
+									var option = $("<option />");
+									option.attr("value", '0').text('Select Batch Name');
+									$('#ddlBatch').append(option);
+									});
+								
+							alert("Application Admition Fee is less than Application Course Fee");	
+							}else{
+								getCourseBatch();
+								getCourseIncentive();
+							}
+							
+						}
+					});
+		/* } */
+		}
+	 	
+	 	function getCourseBatch() {
+	 		if($("select#ddlJoinedClass").val()==0){
+				alert("Please select join study class");
+				$("#ddlJoinedClass").focus();
+				return false;
+			}
+	 		
+	 		$.ajax({
+				type : "GET",
+				url : "/application/getCourseBatch",
+				data : {
+					studyClass: $("select#ddlJoinedClass").val(),
+					campusTrack:document.getElementById("coursesListId").value,
+					campusVal : $("select#ddlcampusName").val(),
+					academic : appAcademic
+				},
+				success : function(data) {
+					var select = $('#ddlBatch');
+					select.find('option').remove();
+					$.each(data, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+				}
+			});
+		}
+	 	
+	 	
+	 	function getCourseIncentive() {
+	 		if($("select#ddlJoinedClass").val()==0){
+				alert("Please select join study class");
+				$("#ddlJoinedClass").focus();
+				return false;
+			}
+	 		
+	 		$.ajax({
+				type : "GET",
+				url : "/application/getCourseIncentive",
+				data : {
+					studyClass: $("select#ddlJoinedClass").val(),
+					campusTrack:document.getElementById("coursesListId").value,
+					campusVal : $("select#ddlcampusName").val(),
+					academic : appAcademic
+				},
+				success : function(data) {
+					courseOrgConcession=data;
+				}
+			});
+		}
+	 	function getBatchDates() {
+	 		if($("select#ddlJoinedClass").val()==0){
+				alert("Please select join study class");
+				$("#ddlJoinedClass").focus();
+				return false;
+			}
+	 		
+	 		$.ajax({
+				type : "GET",
+				url : "/application/getStudentBatchDates",
+				data : {
+					courseBatch: $("select#ddlBatch").val()
+				},
+				success : function(data) {
+					$("#courseBatchDatesid").val(data);
+					getCourseFee();
+				}
+			});
+		}
+	 	
+	 	function getCourseFee() {
+	 		
+	 		$.ajax({
+				type : "GET",
+				url : "/application/getCourseFee",
+				data : {
+					studyClass: $("select#ddlJoinedClass").val(),
+					campusTrack:document.getElementById("coursesListId").value,
+					academic : appAcademic,
+					courseBatch:$("select#ddlBatch").val()
+				},
+				success : function(data) {
+					$("#txtCourseFee").val(data);
+				}
+			});
+		}
+	 	
+	 	function getSchoolDist() {
+	 		
+	 		$.ajax({
+				type : "GET",
+				url : "/application/getDistrict",
+				data : {
+					stateMaster: $("select#ddlSchoolStatesid").val()
+				},
+				success : function(data) {
+					
+					var select = $('#ddlDistrictid');
+					select.find('option').remove();
+					$.each(data, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+				}
+			});
+		}
+	 	
+	 	$(document).ready(function () {
+	 		if(document.getElementById('autoSchoolId')!=null){
+	 		$("#autoSchoolId").autocomplete({
+	 	    	 minChars: 3,
+	 	        source: function(request, response) {
+	 	            $.ajax({
+	 	                url: "/application/getAutoSchool",
+	 	                dataType: "json",
+	 	                data: {
+	 	                    term: request.term,
+	 	                   schoolType: document.getElementById('ddlSyllabusid').value, 
+	 	                  schoolDistrict: document.getElementById('ddlDistrictid').value,
+	 	                 schoolState: document.getElementById('ddlSchoolStatesid').value
+	 	                },
+	 	                success: function(data) {
+	 	                	 response(data);
+	 	                }
+	 	            });
+	 	        },
+	 	        focus : function(event, ui) {
+					$("#autoSchoolId").val(
+							ui.item.value);
+					return false;
+				},
+				select : function(event, ui) {
+					$("#autoSchoolId").val(
+							ui.item.value);
+					$("#newSchoolId").val(
+							ui.item.key);
+					
+					return false;
+				}
+			}).data("ui-autocomplete")._renderItem = function(
+			ul, item) {
+		return $("<li>").append(
+				"<a>" + item.value +item.key+ "</a>")
+				.appendTo(ul);
+	}; 
+	 		}
+	if(document.getElementById('txtsschtnumber')!=null){
+	 	    $("#txtsschtnumber").autocomplete({
+	 	    	minChars: 10,
+	 	    	source: function(request, response) {
+	 	            $.ajax({
+	 	                url: "/application/displayHallStuName",
+	 	                dataType: "json",
+	 	                data: {
+	 	                    term: request.term
+	 	                },
+	 	                success: function(data) {
+	 	                	 response(data);
+	 	                }
+	 	            });
+	 	        },
+	 	        focus : function(event, ui) {
+					$("#txtsschtnumber").val(
+							ui.item.value);
+					return false;
+				},
+				select : function(event, ui) {
+					$("#txtsschtnumber").val(
+							ui.item.value);
+					$("#hall_result").val(
+							ui.item.key);
+					
+					return false;
+				}
+			}).data("ui-autocomplete")._renderItem = function(
+			ul, item) {
+		return $("<li>").append(
+				"<a>" + item.value +item.key+ "</a>")
+				.appendTo(ul);
+	}; 
+	}
+	if(document.getElementById('autoEmployeeId')!=null){
+	 	    $("#autoEmployeeId").autocomplete({
+	 	    	minChars: 3,
+	 	    	source: function(request, response) {
+	 	            $.ajax({
+	 	                url: "/application/displayEmployeeName",
+	 	                dataType: "json",
+	 	                data: {
+	 	                    term: request.term,
+	 	                   schoolType: document.getElementById('ddlSyllabusid').value, 
+	 	                  schoolDistrict: document.getElementById('ddlDistrictid').value,
+	 	                 schoolState: document.getElementById('ddlSchoolStatesid').value
+	 	                },
+	 	                success: function(data) {
+	 	                	 response(data);
+	 	                }
+	 	            });
+	 	        },
+	 	        focus : function(event, ui) {
+					$("#autoEmployeeId").val(
+							ui.item.value);
+					return false;
+				},
+				select : function(event, ui) {
+					$("#autoEmployeeId").val(
+							ui.item.value);
+					$("#emplyee_result").val(
+							ui.item.key);
+					
+					return false;
+				}
+			}).data("ui-autocomplete")._renderItem = function(
+			ul, item) {
+		return $("<li>").append(
+				"<a>" + item.value +item.key+ "</a>")
+				.appendTo(ul);
+	}; 
+	}
+	if(document.getElementById('autoEmployeeId1')!=null && appType=="REG"){
+		 $("#autoEmployeeId1").autocomplete({
+		    	minChars: 3,
+		    	source: function(request, response) {
+		            $.ajax({
+		                url: "/application/displayEmployeeName",
+		                dataType: "json",
+		                data: {
+		                    term: request.term,
+		                   schoolType: document.getElementById('ddlSyllabusid').value, 
+		                  schoolDistrict: document.getElementById('ddlDistrictid').value,
+		                 schoolState: document.getElementById('ddlSchoolStatesid').value
+		                },
+		                success: function(data) {
+		                	 response(data);
+		                }
+		            });
+		        },
+		        focus : function(event, ui) {
+					$("#autoEmployeeId1").val(
+							ui.item.value);
+					return false;
+				},
+				select : function(event, ui) {
+					$("#autoEmployeeId1").val(
+							ui.item.value);
+					$("#emplyee_result1").val(
+							ui.item.key);
+					
+					return false;
+				}
+			}).data("ui-autocomplete")._renderItem = function(
+			ul, item) {
+		return $("<li>").append(
+				"<a>" + item.value +item.key+ "</a>")
+				.appendTo(ul);
+	}; 	
+	}
+	if(document.getElementById('autoRefeEmployeeId')!=null){
+	 	    $("#autoRefeEmployeeId").autocomplete({
+	 	    	minChars: 3,
+	 	    	source: function(request, response) {
+	 	            $.ajax({
+	 	                url: "/application/displayEmployeeName",
+	 	                dataType: "json",
+	 	                data: {
+	 	                    term: request.term,
+	 	                },
+	 	                success: function(data) {
+	 	                	 response(data);
+	 	                }
+	 	            });
+	 	        },
+	 	        focus : function(event, ui) {
+					$("#autoRefeEmployeeId").val(
+							ui.item.value);
+					return false;
+				},
+				select : function(event, ui) {
+					$("#autoRefeEmployeeId").val(
+							ui.item.value);
+					$("#emplyee_result4").val(
+							ui.item.key);
+					
+					return false;
+				}
+			}).data("ui-autocomplete")._renderItem = function(
+			ul, item) {
+		return $("<li>").append(
+				"<a>" + item.value +item.key+ "</a>")
+				.appendTo(ul);
+	}; 
+	}
+	
+	if(document.getElementById('txtpinCode')!=null){
+	 	    $("#txtpinCode").autocomplete({
+	 	    	minChars: 3,
+	 	    	source: function(request, response) {
+	 	            $.ajax({
+	 	                url: "/application/displayAddress",
+	 	                dataType: "json",
+	 	               data: {
+	 	                    term: request.term,
+	 	                },
+	 	                success: function(data) {
+	 	                	 response(data);
+	 	                }
+	 	            });
+	 	        },
+	 	        focus : function(event, ui) {
+					$("#txtpinCode").val(
+							ui.item.value);
+					return false;
+				},
+				select : function(event, ui) {
+					$("#txtpinCode").val(
+							ui.item.value);
+					$("#address1_result").val(
+							ui.item.key);
+					loadAddressData();
+					return false;
+				}
+			}).data("ui-autocomplete")._renderItem = function(
+			ul, item) {
+		return $("<li>").append(
+				"<a>" + item.value +item.key+ "</a>")
+				.appendTo(ul);
+	}; 
+	}
+	if(document.getElementById('autoPosProEmp')!=null){
+	 $("#autoPosProEmp").autocomplete({
+	    	minChars: 3,
+	    	source: function(request, response) {
+	            $.ajax({
+	                url: "/application/displayEmployeeName",
+	                dataType: "json",
+	                data: {
+	                    term: request.term,
+	                   schoolType: document.getElementById('ddlSyllabusid').value, 
+	                  schoolDistrict: document.getElementById('ddlDistrictid').value,
+	                 schoolState: document.getElementById('ddlSchoolStatesid').value
+	                },
+	                success: function(data) {
+	                	 response(data);
+	                }
+	            });
+	        },
+	        focus : function(event, ui) {
+				$("#autoPosProEmp").val(
+						ui.item.value);
+				return false;
+			},
+			select : function(event, ui) {
+				$("#autoPosProEmp").val(
+						ui.item.value);
+				$("#posemplyee_result").val(
+						ui.item.key);
+				
+				return false;
+			}
+		}).data("ui-autocomplete")._renderItem = function(
+		ul, item) {
+	return $("<li>").append(
+			"<a>" + item.value +item.key+ "</a>")
+			.appendTo(ul);
+}; 
+	}
+	if(document.getElementById('autoPosProEmpId')!=null){
+$("#autoPosProEmpId").autocomplete({
+ 	minChars: 3,
+ 	source: function(request, response) {
+         $.ajax({
+             url: "/application/displayEmployeeName",
+             dataType: "json",
+             data: {
+                 term: request.term,
+                schoolType: document.getElementById('ddlSyllabusid').value, 
+               schoolDistrict: document.getElementById('ddlDistrictid').value,
+              schoolState: document.getElementById('ddlSchoolStatesid').value
+             },
+             success: function(data) {
+             	 response(data);
+             }
+         });
+     },
+     focus : function(event, ui) {
+		$("#autoPosProEmpId").val(
+				ui.item.value);
+		return false;
+	},
+	select : function(event, ui) {
+		$("#autoPosProEmpId").val(
+				ui.item.value);
+		$("#appPosemplyee_result").val(
+				ui.item.key);
+		
+		return false;
+	}
+}).data("ui-autocomplete")._renderItem = function(
+ul, item) {
+return $("<li>").append(
+	"<a>" + item.value +item.key+ "</a>")
+	.appendTo(ul);
+}; 
+	}
+	
+	 	    });
+	 	
+		function concesionWrittenonApp(){
+			if(document.getElementById('conwrritenid').checked){
+			 if(document.getElementById('txt1ndCon').disabled==false){
+				 $("#txt1stConapp").val($("#txt1ndCon").val());
+			 }
+			 
+			 if(document.getElementById('txt1ndCon').disabled==true && appStatus!="" && appStatus=="AT_CA"){
+				 $("#txt1stConapp").val($("#txt1ndCon").val());
+				 document.getElementById('txt1stConapp').disabled=true;
+			 }
+			 
+			 if(document.getElementById('txt2ndCon').disabled==false){
+				 $("#txt2ndConapp").val($("#txt2ndCon").val());
+			 }
+			 if(document.getElementById('txt3ndCon').disabled==false){
+				 $("#txt3ndConapp").val($("#txt3ndCon").val());
+			 }
+			}else{
+				 document.getElementById('txt1stConapp').disabled=false;
+				 $("#txt1stConapp").val("");
+				 $("#txt2ndConapp").val("");
+				 $("#txt3ndConapp").val("");
+			}
+			  
+		}
+		
+		function getShowTalentDiv() {
+			var e = document.getElementById("ddlreason");  
+			 var selectedVal = e.options[e.selectedIndex].text;
+			 if(selectedVal == "MERIT" && appMerit=="MERIT" && appBasedOn=="10TH CLASS"){
+				 $("#showTalenDetailsId").show();
+				 $("#showTalenDetailsId1").hide();
+				 $("#talentTestMarksId").val("");
+				 $("#showRefferelId").hide();
+				 $("#autoRefeEmployeeId").val("");
+				 $("#showTalenDetailsId2").show();
+				 $("#tenthMarksId").val("");
+				 document.getElementById('basedOnId').selectedIndex=0;
+			 }else if(selectedVal == "MERIT" && appMerit=="MERIT" && appBasedOn=="ADMISSION_TEST"){
+				 $("#showTalenDetailsId").show();
+				 $("#showTalenDetailsId1").show();
+				 $("#showRefferelId").hide();
+				 $("#showTalenDetailsId2").hide();
+				 $("#autoRefeEmployeeId").val("");
+				 $("#tenthMarksId").val("");
+				 $("#talentTestMarksId").val("");
+				 document.getElementById('basedOnId').selectedIndex=0;
+			 }else if(selectedVal == "MERIT" && appMerit=="MERIT" && appBasedOn=="SCHOOL_TOPPER"){
+				 $("#showTalenDetailsId").show();
+				 $("#showTalenDetailsId1").hide();
+				 $("#showRefferelId").hide();
+				 $("#showTalenDetailsId2").hide();
+				 $("#autoRefeEmployeeId").val("");
+				 $("#tenthMarksId").val("");
+				 $("#talentTestMarksId").val("");
+				 document.getElementById('basedOnId').selectedIndex=0;
+			 }else if(selectedVal == "MERIT"){
+				 $("#showTalenDetailsId").show();
+				 $("#showTalenDetailsId1").hide();
+				 $("#showRefferelId").hide();
+				 $("#showTalenDetailsId2").hide();
+				 $("#autoRefeEmployeeId").val("");
+				 $("#talentTestMarksId").val("");
+				 $("#tenthMarksId").val("");
+				document.getElementById('basedOnId').selectedIndex=0;
+			 }else if(selectedVal == "STAFF"){
+				 $("#showRefferelId").show();
+				 $("#showTalenDetailsId").hide();
+				 $("#showTalenDetailsId1").hide();
+				 $("#showTalenDetailsId2").hide();
+				 $("#talentTestMarksId").val("");
+				 $("#tenthMarksId").val("");
+				 $("#autoRefeEmployeeId").val("");
+				 document.getElementById('basedOnId').selectedIndex=0;
+			 }else{
+				 $("#showTalenDetailsId1").hide();
+				 $("#showTalenDetailsId").hide();
+				 $("#showRefferelId").hide();
+				 $("#showTalenDetailsId2").hide();
+				 $("#talentTestMarksId").val("");
+				 $("#tenthMarksId").val("");
+				 $("#autoRefeEmployeeId").val("");
+				 document.getElementById('basedOnId').selectedIndex=0;
+			 }
+		}
+		
+		function getShowTalentDivInf() {
+			 if(document.getElementById("basedOnId").value == "X_MARKS"){
+				 $("#showTalenDetailsId1").hide();
+				 $("#showTalenDetailsId2").show();
+			 }
+			 else if(document.getElementById("basedOnId").value == "ADMISSION_TEST"){
+				 $("#showTalenDetailsId1").show();
+				 $("#showTalenDetailsId2").hide();
+			 }else{
+				 $("#showTalenDetailsId1").hide();
+				 $("#showTalenDetailsId2").hide();
+			 }
+		}
+		
+		
+		
+		function loadAddressData() {
+			 
+			$.ajax({
+				type : "GET",
+				url : "/application/getPinData",
+				async: true,
+				data : {
+					pinCode : document.getElementById("address1_result").value,
+					appNo:appNo
+				},
+				success : function(data) {
+					$('#appPincodeId').html(data);
+				},
+			});
+			
+		}
+		
+		
+function showAppPaymentDiv(payMode){
+			
+			if(payMode=="DD" || payMode=="Cheque"){
+			
+			document.getElementById("ddChequeAppAmountId").style.display = "inline";
+			document.getElementById("cardAppAmountId").style.display = "none";
+			document.getElementById("proCardAppAmountId").style.display = "none";
+			
+			}else if(payMode=="Card"){
+			
+			document.getElementById("ddChequeAppAmountId").style.display = "none";
+			document.getElementById("cardAppAmountId").style.display = "inline";
+			document.getElementById("proCardAppAmountId").style.display = "none";
+			
+			}else if(payMode=="ProCard"){
+			
+			document.getElementById("ddChequeAppAmountId").style.display = "none";
+			document.getElementById("cardAppAmountId").style.display = "none";
+			document.getElementById("proCardAppAmountId").style.display = "inline";
+			
+			}else{
+			document.getElementById("ddChequeAppAmountId").style.display = "none";
+			document.getElementById("cardAppAmountId").style.display = "none";
+			document.getElementById("proCardAppAmountId").style.display = "none";
+			}
+			}
+function showAppFeePaymentDiv(payMode){
+			
+			if(payMode=="DD" || payMode=="Cheque"){
+			
+			document.getElementById("ddChequeAppFeeAmountId").style.display = "inline";
+			document.getElementById("cardAppFeeAmountId").style.display = "none";
+			document.getElementById("proCardAppFeeAmountId").style.display = "none";
+			
+			}else if(payMode=="Card"){
+			
+			document.getElementById("ddChequeAppFeeAmountId").style.display = "none";
+			document.getElementById("cardAppFeeAmountId").style.display = "inline";
+			document.getElementById("proCardAppFeeAmountId").style.display = "none";
+			
+			}else if(payMode=="ProCard"){
+			
+			document.getElementById("ddChequeAppFeeAmountId").style.display = "none";
+			document.getElementById("cardAppFeeAmountId").style.display = "none";
+			document.getElementById("proCardAppFeeAmountId").style.display = "inline";
+			
+			}else{
+			document.getElementById("ddChequeAppFeeAmountId").style.display = "none";
+			document.getElementById("cardAppFeeAmountId").style.display = "none";
+			document.getElementById("proCardAppFeeAmountId").style.display = "none";
+			}
+			}
+			
+			
+function showAppFee() {
+	if(document.getElementById("appFeechkid").checked){
+		document.getElementById("appFeeShowId").style.display = "inline";
+		document.getElementById("appFeeReceivedId").value = "true";
+	}
+	else {
+		document.getElementById("appFeeShowId").style.display = "hidden";
+		document.getElementById("appFeeReceivedId").value = "false";
+	}
+}
+
+
+function loadTerminalList(id) {
+	var marTer=null;
+	if(id.indexOf("AppFee")!=-1){
+		marTer='#txtAppFeeTerminalId';
+	}else{
+		marTer='#txtProTerminalId';
+	}
+	
+	var marchId = document.getElementById(id);
+	$.ajax({
+		type : "GET",
+		url : "/application/getTerminalValues",
+		async: true,
+		data : {
+			merchantValue : marchId.options[marchId.selectedIndex].text
+		},
+		success : function(data) {
+			var select = marTer;
+			$(marTer).find('option').remove();
+			$.each(data, function(key, value) {
+				$('<option>').val(key).text(value).appendTo(select);
+			});
+		}
+	});
+	
+}
+
+function init()
+{
+	if(appStatus=="AT_SO" || appStatus=="AT_CO"){
+		
+		if((appSscData==null || appSscData=="") && (appSscHtNo!=null || appSscHtNo!="")){
+			document.getElementById('otherDivId').style.visibility = 'visible';	
+		}else{
+			document.getElementById('otherDivId').style.visibility = 'hidden';
+		}
+		 
+		$("#tab1 *").attr("disabled","disabled");
+	}
+	if(appStatus=="AT_SO" || appStatus=="AT_CO"){
+		document.getElementById('messTypeId').style.visibility="visible";
+		$("#tab2 *").attr("disabled","disabled");
+	}
+	if(appStatus=="AT_SO" || appStatus=="AT_CO"){
+		$("#tab3 *").attr("disabled","disabled");
+	}
+	if(appStatus=="AT_SO" || appStatus=="AT_CO"){
+		$("#tab4 *").attr("disabled","disabled");
+	}
+	if(appStatus=="AT_SO" || appStatus=="AT_CO"){
+		$("#tab5 *").attr("disabled","disabled");
+	}
+	if(appStatus=="AT_SO" || appStatus=="AT_CO"){
+		
+		document.getElementById("appFeeShowId").style.display = "inline";
+		document.getElementById("appFeeReceivedId").value = "true";
+		
+		document.getElementById("appFeechkid").checked=false;
+		
+		if(appFeePaymentMode=="DD" || appFeePaymentMode=="CHEQUE"){
+			document.getElementById("ddChequeAppFeeAmountId").style.display = "inline";	
+		}else if(appFeePaymentMode=="CARD"){
+			document.getElementById("cardAppFeeAmountId").style.display = "inline";
+		}else if(appFeePaymentMode=="PRO CARD"){
+			document.getElementById("proCardAppFeeAmountId").style.display = "inline";
+		}
+		
+		
+		
+		if(appAmountPaymentMode=="DD" || appAmountPaymentMode=="CHEQUE"){
+			document.getElementById("ddChequeAppAmountId").style.display = "inline";	
+		}else if(appAmountPaymentMode=="CARD"){
+			document.getElementById("cardAppAmountId").style.display = "inline";	
+		}else if(appAmountPaymentMode=="PRO CARD"){
+			document.getElementById("proCardAppAmountId").style.display = "inline";
+		}
+		
+		
+		
+		
+		
+		$("#tab6 *").attr("disabled","disabled");
+		
+		document.getElementById("submitId").style.display = "none";
+		
+	}
+}
+window.onload=init();
+ </script>
+</head>
+<body>
+
+	<input type="hidden" id="campusTypeid" />
+	<br>
+
+	<div class="table-responsive">
+
+		<table class="table table-bordered" style="width: 100%">
+			<thead>
+				<tr style="background: #3598dc; color: #fff;">
+					<th>Application No</th>
+					<th>Surname</th>
+					<th>Student Name</th>
+					<th>Parent Name</th>
+					<th>Class</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:text=${appNo}></td>
+					<td th:text=${surname}></td>
+					<td th:text=${studentName}></td>
+					<td th:text=${parentName}></td>
+					<td th:text=${studyClass}></td>
+				</tr>
+			</tbody>
+		</table>
+		<div id="downId"
+			style="display: none; width: auto; height: auto; padding: 10px 15px; text-align: center; background: #ffffff; box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22); border-radius: 25px !important; position: absolute; top: 165px; right: 30px;">
+			<i class="fa fa-times"></i>
+		</div>
+	</div>
+	<form class="form-horizontal"
+		th:action="@{/application/saveApplicationInformation}"
+		id="submit_form" method="POST" onsubmit="return Verify();">
+		<div class="form-wizard">
+			<div class="form-body">
+				<ul class="nav nav-pills nav-justified steps">
+					<li><a id="tabId1" href="#tab1" data-toggle="tab"
+						class="step "> <span class="bold"> General Info </span>
+					</a></li>
+					<li><a id="tabId2" href="#tab2" data-toggle="tab"
+						class="step "> <span class="bold">Course Info</span>
+					</a></li>
+					<li><a id="tabId3" href="#tab3" data-toggle="tab"
+						class="step "> <span class="bold"> Study Info </span>
+					</a></li>
+					<li><a id="tabId4" href="#tab4" data-toggle="tab" class="step">
+							<span class="bold"> Concession Info </span>
+					</a></li>
+					<li><a id="tabId5" href="#tab5" data-toggle="tab"
+						class="step active"> <span class="bold">Address Info </span>
+					</a></li>
+					<li><a id="tabId6" href="#tab6" data-toggle="tab" class="step">
+							<span class="bold"> Payment Info </span>
+					</a></li>
+				</ul>
+				<div class="tab-content">
+
+					<input type="hidden" name="academic" th:value="${academic.id}">
+					<input type="hidden" name="form" th:value="${appVal.appNo}">
+					<input type="hidden" name="appcheckStatus" value="false"
+						id="appFeeReceivedId"> <input type="hidden"
+						name="appCoupon" id="appCouponId" value="false"> <input
+						type="hidden" name="couponMobileNo" id=""> <input
+						type="hidden" name="coupon" id="appCouponValId"> <input
+						type="hidden" name="paymentsCnt" id="paymentsCnt" value="0" /> <input
+						type="hidden" name="applicationFeePaid" id="applicationFeePaid"
+						value="false" /> <input type="hidden"
+						name="applicationPaymentFee" id="applicationPaymentFee"
+						value="false" /> <span
+						th:if="${appVal!=null && appVal.payments!=null && appVal.payments.size()>0}">
+						<input name="paymentsCnt" type="hidden" id="paymentsCnt"
+						value="${appVal.payments.size()}" /> <input
+						name="isSecondReceiptNo" type="hidden" id="isSecondReceiptNoId"
+						value="0" />
+					</span>
+
+
+					<div class="alert alert-danger display-none">
+						<button class="close" data-dismiss="alert"></button>
+						You have some form errors. Please check below.
+					</div>
+					<div class="alert alert-success display-none">
+						<button class="close" data-dismiss="alert"></button>
+						Your form validation is successful!
+					</div>
+					<br>
+					<div class="tab-pane active" id="tab1">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="radio-inline"><input type="radio"
+										id="sscId" onchange="getSscDiv('SSC')"
+										th:checked="${(appVal.appStatus=='AT_CA') || (appVal.sscData!=null)}">SSC</label>
+									<label class="radio-inline"> <input type="radio"
+										th:checked="${appVal.sscHtNo!=null && appVal.sscData==null}"
+										id="otherSscId" onchange="getSscDiv('OTHER')">OTHER
+									</label>
+								</div>
+							</div>
+
+							<div class="col-md-4" id="sscDivId"
+								th:if="${(appVal.appStatus=='AT_CA') || (appVal.sscData!=null)}">
+								<div class="form-group">
+									<label>SSC HallTicket</label> <input type="text"
+										id="txtsschtnumber" placeholder="SSC Hallticket Number"
+										maxlength="10"
+										th:value="${appVal.sscData!=null?appVal.sscData.hallticketNo:''}"
+										class="form-control number" ondrop="return false"
+										ondrag="return false" autocomplete="off" /> <input
+										type="hidden" id="hall_result" name="sscStuData">
+								</div>
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Application No:</label> <input type="text"
+										th:value="${appNo}" readonly="readonly" id="appNoValId"
+										placeholder="Application No" maxlength="10"
+										class="form-control number" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Aadhaar Card No:</label> <input type="text"
+										name="aadharCardNo" id="aadharCardId"
+										th:value="${appVal.aadharCardNo}"
+										placeholder="Aadhaar Card No" class="form-control number"
+										maxlength="16" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Date Of Birth:</label> <input type="text" id="dobId"
+										name="dobStr" readonly="readonly"
+										th:value="${#dates.format(appVal.dob, 'dd-MM-yyyy')}"
+										placeholder="Date Of Birth (dd-mm-yyyy)"
+										class="form-control placeholder-no-fix" />
+								</div>
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Pro Name:</label> <input type="text" id="proNameId"
+										th:value="${appVal.issueToPROEmpId.userName}"
+										readonly="readonly" placeholder="Pro Name"
+										class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>App Type:</label> <input type="text" id="appTypeId"
+										placeholder="App Type" class="form-control"
+										readonly="readonly" value="CAMP" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>App Fee:</label> <input type="text" id="appFeeId"
+										th:value="${appVal.appFee}" readonly="readonly"
+										placeholder="App Fee" class="form-control number" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Surname:</label> <input type="text" id="surnameId"
+										th:value="${appVal.studentSurname}" name="surname"
+										placeholder="Surname" class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Student Name:</label> <input type="text" name="name"
+										th:value="${appVal.studentName}" id="studentNameId"
+										placeholder="Student Name" class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Parent Name:</label> <input type="text"
+										th:value="${appVal.parentName}" name="fatherName"
+										id="parentNameId" placeholder="Parent Name" maxlength="15"
+										class="form-control" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Gender:</label><br> <label class="radio-inline"><input
+										type="radio" id="rbMale" name="gender"
+										th:checked="${appVal.gender=='M'}" value="M">Male</label> <label
+										class="radio-inline"><input type="radio" id="rbFeMale"
+										name="gender" th:checked="${appVal.gender=='F'}" value="F">Female</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Phone Type:</label><br> <label class="radio-inline"><input
+										type="radio" name="phoneType" id="rbMobile" value="M"
+										th:checked="${appVal.phoneType=='M'}">Mobile</label> <label
+										class="radio-inline"><input type="radio" id="rbPhone"
+										name="phoneType" value="L"
+										th:checked="${appVal.phoneType=='L'}">Landline</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Phone Number:</label> <input type="text" name="phoneNo"
+										id="phoneNumberId" placeholder="Phone Number" maxlength="10"
+										th:value="${appVal.phoneNo}" class="form-control number" />
+								</div>
+							</div>
+						</div>
+						<div class="row" >
+							
+							
+							<div class="col-md-4" id="otherDivId" style="visibility: hidden;">
+								<div class="form-group">
+									<label>Hall Ticket:</label> <input type="text" name="sscHtno"
+										th:value="${appVal.sscHtNo}" id="txtschoolhtnumber"
+										maxlength="10" placeholder="Hallticket Number"
+										class="form-control number" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group"></div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group"></div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab2">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Joined Campus:</label> <select class="form-control"
+										name="proposedCampus" id="ddlcampusName"
+										onchange="getProposedCity()">
+										<option value="0">Select Join Into</option>
+										<option th:each="campus: ${campuses}" th:value="${campus.id}"
+											th:selected="${appVal.proposedCampus!=null && appVal.proposedCampus.id==campus.id}"
+											th:text="${campus.campusName}"></option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>City:</label> <input type="text" placeholder="City"
+										th:value="${appVal.proposedCampus!=null?appVal.proposedCampus.city.cityName:''}"
+										readonly="readonly" id="txtCityName" class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Joined Into:</label> <select class="form-control"
+										id="ddlJoinedClass" onchange="getCourses()" name="studyClass">
+										<option value="0">Select Join Into</option>
+										<option th:each="studyClass: ${studyClassList}"
+											th:value="${studyClass.id}"
+											th:selected="${appVal.joinClass!=null && appVal.joinClass.id==studyClass.id}"
+											th:text="${studyClass.displayName}"></option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Course:</label> <select class="form-control"
+										id="coursesListId" onchange="getCourseAppFee();"
+										name="campusTrack">
+										<option value="0">Select Course</option>
+
+										<option th:each="campusCourseTrack: ${coursesList}"
+											th:value="${campusCourseTrack.campusTrackId}"
+											th:selected="${appVal.proposedCampus.getCampusTrack(appVal.courseTrack).campusTrackId}"
+											th:text="${campusCourseTrack.courseTrack.courseTrackCode + '  (  '  +campusCourseTrack.courseTrack.courseTrackName + '  /  '+campusCourseTrack.courseTrack.groupName+ '  /  '+campusCourseTrack.courseTrack.medium+ '  /  '+campusCourseTrack.courseTrack.courseTrackCode+'  )  '}"></option>
+
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Course Batch:</label> <select class="form-control"
+										id="ddlBatch" onchange="getBatchDates()" name="courseBatchVal">
+										<option value="0">Select Batch</option>
+
+										<option th:each="courseBatch: ${courseBatchList}"
+											th:value="${courseBatch.id}"
+											th:selected="${appVal.courseBatch!=null && appVal.courseBatch.id==courseBatch.id}"
+											th:text="${courseBatch.displayName}"></option>
+
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Course Dates:</label> <input type="text"
+										id="courseBatchDatesid" placeholder="Course Dates"
+										readonly="readonly"
+										th:value="${appVal.courseBatch!=null?(#dates.format(appVal.courseBatch.startDate, 'dd-MM-yyyy')+' to '+#dates.format(appVal.courseBatch.endDate, 'dd-MM-yyyy')):''}"
+										class="form-control" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Fees:</label> <input type="text" placeholder="Fees"
+										readonly="readonly"
+										th:value="${appVal.courseFee!=null?appVal.courseFee.getFeeAmount():''}"
+										id="txtCourseFee" class="form-control number" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Additional Course Fee:</label> <input type="text"
+										id="txtadditionalCoursefee" name="additionalCourseFee"
+										th:value="${appVal.additionalCourseFee}" readonly="readonly"
+										placeholder="Additional Course Fee"
+										class="form-control number" />
+								</div>
+							</div>
+							<div class="col-md-4" id="messTypeId" style="visibility: hidden;">
+								<div class="form-group">
+									<label>Mess Type:</label><br>  <label
+										class="radio-inline"><input type="radio" id="nonVegId"
+										name="entry.messType" value="n"
+										th:checked="${appVal.appStatus!='AT_CA' && !appVal.isVegetarian}">Non Veg</label>
+										<label class="radio-inline"><input
+										type="radio" name="entry.messType" id="vegId" value="v"
+										th:checked="${appVal.appStatus!='AT_CA' && appVal.isVegetarian}">Veg</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab3">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>School State:</label> <select class="form-control"
+										name="schoolState" id="ddlSchoolStatesid"
+										onchange="getSchoolDist();">
+										<option value="0">Select State</option>
+										<option th:each="state: ${states}" th:value="${state.id}"
+											th:selected="${appVal.school!=null && appVal.school.district!=null && appVal.school.district.state.id==state.id}"
+											th:text="${state.stateName}"></option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>School District:</label> <select id="ddlDistrictid"
+										name="schoolDisctrict" class="form-control"><option
+											value="0">Select School District</option>
+
+										<option th:each="district: ${districtList}"
+											th:value="${district.districtCode}"
+											th:selected="${appVal.school!=null && appVal.school.district!=null && appVal.school.district.districtCode==district.districtCode}"
+											th:text="${district.districtName}"></option>
+
+
+
+
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label></label>
+
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>School Type:</label> 
+									<select class="form-control"
+										name="schoolType" id="ddlSyllabusid">
+										<option value="0">Select Syllabus</option>
+										<option th:each="syllabusName: ${syllabusNames}"
+											th:value="${syllabusName.syllabusName}"
+											th:selected="${appVal.school!=null && appVal.school.schoolType.equals(syllabusName.syllabusName)}"
+											th:text="${syllabusName.syllabusName}"></option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="form-group">
+									<label>School Name:</label> <input type="text"
+										id="autoSchoolId" placeholder="School Name"
+										th:value="${appVal.school!=null?((appVal.school.schoolName!=null?appVal.school.schoolName:'')+'   '+(appVal.school.schoolType!=null?appVal.school.schoolType:'')):''}"
+										class="form-control" /> <input type="hidden" id="newSchoolId"
+										name="schoolName">
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab4">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>1st Year Concession:</label> <input type="text"
+										name="fyConcession" id="txt1ndCon"
+										th:value="${appConcession!=null?appConcession.firstOrOthers:''}"
+										placeholder="1st Year Concession" class="form-control number"
+										maxlength="6" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>2nd Year Concession:</label> <input type="text"
+										name="syConcession" id="txt2ndCon"
+										th:value="${appConcession!=null?appConcession.second:''}"
+										placeholder="2nd Year Concession" class="form-control number"
+										maxlength="6" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>3rd Year Concession:</label> <input type="text"
+										name="thirdConcession" id="txt3ndCon" disabled="disabled"
+										th:value="${appConcession!=null?appConcession.third:''}"
+										placeholder="3rd Year Concession" class="form-control number"
+										maxlength="6" />
+								</div>
+							</div>
+						</div>
+						<th:if test='${appVal.appType.equals("REG")}'>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Given By:</label> <input type="text"
+											id='autoEmployeeId1' class="form-control"
+											th:value="${(appVal.appType=='REG' && appVal.concessionGivenBy!=null)?appVal.concessionGivenBy.userName:(appVal.issueToPROEmpId!=null?appVal.issueToPROEmpId.userName:'')}" />
+										<input type="hidden" id="emplyee_result1" name="givenBy">
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label></label>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label></label>
+									</div>
+								</div>
+							</div>
+						</th:if>
+						<th:if test='${!appVal.appType.equals("REG")}'>
+							<div class="row">
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Given By:</label> <input type="text"
+											class="form-control" id="txtGivenBy"
+											th:value="${(appVal.appType=='REG' && appVal.concessionGivenBy!=null)?appVal.concessionGivenBy.userName:(appVal.issueToPROEmpId!=null?appVal.issueToPROEmpId.userName:'')}"
+											disabled="disabled" />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Description:</label> <input type="text"
+											th:value="${appConcession!=null?appConcession.reasonDescription:''}"
+											id="txtdescriptionreason" placeholder="Description"
+											class="form-control" name="concessiondescription" />
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label>Authorized By:</label> <input type="text"
+											id="autoEmployeeId" placeholder="Authorized By"
+											th:value="${(appConcession!=null && appConcession.approvedBy1!=null)?appConcession.approvedBy1.userName:''}"
+											class="form-control" /> <input type="hidden"
+											id="emplyee_result" name="authorizedBy">
+
+									</div>
+								</div>
+							</div>
+						</th:if>
+
+
+
+						<div class="row">
+							<div class="col-md-4" id="concesionWrittenonAppId">
+								<label class="checkbox-inline"> <input id="conwrritenid"
+									type="checkbox" onclick="concesionWrittenonApp()">Concession
+									Written On Application
+								</label>
+							</div>
+						</div>
+						<div class="clearfix" style="margin-bottom: 15px"></div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>1st Year Concession:</label> <input type="text"
+										id="txt1stConapp" placeholder="1st Year Concession"
+										th:value="${appConcession!=null?appConcession.firstConOnApp:''}"
+										class="form-control number" name="firstConOnApp" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>2nd Year Concession:</label> <input type="text"
+										id="txt2ndConapp" placeholder="2nd Year Concession"
+										th:value="${appConcession!=null?appConcession.secondConOnApp:''}"
+										class="form-control number" name="secondConOnApp" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>3rd Year Concession:</label> <input type="text"
+										id="txt3ndConapp" placeholder="3rd Year Concession"
+										disabled="disabled"
+										th:value="${appConcession!=null?appConcession.thirdConOnApp:''}"
+										class="form-control number" name="thirdConOnApp" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Reason</label> <select class="form-control"
+										name="concessionReason" id="ddlreason"
+										onchange="getShowTalentDiv();">
+										<option value="0">Select Reason</option>
+										<option th:each="concessionReason: ${concessionReasons}"
+											th:value="${concessionReason.id}"
+											th:selected="${appConcession!=null &&  appConcession.reason!=null && appConcession.reason.id==concessionReason.id}"
+											th:text="${concessionReason.reason}"></option>
+									</select>
+
+								</div>
+							</div>
+							<div class="col-md-4" id="showRefferelId" style="display: none;">
+								<div class="form-group">
+									<label>Referral Employee</label> <input type="text"
+										id="autoRefeEmployeeId" placeholder="Authorized By"
+										th:value="${appVal.refferenceBy!=null?appVal.refferenceBy.userName:''}"
+										class="form-control" /> <input type="hidden"
+										id="emplyee_result4" name="autoReferelEmpId">
+
+								</div>
+							</div>
+						</div>
+						<div class="row" id="showTalenDetailsId" style="display: none;">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Based On</label> <select class="form-control"
+										name="basedOn" id="basedOnId" onchange="getShowTalentDivInf()">
+										<option value="0">Select Type</option>
+
+										<option value="X_MARKS"
+											th:selected="${appVal.basedOn!=null && appVal.basedOn=='X_MARKS'}">X_MARKS</option>
+										<option value="ADMISSION_TEST"
+											th:selected="${appVal.basedOn!=null && appVal.basedOn=='ADMISSION_TEST'}">ADMISSION_TEST</option>
+										<option value="SCHOOL_TOPPER"
+											th:selected="${appVal.basedOn!=null && appVal.basedOn=='SCHOOL_TOPPER'}">SCHOOL_TOPPER</option>
+
+
+
+									</select>
+
+								</div>
+							</div>
+							<div class="col-md-4" id="showTalenDetailsId2">
+								<div class="form-group">
+									<label>10TH Marks</label> <input type="text" id="tenthMarksId"
+										th:value="${appVal.tenthMarks}" name="tenthMarks"
+										maxlength="4" class="form-control" />
+
+
+								</div>
+							</div>
+							<div class="col-md-4" id="showTalenDetailsId1">
+								<div class="form-group">
+									<label>Admission Test Marks </label> <input type="text"
+										id="talentTestMarksId" name="talentTestMarks" maxlength="4"
+										th:value="${appVal.talentTestMarks}" class="form-control" />
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="tab5">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Door Number:</label> <input type="text" name="commDno"
+										id="addressDnoId" placeholder="Door Number"
+										th:value="${appVal.commDno}" class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Street:</label> <input type="text" id="txtcommStreet"
+										th:value="${appVal.commStreet}" name="commStreet"
+										placeholder="Street" class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Landmark:</label> <input type="text" id="txtcommLand"
+										th:value="${appVal.commLand}" name="commLand"
+										placeholder="Lankmark" class="form-control" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Area:</label> <input type="text" placeholder="Area"
+										th:value="${appVal.commArea}" name="commArea" id="txtcommArea"
+										class="form-control" />
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="form-group">
+									<label>Pin Code:</label> <input type="text" id="txtpinCode"
+										th:value="${appVal.commPinId!=null?(appVal.commPinId.pinCode + ' / ' + appVal.commPinId.officeName + ' / ' + appVal.commPinId.taluk):''}"
+										placeholder="Pincode" class="form-control"
+										ondrop="return false" ondrag="return false" autocomplete="off" />
+									<input type="hidden" id="address1_result" name="commPinCodeId">
+								</div>
+							</div>
+						</div>
+						<div id="appPincodeId">
+							<div th:replace="myTheme1/appPincode"></div>
+						</div>
+
+
+					</div>
+					 <div class="tab-pane" id="tab6">
+						<div class="row">
+							<div class="col-md-12">
+
+								<div class="form-group form-md-line-input">
+									<label class="col-md-3 control-label bold" for="form_control_1">Pay
+										mode</label>
+									<div class="col-md-9">
+										<div class="md-radio-inline">
+											<div class="md-radio">
+												<input type="radio" id="raPROCashId" class="md-radiobtn"
+													checked value="CASH"
+													onclick="showAppPaymentDiv(this.value)"
+													th:checked="${isAppAmountPayment?appAmountPayment.payMode=='CASH':(bankAppAmountPayment!=null?bankAppAmountPayment.payMode=='CASH':(appVal.appStatus=='AT_CA'?true:false))}"
+													name="payments[0].payMode"> <label
+													for="raPROCashId"> <span></span> <span
+													class="check"></span> <span class="box "></span> Cash
+												</label>
+											</div>
+											<div class="md-radio ">
+												<input type="radio" id="raPRODDId" class="md-radiobtn"
+													onclick="showAppPaymentDiv(this.value)" value="DD"
+													name="payments[0].payMode"
+													th:checked="${isAppAmountPayment?appAmountPayment.payMode=='DD':(bankAppAmountPayment!=null?bankAppAmountPayment.payMode=='DD':false)}">
+												<label for="raPRODDId"> <span></span> <span
+													class="check"></span> <span class="box "></span> DD
+												</label>
+											</div>
+											<div class="md-radio">
+												<input type="radio" id="raPROChequeId" class="md-radiobtn"
+													onclick="showAppPaymentDiv(this.value)" value="CHEQUE"
+													th:checked="${isAppAmountPayment?appAmountPayment.payMode=='CHEQUE':(bankAppAmountPayment!=null?bankAppAmountPayment.payMode=='CHEQUE':false)}"
+													name="payments[0].payMode"> <label
+													for="raPROChequeId"> <span></span> <span
+													class="check"></span> <span class="box "></span> Cheque
+												</label>
+											</div>
+											<div class="md-radio">
+												<input type="radio" id="raPROCardId" class="md-radiobtn"
+													onclick="showAppPaymentDiv(this.value)" value="CARD"
+													th:checked="${isAppAmountPayment?appAmountPayment.payMode=='CARD':(bankAppAmountPayment!=null?bankAppAmountPayment.payMode=='CARD':false)}"
+													name="payments[0].payMode"> <label
+													for="raPROCardId"> <span></span> <span
+													class="check"></span> <span class="box "></span> Card
+												</label>
+											</div>
+											<div class="md-radio">
+												<input type="radio" id="raPROSelCardId" class="md-radiobtn"
+													onclick="showAppPaymentDiv(this.value)" value="PROCARD"
+													th:checked="${isAppAmountPayment?appAmountPayment.payMode=='PROCARD':(bankAppAmountPayment!=null?bankAppAmountPayment.payMode=='PROCARD':false)}"
+													name="payments[0].payMode"> <label
+													for="raPROSelCardId"> <span></span> <span
+													class="check"></span> <span class="box "></span> ProCard
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<div class="col-md-6">
+
+								<div class="form-group">
+									<label class="col-md-6 control-label" for="form_control_1">Payment
+										date</label>
+									<div class="col-md-6">
+										<input type="text" id="dtpPROPaymentDateId"
+											name="payments[0].payDateStr" readonly="readonly"
+											placeholder="dd-mm-yyyy"
+											th:value="${isAppAmountPayment?#dates.format(appAmountPayment.payDate, 'dd-MM-yyyy'):(bankAppAmountPayment!=null?#dates.format(bankAppAmountPayment.payDate, 'dd-MM-yyyy'):'')}"
+											class="form-control placeholder-no-fix" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-6 control-label" for="form_control_1">Amount</label>
+									<div class="col-md-6">
+										<input type="text" id="txtPROAmountId"
+											class="form-control number" name="payments[0].amount"
+											ondrop="return false" ondrag="return false"
+												autocomplete="off"
+											th:value="${isAppAmountPayment?appAmountPayment.amount:(bankAppAmountPayment!=null?bankAppAmountPayment.amount:appVal.amount)}"
+											maxlength="5">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-6 control-label" for="form_control_1">Pre
+										Printed Receipt No.</label>
+									<div class="col-md-6">
+										<input id="txtPROPrePrintedReceiptId" type="text"
+											class="form-control number"
+											ondrop="return false" ondrag="return false"
+												autocomplete="off"
+											th:value="${isAppAmountPayment?appAmountPayment.manualReceipt:(bankAppAmountPayment!=null?bankAppAmountPayment.manualReceipt:'')}"
+											name="payments[0].prePrintedReceiptNo">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6" id="ddChequeAppAmountId"
+								style="display: none;">
+								<div style="padding: 10px 20px; background: #f1f1f170">
+
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">Bank
+											Name</label>
+										<div class="col-md-6">
+											<input id="txtPRODDBankNameId" type="text"
+												th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDBankname:''}"
+												class="form-control" name="payments[0].bankName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">Branch
+											Name</label>
+										<div class="col-md-6">
+											<input id="txtPRODDBranchNameId" type="text"
+												th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDBranchname:''}"
+												class="form-control" name="payments[0].branchName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">City
+											Name</label>
+										<div class="col-md-6">
+											<input id="txtPRODDCityNameId" type="text"
+												th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDCityname:''}"
+												class="form-control" name="payments[0].cityName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">DD/Cheque
+											Number</label>
+										<div class="col-md-6">
+
+											<input id="txtPRODDNumberId" type="text" class="form-control"
+												th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDNo:''}"
+												name="payments[0].ddNumber">
+
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">DD/Cheque
+											Date</label>
+										<div class="col-md-6">
+
+											<input type="text" id="dtpPRODDDateId"
+												name="payments[0].ddDateStr" readonly="readonly"
+												th:value="${bankAppAmountPayment!=null?#dates.format(bankAppAmountPayment.bankInstruments.chequeDDDate, 'dd-MM-yyyy'):''}"
+												placeholder="dd-mm-yyyy"
+												class="form-control placeholder-no-fix" />
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">Favorable
+											of</label>
+										<div class="col-md-6">
+											<select class="form-control" name="appCardBankAccountOrg"
+												id="bankAccountVlaId">
+												<option value="-1">Select Type</option>
+												<option
+													th:each="campusOrganization: ${campusOrganizationList}"
+													th:value="${campusOrganization.id}"
+													th:selected="${bankAppAmountPayment!=null &&  bankAppAmountPayment.org!=null && bankAppAmountPayment.org.id==campusOrganization.id}"
+													th:text="${campusOrganization.organizationName}"></option>
+											</select>
+										</div>
+									</div>
+
+								</div>
+							</div>
+							<div class="col-md-6" id="cardAppAmountId" style="display: none;">
+								<div style="padding: 10px 20px; background: #f1f1f170">
+									<div class="form-body">
+
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Appr
+												Code </label>
+											<div class="col-md-6">
+
+												<input type="text" class="form-control" maxlength="6"
+													th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDNo:''}"
+													name="payments[0].swipeApprNO">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Swiping
+												Date</label>
+											<div class="col-md-6">
+
+												<input type="text" id="datepickerProSwipe"
+													name="payments[0].proSwipeDate" readonly="readonly"
+													th:value="${bankAppAmountPayment!=null?#dates.format(bankAppAmountPayment.bankInstruments.chequeDDDate, 'dd-MM-yyyy'):''}"
+													placeholder="dd-mm-yyyy"
+													class="form-control placeholder-no-fix" />
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Invoice
+												No.</label>
+											<div class="col-md-6">
+
+												<input id="txtProInvoiceNo" type="text" class="form-control" maxlength="6"
+													th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDBankname:''}"
+													name="payments[0].proSwipeInvoiceNo">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Merchant
+												ID</label>
+											<div class="col-md-6">
+
+												<select class="form-control" name="payments[0].swipeMId"
+													id="txtProMerchantId" onchange="loadTerminalList(this.id)">
+													<option value="-1">Select Merchant Id</option>
+													<option th:each="merchant: ${merchantList}"
+														th:selected="${bankAppAmountPayment!=null &&  bankAppAmountPayment.bankInstruments.posId!=null && bankAppAmountPayment.bankInstruments.posId.id==merchant.id}"
+														th:value="${merchant.id}" th:text="${merchant.merchantId}"></option>
+												</select>
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Terminal
+												ID</label>
+											<div class="col-md-2">
+												<input id="txtProTerminal1Id" type="text" maxlength="2"
+													th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDBranchname:''}"
+													class="form-control" name="payments[0].swipeTId1">
+											</div>
+											<div class="col-md-4">
+
+												<select id="txtProTerminalId" name="payments[0].swipeTId"
+													class="form-control">
+													<option value="-1">Select Terminal Id</option>
+													<option th:each="merchant: ${merchantList}"
+														th:selected="${bankAppAmountPayment!=null &&  bankAppAmountPayment.bankInstruments.posId!=null && bankAppAmountPayment.bankInstruments.posId.id==merchant.id}"
+														th:value="${merchant.id}" th:text="${merchant.terminalId}"></option>
+
+												</select>
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6" id="proCardAppAmountId"
+								style="display: none;">
+								<div style="padding: 10px 20px; background: #f1f1f170">
+									<div class="form-body">
+
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Appr
+												Code </label>
+											<div class="col-md-6">
+
+												<input id="txtProApprNo1" type="text" class="form-control" maxlength="6"
+													th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDNo:''}"
+													name="payments[0].proSwipeApprNO">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Swiping
+												Date</label>
+											<div class="col-md-6">
+
+												<input type="text" id="datepickerProSwipe1"
+													name="payments[0].proSelSwipeDate" readonly="readonly"
+													th:value="${bankAppAmountPayment!=null?#dates.format(bankAppAmountPayment.bankInstruments.chequeDDDate, 'dd-MM-yyyy'):''}"
+													placeholder="dd-mm-yyyy"
+													class="form-control placeholder-no-fix" />
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Invoice
+												No.</label>
+											<div class="col-md-6">
+
+												<input id="txtProInvoiceNo1" type="text"
+													class="form-control" maxlength="6"
+													th:value="${bankAppAmountPayment!=null?bankAppAmountPayment.bankInstruments.chequeDDBankname:''}"
+													name="payments[0].proCardSwipeInvoiceNo">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Pro
+												Employee</label>
+											<div class="col-md-6">
+												<input id='autoPosProEmp' type="text" class="form-control"
+													name="autoPosProEmp"
+													th:value="${(bankAppAmountPayment!=null && bankAppAmountPayment.bankInstruments.posId!=null && bankAppAmountPayment.bankInstruments.posId.posEmployee!=null)?bankAppAmountPayment.bankInstruments.posId.posEmployee.userName:''}">
+												<input type="hidden" id="posemplyee_result" name="posEmp">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group form-md-line-input">
+									<label class="col-md-3 control-label" for="form_control_1">Application
+										Fee Received</label>
+									<div class="col-md-9">
+										<div class="md-checkbox-inline">
+
+											<div class="md-checkbox">
+												<input type="checkbox" id="appFeechkid" class="md-check"
+													onclick="showAppFee()"> <label for="appFeechkid">
+													<span></span> <span class="check"></span> <span class="box"></span>
+													&nbsp;
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="row" id="appFeeShowId" style="display: none;">
+							<div class="col-md-12">
+
+								<div class="form-group form-md-line-input">
+									<label class="col-md-3 control-label bold" for="form_control_1">Pay
+										mode</label>
+									<div class="col-md-9">
+										<div class="md-radio-inline">
+											<div class="md-radio">
+												<input type="radio" id="raAppFeeCashId"
+													name="payment.payMode" class="md-radiobtn"
+													th:checked="${isAppFeePayment?appFeePayment.payMode=='CASH':(bankAppFeePayment!=null?bankAppFeePayment.payMode=='CASH':(appVal.appStatus=='AT_CA'?true:false))}"
+													value="CASH" onclick="showAppFeePaymentDiv(this.value)">
+												<label for="raAppFeeCashId"> <span></span> <span
+													class="check"></span> <span class="box "></span> Cash
+												</label>
+											</div>
+											<div class="md-radio ">
+												<input type="radio" id="raAppFeeDDId" name="payment.payMode"
+													class="md-radiobtn"
+													th:checked="${isAppFeePayment?appFeePayment.payMode=='DD':(bankAppFeePayment!=null?bankAppFeePayment.payMode=='DD':false)}"
+													onclick="showAppFeePaymentDiv(this.value)" value="DD">
+												<label for="raAppFeeDDId"> <span></span> <span
+													class="check"></span> <span class="box "></span> DD
+												</label>
+											</div>
+											<div class="md-radio">
+												<input type="radio" id="raAppFeeChequeId"
+													th:checked="${isAppFeePayment?appFeePayment.payMode=='CHEQUE':(bankAppFeePayment!=null?bankAppFeePayment.payMode=='CHEQUE':false)}"
+													name="payment.payMode" class="md-radiobtn"
+													onclick="showAppFeePaymentDiv(this.value)" value="CHEQUE">
+												<label for="raAppFeeChequeId"> <span></span> <span
+													class="check"></span> <span class="box "></span> Cheque
+												</label>
+											</div>
+											<div class="md-radio">
+												<input type="radio" id="raAppFeeCardId"
+													th:checked="${isAppFeePayment?appFeePayment.payMode=='CARD':(bankAppFeePayment!=null?bankAppFeePayment.payMode=='CARD':false)}"
+													name="payment.payMode" class="md-radiobtn"
+													onclick="showAppFeePaymentDiv(this.value)" value="CARD">
+												<label for="raAppFeeCardId"> <span></span> <span
+													class="check"></span> <span class="box "></span> Card
+												</label>
+											</div>
+											<div class="md-radio">
+												<input type="radio" id="raAppFeeProCardId"
+													th:checked="${isAppFeePayment?appFeePayment.payMode=='PROCARD':(bankAppFeePayment!=null?bankAppFeePayment.payMode=='PROCARD':false)}"
+													name="payment.payMode" class="md-radiobtn"
+													onclick="showAppFeePaymentDiv(this.value)" value="PROCARD">
+												<label for="raAppFeeProCardId"> <span></span> <span
+													class="check"></span> <span class="box "></span> ProCard
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<div class="col-md-6">
+
+								<div class="form-group">
+									<label class="col-md-6 control-label" for="form_control_1">Application
+										Fee Pay date</label>
+									<div class="col-md-6">
+
+										<input type="text" id="dtpAppFeeDateId"
+											name="payment.payDateStr" readonly="readonly"
+											placeholder="dd-mm-yyyy"
+											th:value="${isAppFeePayment?#dates.format(appFeePayment.payDate, 'dd-MM-yyyy'):(bankAppFeePayment!=null?#dates.format(bankAppFeePayment.payDate, 'dd-MM-yyyy'):'')}"
+											class="form-control placeholder-no-fix" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-6 control-label" for="form_control_1">Amount</label>
+									<div class="col-md-6">
+										<input id="txtAppFeeAmountId" type="text"
+										ondrop="return false" ondrag="return false"
+												autocomplete="off"
+											th:value="${isAppFeePayment?appFeePayment.amount:(bankAppFeePayment!=null?bankAppFeePayment.amount:appVal.appFee)}"
+											class="form-control number" name="payment.amount"
+											maxlength="5">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-6 control-label" for="form_control_1">Pre
+										Printed Receipt No.</label>
+									<div class="col-md-6">
+										<input id="txtAppFeePrePrintedReceiptId" type="text"
+										ondrop="return false" ondrag="return false"
+												autocomplete="off"
+											th:value="${isAppFeePayment?appFeePayment.manualReceipt:(bankAppFeePayment!=null?bankAppFeePayment.manualReceipt:'')}"
+											class="form-control number" name="secondprePrintedReceiptNo">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6" id="ddChequeAppFeeAmountId"
+								style="display: none;">
+								<div style="padding: 10px 20px; background: #f1f1f170">
+
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">Bank
+											Name</label>
+										<div class="col-md-6">
+											<input id="txtAppFeeDDBankNameId" type="text"
+												th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDBankname:''}"
+												class="form-control" name="payment.bankName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">Branch
+											Name</label>
+										<div class="col-md-6">
+											<input id="txtAppFeeDDBranchNameId" type="text"
+												th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDBranchname:''}"
+												class="form-control" name="payment.branchName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">City
+											Name</label>
+										<div class="col-md-6">
+											<input id="txtAppFeeDDCityNameId" type="text"
+												th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDCityname:''}"
+												class="form-control" name="payment.cityName">
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">DD/Cheque
+											Number</label>
+										<div class="col-md-6">
+
+											<input id="txtAppFeeDDNumberId" type="text"
+												th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDNo:''}"
+												class="form-control" name="payment.ddNumber">
+
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">DD/Cheque
+											Date</label>
+										<div class="col-md-6">
+
+											<input type="text" id="dtpAppeFeeDDDateId"
+												name="payment.ddDateStr" readonly="readonly"
+												th:value="${bankAppFeePayment!=null?#dates.format(bankAppFeePayment.bankInstruments.chequeDDDate, 'dd-MM-yyyy'):''}"
+												placeholder="dd-mm-yyyy"
+												class="form-control placeholder-no-fix" />
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-md-6 control-label" for="form_control_1">Favorable
+											of</label>
+										<div class="col-md-6">
+											<select class="form-control" name="appFeeCardBankAccountOrg"
+												id="appFeeBankAccountVlaId">
+												<option value="-1">Select Type</option>
+												<option
+													th:each="campusOrganization: ${campusOrganizationList}"
+													th:value="${campusOrganization.id}"
+													th:selected="${bankAppFeePayment!=null &&  bankAppFeePayment.org!=null && bankAppFeePayment.org.id==campusOrganization.id}"
+													th:text="${campusOrganization.organizationName}"></option>
+											</select>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+							<div class="col-md-6" id="cardAppFeeAmountId"
+								style="display: none;">
+								<div style="padding: 10px 20px; background: #f1f1f170">
+									<div class="form-body">
+
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Appr
+												Code </label>
+											<div class="col-md-6">
+
+												<input id="txtAppFeeApprNo" type="text" class="form-control" maxlength="6"
+													th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDNo:''}"
+													name="payment.swipeApprNO">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Swiping
+												Date</label>
+											<div class="col-md-6">
+
+												<input type="text" id="datepickerAppFeeSwipe"
+													name="payment.proSwipeDate" readonly="readonly"
+													placeholder="dd-mm-yyyy"
+													th:value="${bankAppFeePayment!=null?#dates.format(bankAppFeePayment.bankInstruments.chequeDDDate, 'dd-MM-yyyy'):''}"
+													class="form-control placeholder-no-fix" />
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Invoice
+												No.</label>
+											<div class="col-md-6">
+
+												<input id="txtAppFeeInvoiceNo" type="text" maxlength="6"
+													th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDBankname:''}"
+													class="form-control" name="payment.appFeeSwipeInvoiceNo">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Merchant
+												ID</label>
+											<div class="col-md-6">
+
+												<select class="form-control" name="payment.swipeMId"
+													id="txtAppFeeMerchantId"
+													onchange="loadTerminalList(this.id)">
+													<option value="-1">Select Merchant Id</option>
+													<option th:each="merchant: ${merchantList}"
+														th:selected="${bankAppFeePayment!=null &&  bankAppFeePayment.bankInstruments.posId!=null && bankAppFeePayment.bankInstruments.posId.id==merchant.id}"
+														th:value="${merchant.id}" th:text="${merchant.merchantId}"></option>
+												</select>
+
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Terminal
+												ID</label>
+											<div class="col-md-2">
+												<input type="text" class="form-control" maxlength="2"
+													th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDBankname:''}"
+													name="payment.swipeTId1" id="txtAppFeeTerminal1Id">
+											</div>
+											<div class="col-md-4">
+
+												<select id="txtAppFeeTerminalId" name="payment.swipeTId"
+													class="form-control">
+													<option value="-1">Select Terminal Id</option>
+													<option th:each="merchant: ${merchantList}"
+														th:selected="${bankAppFeePayment!=null &&  bankAppFeePayment.bankInstruments.posId!=null && bankAppFeePayment.bankInstruments.posId.id==merchant.id}"
+														th:value="${merchant.id}" th:text="${merchant.terminalId}"></option>
+
+												</select>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6" id="proCardAppFeeAmountId"
+								style="display: none;">
+								<div style="padding: 10px 20px; background: #f1f1f170">
+									<div class="form-body">
+										<!-- <div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Favorable
+												of</label>
+											<div class="col-md-6">
+												<select class="form-control"
+													name="appFeeProCardBankAccountOrg"
+													id="appFeeBankAccountVlaId">
+													<option value="-1">Select Type</option>
+													<option
+														th:each="campusOrganization: ${campusOrganizationList}"
+														th:value="${campusOrganization.id}"
+														th:selected="${bankAppFeePayment!=null &&  bankAppFeePayment.org!=null && bankAppFeePayment.org.id==campusOrganization.id}"
+														th:text="${campusOrganization.organizationName}"></option>
+												</select>
+											</div>
+										</div> -->
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Appr
+												Code </label>
+											<div class="col-md-6">
+
+												<input id="txtAppFeeApprNo1" type="text" maxlength="6"
+													th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDNo:''}"
+													class="form-control" name="payment.appFeeSwipeApprNO">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Swiping
+												Date</label>
+											<div class="col-md-6">
+
+												<input type="text" id="datepickerAppFeeSwipe1"
+													th:value="${bankAppFeePayment!=null?#dates.format(bankAppFeePayment.bankInstruments.chequeDDDate, 'dd-MM-yyyy'):''}"
+													name="payment.appFeeSwipeDate" readonly="readonly"
+													placeholder="dd-mm-yyyy"
+													class="form-control placeholder-no-fix" />
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Invoice
+												No.</label>
+											<div class="col-md-6">
+
+												<input id="txtAppFeeInvoiceNo1" type="text" maxlength="6"
+													th:value="${bankAppFeePayment!=null?bankAppFeePayment.bankInstruments.chequeDDBankname:''}"
+													class="form-control"
+													name="payment.appFeeCardSwipeInvoiceNo">
+
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-6 control-label" for="form_control_1">Pro
+												Employee</label>
+											<div class="col-md-6">
+												<input id='autoPosProEmpId' type="text" class="form-control"
+													name="autoPosProEmpId"
+													th:value="${(bankAppFeePayment!=null && bankAppFeePayment.bankInstruments.posId!=null && bankAppFeePayment.bankInstruments.posId.posEmployee!=null)?bankAppFeePayment.bankInstruments.posId.posEmployee.userName:''}">
+												<input type="hidden" id="appPosemplyee_result"
+													name="appPosEmp">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div> 
+					</div>
+				</div>
+			</div>
+			<div class="form-actions" id="submitId">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="pull-right">
+							<a href="javascript:;" class="btn default button-previous"> <i
+								class="fa fa-long-arrow-left"></i> Previous
+							</a> <a href="javascript:;" class="btn btn-outline green button-next">
+								Next <i class="fa fa-long-arrow-right"></i>
+							</a>
+							<button class="btn green button-submit">
+								Submit <i class="fa fa-check"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div id="printId" style="display: none;"></div>
+</body>
+</html>

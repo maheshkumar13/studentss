@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<style>
+th, td {
+	white-space: nowrap;
+}
+
+.inmodal .modal-header {
+	padding: 10px 15px;
+}
+
+.inmodal .modal-title {
+	font-size: 18px;
+}
+
+.panel-success {
+	height: auto;
+}
+
+.panel-group {
+	margin-bottom: 66px;
+}
+
+.panel-heading {
+	margin-bottom: 20px;
+}
+
+.panel-body {
+	margin-bottom: 20px;
+}
+</style>
+<script type="text/javascript">
+
+	function getLeaveUpdatePopup(leaveId,isCancelValid) {
+		$.ajax({
+			url : "/leaveManagement/leaveCancelPopup?leave=" + leaveId+"&allowCancel="+isCancelValid,
+			dataType : 'text',
+			success : function(data) {
+				$('#leaveUpdatePopupDataId').html(data);
+			},
+			error : function() {
+				alert('Unable to load details');
+			}
+		});
+	}
+	
+	$(function() {
+		$('#searchEmpchkid').click(function(){
+				if($(this).prop('checked')){
+					$('#autoEmployeeId').prop('disabled',false);
+				}else{
+					$('#autoEmployeeId').prop('disabled',true);
+					$('#autoEmployeeId').val('');
+					
+					window.location.reload();
+				}
+			
+		})});
+		
+		$(function() {
+			
+			
+			$("#autoEmployeeId").autocomplete({
+	 	    	minChars: 3,
+	 	    	source: function(request, response) {
+	 	            $.ajax({
+	 	                url: "/leaveManagement/autoEmpLeave",
+	 	                dataType: "json",
+	 	               data: {
+	 	                    term: request.term,
+	 	                },
+	 	                success: function(data) {
+	 	                	 response(data);
+	 	                }
+	 	            });
+	 	        },
+	 	        focus : function(event, ui) {
+					$("#autoEmployeeId").val(
+							ui.item.value);
+					return false;
+				},
+				change : function(event, ui) {
+					if (ui.item == null) {
+						$("#autoEmployeeId").val("");
+					}
+				},
+				select : function(event, ui) {
+					$("#autoEmployeeId").val(ui.item.en);
+					 getEmployeeInfo(ui.item.eid);
+					return false;
+				}
+			}).data("ui-autocomplete")._renderItem = function(
+			ul, item) {
+		return $("<li>").append(
+				"<a>" + item.value +item.key+ "</a>")
+				.appendTo(ul);
+	};
+			});
+		
+		function getEmployeeInfo(empId){
+			$.ajax({
+				url : "//leaveManagement/leaveCancel?reqEmployee="
+					+ empId,
+				dataType : 'text',
+				success : function(data) {
+					$('#selEmpLeaveId').html(data);
+				},
+			});
+		}
+</script>
+<div class="row">
+	<div class="col-lg-12">
+
+		<div class="panel-group">
+			<div class="panel panel-success">
+				<div class="panel-heading">Leaves</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-xs-12">
+							<label for="ex1">Search Employee&nbsp;&nbsp;<input
+								type="checkbox" id="searchEmpchkid" /></label> <input type="text"
+								placeholder="Search Employee With Payroll / Name"
+								class="form-control" id="autoEmployeeId" disabled="disabled"
+								name="autoEmployeeId">
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-xs-12">
+							<div id="selEmpLeaveId">
+							<div th:replace="myTheme1/LeaveManagement/leaveCancelDetails"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal inmodal fade" id="leaveCancelPopupId" tabindex="-1"
+	role="dialog" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="width: 40%;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">Leave Details</h4>
+			</div>
+			<div class="modal-body" id="leaveUpdatePopupDataId"></div>
+		</div>
+	</div>
+</div>

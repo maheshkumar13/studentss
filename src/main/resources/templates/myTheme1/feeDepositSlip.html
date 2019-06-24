@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>Fee Deposit slip</title>
+<script type="text/javascript">
+	//document.paymentFormId.paymentEntryAmountId.focus(); 
+	
+	window.history.forward();
+	function noBack() {
+		window.history.forward();
+	}
+</script>
+<style>
+*{
+margin:0px;
+}
+.deposit_test{
+font-family:Arial, Helvetica, sans-serif;
+font-size:12px;
+line-height:23px;
+padding-left:5px;
+}
+.deposit_test1{
+font-family:Arial, Helvetica, sans-serif;
+font-size:14px;
+line-height:23px;
+padding-left:0px;
+}
+.deposit_test2{
+font-family:Arial, Helvetica, sans-serif;
+font-size:14px;
+line-height:45px;
+padding-left:5px;
+}
+#checkbox{
+width:50px;
+height:20px;
+margin:3px 0 0 16px;
+}
+#textfield{
+width:200px;
+height:15px;
+border:1px solid #333333;
+margin-top:2px;
+margin-left:10px;
+}
+#textfield2{
+width:80px;
+height:14px;
+border:1px solid #333333;
+margin-top:1px;
+margin-left:6px;
+}
+
+#textarea{
+width:200px;
+height:35px;
+margin-top:4px;
+margin-left:10px;
+border:1px solid #000000;
+}
+</style>
+<style type="text/css" media="print">
+@page
+{
+ size: landscape;
+ margin: 2cm;
+}
+</style>
+</head>
+<body>
+	
+<div style="width:1240px; height:852px; margin:0 auto;border:2px solid #333333;" class="page">
+		<!-----========================Main====================================------->
+
+		<div style="float:left; width:377px; height:1000px; margin-left:7px; ">
+			<!--------------------------------Left---------------------------------------------------------->
+<div style="width:377px; height:60px;"><!-----Logo_Box------->       	
+           
+            <div style="float:left; margin-top:0px; margin-left:5px;"><img src="/assets/global/img/SRIlogo2.jpeg"></div>
+      </div><!-----Logo_Box_End------->
+      
+        <div style="width:377px;height:12px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif; font-size:11px; float:left; padding-left:75px;"><b>Fee Deposit slip for New Admission</b></p>
+        	<p style="font-family:Arial, Helvetica, sans-serif; font-size:11px; float:left;padding-left:30px; "><b>Student Copy</b></p>
+        </div>
+        
+				
+
+			
+        
+        <div style="width:377px; height:72px; border:1px solid #000000; margin-left:5px; margin-top:5px;">
+        	<div style="width:377px; height:20px; border-bottom:1px solid #000000; background-color:#333333; color:#FFFFFF;">
+            
+            	<div style="width:75px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; font-weight:bold;float:left;">Please Tick</p>
+                    <img src="/assets/global/img/check-box1.png" style="padding:3px 0 0 5px; float:left;">
+                </div>
+                <div style="width:80px; height:20px; border-right:1px solid #000000;; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">Bank Name</p>
+                </div>
+                <div style="width:125px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">A/C Holder</p>
+                </div>
+                <div style="width:94px; height:20px;  float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">A/C No.</p>
+                </div>
+            </div>
+            
+            <div style="width:377px; height:25px; border-bottom:1px solid #000000;">
+            
+            	<div style="width:75px; height:25px; border-right:1px solid #000000; float:left;"><input name="" id="checkbox" value="" type="checkbox"></div>
+                
+                <div style="width:80px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; padding-left:2px;"><b>ICICI-isure Pay</b> (ICICI Bank Ltd.)</p>
+                </div>
+                <div style="width:125px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px;text-align:center;">PRO-Sri Chaitanya Group</p>
+                </div>
+                <div style="width:94px; height:25px; float:left;"><p style="text-align:center;">-</p></div>
+            </div>
+            <div style="width:377px; height:25px; ">
+            	<div style="width:75px; height:25px; border-right:1px solid #000000; float:left;"><input name="" id="checkbox" value="" type="checkbox"></div>
+                
+                <div style="width:80px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:11px; padding-left:25px;"><b>AXIS</b></p>
+                    <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; padding-left:2px;">(ICICI Bank Ltd.)</p>
+                </div>
+                <div style="width:125px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px;text-align:center; ">Sri Chaitanya Group</p>
+                </div>
+                <div style="width:94px; height:25px; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px; text-align:center;">913010029088430</p>
+                </div>
+            </div>
+        </div>
+        
+<!-----------------------Left Deposit box------->
+
+ <div style="width:377px; height:354px; border-top:#000000 1px solid;border-left:#000000 1px solid;border-right:#000000 1px solid; margin-left:5px; margin-top:3px;">
+        
+        	<div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test">Bank Branch:</p>
+            	</div>
+                <div style="width:235px; height:23px; float:left;"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">Date of Deposit</p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+
+<div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test">Application No.</p>
+           	  </div>
+                <div style="width:235px; height:23px; float:left"><span th:text="${printReceipt.appNo}"></span></div>
+            </div>
+            
+           
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+                	<p class="deposit_test">Amount <span style="padding-left:5px;">Rs.</span></p>
+              </div>
+                <div style="width:235px; height:23px; float:left"><span th:text="${printReceipt.amount}"></span></div>
+            </div>
+            
+           
+            
+            <div style="width:377px; height:45px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:45px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test2">Amount in Words</p>
+           	  </div>
+                <div style="width:235px; height:45px; float:left"><span th:text="${printReceipt.amountinwords}"></span> 
+                </div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+                	<p class="deposit_test">Deno  <span style="padding-left:20px;">No. of </span> </p>
+              </div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">1000<span style="padding-left:70px;"> x</span></p></div>
+                <div style="width:229px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">500<span style="padding-left:76px;"> x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">100<span style="padding-left:79px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">50<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">20<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">10<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">05<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:378px; height:24px;border-bottom:#000000 1px solid; ">
+            	<div style="width:140px; height:24px; float:left; border-right:1px solid #000000;"><p class="deposit_test">Others</p></div>
+                <div style="width:235px; height:24px; float:left;"></div>
+            </div>            
+        </div><!---------------------------------------------------------------------------------------------Left Deposit box_End------->
+ <div style="width:377px; height:20px; border:1px solid #000000; margin-top:2px; margin-left:5px; ">
+           <div style="width:140px; height:20px; float:left; border-right:1px solid #000000;"><p class="deposit_test"><b>Total :</b></p></div>
+           <div style="width:235px; height:20px; float:left"><span th:text="${printReceipt.amountinwords}"></span> </div>
+        </div>
+        
+        <div style="width:377px; height:41px;border:1px solid #000000; margin-left:5px; margin-top:2px;">
+        	<div style="width:377px; height:20px; border-bottom:1px solid #000000">
+            	<div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Journal No.</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; border-right:1px solid #000000;"></div>
+                <div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Branch Code</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; "></div>
+            </div>
+            <div style="width:377px; height:20px; ">
+            	<div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Branch Name</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; border-right:1px solid #000000;"></div>
+                <div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Date</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; "></div>
+            </div>
+        </div>
+        
+        
+        <div style="width:377px; height:15px; margin-left:5px; margin-top:8px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px;float:left;">Depositor's Signature</p>
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:12px;float:left; padding-left:125px">Teller's Signature</p>
+        </div>
+        
+        <div style="width:377px; height:23px; margin-top:15px; margin-left:5px">
+        	<div style="float:left; width:110px; height:23px; ">
+            	<p style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; ">Phone/Mobile   :</p>
+            </div>
+            <div style="float:left; width:200px; height:23px; ">
+            	
+            </div>
+        </div>
+        
+        
+        <div style="width:377px; height:63px; border:#000000 solid 1px; margin-top:2px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif;font-size:10px;font-weight:bold; padding:4px 0 0 10px;">You can now pay fee at any branch of ICICI / AXIS Bank                across the Country
+            </p>
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:11px; padding:2px 0 0 10px;">1.All columns have to be filled correctly including denomination of notes /                coins.
+            </p>
+            
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:10px; padding:2px 0 0 10px;">2.Please rotain the student copy for future reference.
+            </p>
+        </div>
+        
+        
+        <div style="border-bottom:2px dotted #000000; width:390px; margin-top:5px;"></div>
+        
+        
+        
+        <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; font-weight:bold; margin-top:3px;">Dear Parent/Student:</p>
+        <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px;  margin-top:5px;">Thanks for your continued patronage and support.</p>
+        <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; width:377px;">At
+ Sri Chaitanya we strive hard to provide quality education to students 
+&amp; and facilitates             in a better environment.</p>
+        
+        <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px;margin-top:3px; width:377px;">In
+ our effort to make easy payment of your ward college fee, our          
+  institution in alliance with Axis bank &amp; ICICI Bank made 
+arrangement to accept fee on line receipts through banking system.</p>
+         <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px;width:377px;">You
+ may collect deposit slips from any of our college-campus, alternatively
+ down load the            same from www.srichaitanya.net and pay the fee
+ in any branch of the above banks across the country.</p>
+    </div><!---------------------------------------------------Left_End--------------------------------------------------------------------------------->
+    
+    
+    
+    
+    
+    <div style="float:left; width:15px; height:1000px; margin-left:15px; margin-top:3px;"><img src="/assets/global/img/cutpage.png"></div><!---------------------------------CUTPAGE------------------------------->   				
+		<!---------------------------------------------------Left_End--------------------------------------------------------------------------------->
+		
+			<!-------------------------------------------Middle------------------------------------------------>     	
+    <div style="float:left; width:377px; height:842px; margin-left:10px; "> 
+    	<div style="width:377px; height:60px;"><!-----Logo_Box------->       	
+           
+            <div style="float:left; margin-top:0px; margin-left:5px;"><img src="/assets/global/img/SRIlogo2.jpeg"></div>
+      </div><!-----Logo_Box_End------->
+      
+        <div style="width:377px;height:12px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif; font-size:11px; float:left; padding-left:60px;"><b>Fee Deposit slip for New Admission</b></p>
+        	<p style="font-family:Arial, Helvetica, sans-serif; font-size:11px; float:left;padding-left:30px; "><b>Institution Copy</b></p>
+        </div>
+        
+        
+        
+        
+        <div style="width:377px; height:72px; border:1px solid #000000; margin-left:5px; margin-top:5px;">
+        	<div style="width:377px; height:20px; border-bottom:1px solid #000000;; background-color:#333333; color:#FFFFFF;">
+            
+            	<div style="width:75px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; font-weight:bold;float:left;">Please Tick</p>
+                    <img src="/assets/global/img/check-box1.png" style="padding:3px 0 0 5px; float:left;">
+                </div>
+                <div style="width:80px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">Bank Name</p>
+                </div>
+                <div style="width:125px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">A/C Holder</p>
+                </div>
+                <div style="width:94px; height:20px;  float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">A/C No.</p>
+                </div>
+            </div>
+            
+            <div style="width:377px; height:25px; border-bottom:1px solid;">
+            
+            	<div style="width:75px; height:25px; border-right:1px solid #000000; float:left;"><input name="" id="checkbox" value="" type="checkbox"></div>
+                
+                <div style="width:80px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; padding-left:2px;"><b>ICICI-isure Pay</b> (ICICI Bank Ltd.)</p>
+                </div>
+                <div style="width:125px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px;text-align:center;">PRO-Sri Chaitanya Group</p>
+                </div>
+                <div style="width:94px; height:25px; float:left;"><p style="text-align:center;">-</p></div>
+            </div>
+            <div style="width:377px; height:25px; ">
+            	<div style="width:75px; height:25px; border-right:1px solid #000000; float:left;"><input name="" id="checkbox" value="" type="checkbox"></div>
+                
+                <div style="width:80px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:11px; padding-left:25px;"><b>AXIS</b></p>
+                    <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; padding-left:2px;">(ICICI Bank Ltd.)</p>
+                </div>
+                <div style="width:125px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px;text-align:center; ">Sri Chaitanya Group</p>
+                </div>
+                <div style="width:94px; height:25px; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px; text-align:center;">913010029088430</p>
+
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+    <!-----------------------Left Deposit box----------------------------->    
+        
+       <div style="width:377px; height:354px; border-top:#000000 1px solid;border-left:#000000 1px solid;border-right:#000000 1px solid; margin-left:5px; margin-top:3px;">
+        
+        	<div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test">Bank Branch:</p>
+            	</div>
+                <div style="width:235px; height:23px; float:left;"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">Date of Deposit</p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test">Application No.</p>
+           	  </div>
+                <div style="width:235px; height:23px; float:left"><span th:text="${printReceipt.appNo}"></span></div>
+            </div>
+            
+           
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+                	<p class="deposit_test">Amount <span style="padding-left:5px;">Rs.</span></p>
+              </div>
+                <div style="width:235px; height:23px; float:left"><span th:text="${printReceipt.amount}"></span></div>
+            </div>
+            
+           
+            
+            <div style="width:377px; height:45px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:45px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test2">Amount in Words</p>
+           	  </div>
+                <div style="width:235px; height:45px; float:left"><span th:text="${printReceipt.amountinwords}"></span> 
+                </div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+                	<p class="deposit_test">Deno  <span style="padding-left:20px;">No. of </span> </p>
+              </div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">1000<span style="padding-left:70px;"> x</span></p></div>
+                <div style="width:229px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">500<span style="padding-left:76px;"> x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">100<span style="padding-left:79px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">50<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">20<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">10<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">05<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:378px; height:24px;border-bottom:#000000 1px solid; ">
+            	<div style="width:140px; height:24px; float:left; border-right:1px solid #000000;"><p class="deposit_test">Others</p></div>
+                <div style="width:235px; height:24px; float:left;"></div>
+            </div>            
+        </div><!---------------------------------------------------------------------------------------------Left Deposit box_End------->
+        
+        <div style="width:377px; height:20px; border:1px solid #000000; margin-top:2px; margin-left:5px; ">
+           <div style="width:140px; height:20px; float:left; border-right:1px solid #000000;"><p class="deposit_test"><b>Total :</b></p></div>
+           <div style="width:235px; height:20px; float:left"><span th:text="${printReceipt.amountinwords}"></span> </div>
+        </div>
+        
+        <div style="width:377px; height:41px;border:1px solid #000000; margin-left:5px; margin-top:2px;">
+        	<div style="width:377px; height:20px; border-bottom:1px solid #000000">
+            	<div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Journal No.</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; border-right:1px solid #000000;"></div>
+                <div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Branch Code</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; "></div>
+            </div>
+            <div style="width:377px; height:20px; ">
+            	<div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Branch Name</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; border-right:1px solid #000000;"></div>
+                <div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Date</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; "></div>
+            </div>
+        </div>
+        
+        
+        <div style="width:377px; height:15px; margin-left:5px; margin-top:8px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px;float:left;">Depositor's Signature</p>
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:12px;float:left; padding-left:125px">Teller's Signature</p>
+        </div>
+        
+        <div style="width:377px; height:23px; margin-top:15px; margin-left:5px">
+        	<div style="float:left; width:110px; height:23px; ">
+            	<p style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; ">Phone/Mobile   :</p>
+            </div>
+            <div style="float:left; width:200px; height:23px; ">
+            	
+            </div>
+        </div>
+        
+        
+        <div style="width:377px; height:63px; border:#000000 solid 1px; margin-top:5px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif;font-size:10px;font-weight:bold; padding:4px 0 0 10px;">You can now pay fee at any branch of ICICI / AXIS Bank                across the Country
+            </p>
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:11px; padding:2px 0 0 10px;">1.All columns have to be filled correctly including denomination of notes /                coins.
+            </p>
+            
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:10px; padding:2px 0 0 10px;">2.Please rotain the student copy for future reference.
+            </p>
+        </div>
+        
+        
+        <div style="border-bottom:2px dotted #000000; width:390px; margin-top:5px;"></div>
+        
+        
+        
+       
+        
+    </div><!-----------------------------------------------------------------------------Middle_End--------------------------------------------------------->
+    
+    
+    
+    <div style="float:left; width:15px; height:1000px; margin-left:15px; margin-top:3px; "><img src="/assets/global/img/cutpage.png"></div><!---------------------------------CUTPAGE------------------------------->   
+    
+
+	<!-------------------------------------------Right------------------------------------------------>  
+    <div style="float:left; width:377px; height:842px; margin-left:10px; ">   
+    	<div style="width:377px; height:60px;"><!-----Logo_Box------->       	
+           
+            <div style="float:left; margin-top:0px; margin-left:5px;"><img src="/assets/global/img/SRIlogo2.jpeg"></div>
+      </div><!-----Logo_Box_End------->
+      
+        <div style="width:377px;height:12px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif; font-size:11px; float:left; padding-left:80px;"><b>Fee Deposit slip for New Admission</b></p>
+        	<p style="font-family:Arial, Helvetica, sans-serif; font-size:11px; float:left;padding-left:40px; "><b>Bank Copy</b></p>
+        </div>
+        
+        
+        
+        
+        <div style="width:377px; height:72px; border:1px solid #000000; margin-left:5px; margin-top:5px;">
+        	<div style="width:377px; height:20px; border-bottom:1px solid #000000; background-color:#333333; color:#FFFFFF;">
+            
+            	<div style="width:75px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; font-weight:bold;float:left;">Please Tick</p>
+                    <img src="/assets/global/img/check-box1.png" style="padding:3px 0 0 5px; float:left;">
+                </div>
+                <div style="width:80px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">Bank Name</p>
+                </div>
+                <div style="width:125px; height:20px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">A/C Holder</p>
+                </div>
+                <div style="width:94px; height:20px;  float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:20px; text-align:center; font-weight:bold;">A/C No.</p>
+                </div>
+            </div>
+            
+            <div style="width:377px; height:25px; border-bottom:1px solid;">
+            
+            	<div style="width:75px; height:25px; border-right:1px solid #000000; float:left;"><input name="" id="checkbox" value="" type="checkbox"></div>
+                
+                <div style="width:80px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; padding-left:2px;"><b>ICICI-isure Pay</b> (ICICI Bank Ltd.)</p>
+                </div>
+                <div style="width:125px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px;text-align:center;">PRO-Sri Chaitanya Group</p>
+                </div>
+                <div style="width:94px; height:25px; float:left;"><p style="text-align:center;">-</p></div>
+            </div>
+            <div style="width:377px; height:25px; ">
+            	<div style="width:75px; height:23px; border-right:1px solid #000000; float:left;"><input name="" id="checkbox" value="" type="checkbox"></div>
+                
+                <div style="width:80px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:11px; padding-left:25px;"><b>AXIS</b></p>
+                    <p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:12px; padding-left:2px;">(ICICI Bank Ltd.)</p>
+                </div>
+                <div style="width:125px; height:25px; border-right:1px solid #000000; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:25px;text-align:center; ">Sri Chaitanya Group</p>
+                </div>
+                <div style="width:94px; height:25px; float:left;">
+                	<p style="font-family:Arial, Helvetica, sans-serif; font-size:10px; line-height:23px; text-align:center;">913010029088430</p>
+
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+   <!-----------------------Left Deposit box---------------------------------------->     
+        <div style="width:377px; height:354px; border-top:#000000 1px solid;border-left:#000000 1px solid;border-right:#000000 1px solid; margin-left:5px; margin-top:3px;">
+        
+        	<div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test">Bank Branch:</p>
+            	</div>
+                <div style="width:235px; height:23px; float:left;"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">Date of Deposit</p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test">Application No.</p>
+           	  </div>
+                <div style="width:235px; height:23px; float:left"><span th:text="${printReceipt.appNo}"></span></div>
+            </div>
+            
+           
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+                	<p class="deposit_test">Amount <span style="padding-left:5px;">Rs.</span></p>
+              </div>
+                <div style="width:235px; height:23px; float:left"><span th:text="${printReceipt.amount}"></span></div>
+            </div>
+            
+           
+            
+            <div style="width:377px; height:45px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:45px; float:left; border-right:1px solid #000000;">
+            	  <p class="deposit_test2">Amount in Words</p>
+           	  </div>
+                <div style="width:235px; height:45px; float:left"><span th:text="${printReceipt.amountinwords}"></span> 
+                </div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;">
+                	<p class="deposit_test">Deno  <span style="padding-left:20px;">No. of </span> </p>
+              </div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">1000<span style="padding-left:70px;"> x</span></p></div>
+                <div style="width:229px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">500<span style="padding-left:76px;"> x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">100<span style="padding-left:79px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">50<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">20<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">10<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:377px; height:23px; border-bottom:#000000 1px solid;">
+            	<div style="width:140px; height:23px; float:left; border-right:1px solid #000000;"><p class="deposit_test">05<span style="padding-left:86px;">x</span></p></div>
+                <div style="width:235px; height:23px; float:left"></div>
+            </div>
+            
+            <div style="width:378px; height:24px;border-bottom:#000000 1px solid; ">
+            	<div style="width:140px; height:24px; float:left; border-right:1px solid #000000;"><p class="deposit_test">Others</p></div>
+                <div style="width:235px; height:24px; float:left;"></div>
+            </div>            
+        </div><!---------------------------------------------------------------------------------------------Left Deposit box_End------->
+        
+        <div style="width:377px; height:20px; border:1px solid #000000; margin-top:2px; margin-left:5px; ">
+           <div style="width:140px; height:20px; float:left; border-right:1px solid #000000;"><p class="deposit_test"><b>Total :</b></p></div>
+           <div style="width:235px; height:20px; float:left"><span th:text="${printReceipt.amountinwords}"></span> </div>
+        </div>
+        
+        <div style="width:377px; height:41px;border:1px solid #000000; margin-left:5px; margin-top:2px;">
+        	<div style="width:377px; height:20px; border-bottom:1px solid #000000">
+            	<div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Journal No.</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; border-right:1px solid #000000;"></div>
+                <div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Branch Code</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; "></div>
+            </div>
+            <div style="width:377px; height:20px; ">
+            	<div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Branch Name</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; border-right:1px solid #000000;"></div>
+                <div style="width:85px; height:20px;float:left; border-right:1px solid #000000;">
+                	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px; font-weight:bold; line-height:20px;text-align:center;">Date</p>
+                </div>
+                <div style="width:95px; height:20px;float:left; "></div>
+            </div>
+        </div>
+        
+        
+        <div style="width:377px; height:15px; margin-left:5px; margin-top:8px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif;font-size:12px;float:left;">Depositor's Signature</p>
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:12px;float:left; padding-left:125px">Teller's Signature</p>
+        </div>
+        
+        <div style="width:377px; height:23px; margin-top:15px; margin-left:5px">
+        	<div style="float:left; width:110px; height:23px; ">
+            	<p style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; ">Phone/Mobile   :</p>
+            </div>
+            <div style="float:left; width:200px; height:23px; ">
+            	
+            </div>
+        </div>
+        
+        
+        <div style="width:377px; height:63px; border:#000000 solid 1px; margin-top:5px;">
+        	<p style="font-family:Arial, Helvetica, sans-serif;font-size:10px;font-weight:bold; padding:4px 0 0 10px;">You can now pay fee at any branch of ICICI / AXIS Bank                across the Country
+            </p>
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:11px; padding:2px 0 0 10px;">1.All columns have to be filled correctly including denomination of notes /                coins.
+            </p>
+            
+            <p style="font-family:Arial, Helvetica, sans-serif;font-size:10px; padding:2px 0 0 10px;">2.Please rotain the student copy for future reference.
+            </p>
+        </div>
+        
+        
+        <div style="border-bottom:2px dotted #000000; width:390px; margin-top:5px;"></div>         
+       
+        
+        
+        
+    </div><!-----------------------------------------------------------------------------Right_End--------------------------------------------------------->
+    
+    
+</div><!-------------------======================================Main_End========================================================---------------------------->
+	
+
+
+	
+
+
+</body></html>

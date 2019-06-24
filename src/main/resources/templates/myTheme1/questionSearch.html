@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="utf-8">
+<title>Question Search</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css"
+	th:href="@{/assets/global/plugins/jquery-multiselect-search/jquery.dropdown.min.css}">
+<script
+	th:src="@{/assets/global/plugins/jquery-multiselect-search/jquery.dropdown.min.js}"></script>
+</head>
+<body>
+	<div class="portlet box green">
+		<div class="portlet-title" id="toggleId">
+			<div class="caption">Questions Search</div>
+		</div>
+		<div class="portlet-body" id="searchDivId">
+			<form action="/qb/filterQuestions" id="searchFormId">
+			
+			<input type="hidden" name="pageSize" id="pageSize">
+			<input type="hidden" name="pageNumber" id="pageNumber">
+			
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group ">
+							<label>Zone</label>
+							<div class="jquerySel">
+								<select name="zones" class="form-control" id="zonesId"
+									multiple="multiple">
+									<th:block th:each="zone:${zones}">
+										<option th:value="${zone.id}" th:text="${zone.zonalName}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Campus</label>
+							<div class="jquerySel">
+								<select name="campusList" class="form-control" id="campusesId"
+									multiple="multiple">
+									<th:block th:each="campus:${campuses}">
+										<option th:value="${campus.id}" th:text="${campus.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group ">
+							<label>Exam Type</label>
+							<div class="jquerySel">
+								<select name="examTypes" class="form-control" id="examTypesId"
+									multiple="multiple">
+									<th:block th:each="examType:${examTypes}">
+										<option th:value="${examType.id}"
+											th:text="${examType.examTypeName}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Question Objective</label>
+							<div class="jquerySel">
+								<select name="questionObjectives" class="form-control"
+									id="questionObjectivesId" multiple="multiple">
+									<th:block th:each="questionObjective:${questionObjectives}">
+										<option th:value="${questionObjective.id}"
+											th:text="${questionObjective.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group ">
+							<label>Question Type</label>
+							<div class="jquerySel">
+								<select name="questionTypes" class="form-control"
+									id="questionTypesId" multiple="multiple">
+									<th:block th:each="questionType:${questionTypes}">
+										<option th:value="${questionType.id}"
+											th:text="${questionType.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Difficulty Level</label>
+							<div class="jquerySel">
+								<select name="difficultyLevels" class="form-control"
+									id="difficultyLevelsId" multiple="multiple">
+									<th:block th:each="difficultyLevel:${difficultyLevels}">
+										<option th:value="${difficultyLevel.id}"
+											th:text="${difficultyLevel.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group ">
+							<label>Category</label>
+							<div class="jquerySel">
+								<select name="categories" class="form-control" id="categoriesId"
+									multiple="multiple">
+									<th:block th:each="category:${categories}">
+										<option th:value="${category.id}" th:text="${category.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Creator</label>
+							<div class="jquerySel">
+								<select name="creators" class="form-control" id="creatorsId"
+									multiple="multiple">
+									<th:block th:each="creator:${creators}">
+										<option th:value="${creator.id}" th:text="${creator.name}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group ">
+							<label>Status</label>
+							<div class="jquerySel">
+								<select name="status" class="form-control" id="statusId"
+									multiple="multiple">
+									<option value="Create">Create</option>
+									<option value="Scrutiny">Scrutiny</option>
+									<option value="Approved">Approved</option>
+									<option value="Final">Final</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label>Reference Book Name</label>
+							<div class="jquerySel">
+								<select name="referenceBooks" class="form-control"
+									id="referenceBooksId" multiple="multiple">
+									<th:block th:each="referenceBook:${referenceBooks}">
+										<option th:value="${referenceBook.id}"
+											th:text="${referenceBook.referenceBook}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group ">
+							<label>Exam Year</label> <input type="text"
+								class="form-control number" id="examYearId" name="examYear">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group ">
+							<label>Keywords</label> <input type="text" id="keywordsId"
+								name="keywords" class="form-control">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<div class="form-group ">
+							<label>Created Time (From )</label> <input type="text"
+								class="form-control" id="fromDateId" name="createdTimeFromStr">
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group ">
+							<label>Created Time (To )</label> <input type="text"
+								class="form-control" id="toDateId" name="createdToFromStr">
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group ">
+							<label>Start</label> <input type="text"
+								class="form-control number" name="start" id="startId">
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group ">
+							<label>End</label> <input type="text" class="form-control number"
+								name="end" id="endId">
+						</div>
+					</div>
+				</div>
+				<button type="button" class="btn btn-primary" id="submitBtnId">Submit</button>
+				<button type="button" class="btn btn-default">Show For
+					Print</button>
+			</form>
+		</div>
+	</div>
+	<div class="portlet box green" id="questionsDivId">
+		<div class="portlet-title">
+			<div class="caption">Questions</div>
+		</div>
+		<div class="portlet-body" style="width: 100%;" id="questionsBodyId">
+		</div>
+	</div>
+	<script
+		th:src="@{/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js}"
+		type="text/javascript"></script>
+	<script type="text/javascript">
+	//	$("#questionsDivId").slideUp();
+		$("#fromDateId,#toDateId").datepicker({
+			format : 'dd-mm-yyyy'
+		});
+		$('.number').keyup(function(event) {
+			if (isNaN($(this).val())) {
+				showToastr("Please Enter Numericals", "error");
+				$(this).val('');
+			}
+		});
+		$('.jquerySel').dropdown({
+			input : '<input type="text" maxLength="20" placeholder="Search">',
+			searchNoData : '<li style="color:#ddd">No Results</li>'
+		});
+
+		$("#submitBtnId").click(function() {
+			pageOverlay(0);
+			//$("#searchDivId").slideUp(1000);
+			//$("#questionsDivId").slideDown(1000);
+			$.ajax({
+				url : '/qb/filterQuestions',
+				type : 'get',
+				data : $("#searchFormId").serialize(),
+				success : function(data) {
+					$("#questionsBodyId").html(data);
+					pageOverlay(1);
+				},
+				error : function() {
+					alert("Unable to load details.");
+					pageOverlay(1);
+				}
+			});
+		});
+		
+		
+		function showReport(pageNumber) {
+			
+			document.getElementById("pageSize").value=10;
+			document.getElementById("pageNumber").value=pageNumber;
+			
+			pageOverlay(0);
+			$.ajax({
+				type : "GET",
+				url : "/qb/filterQuestions",
+				data : $("#searchFormId").serialize(),
+				success : function(data) {
+					$('#queSerachInnerId').html(data);
+					pageOverlay(1);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+
+		}
+
+		$("#toggleId").click(function() {
+		//	$("#searchDivId").toggle(100);
+		//	$("#questionsDivId").slideUp(1000);
+		});
+		
+		
+	</script>
+</body>
+</html>

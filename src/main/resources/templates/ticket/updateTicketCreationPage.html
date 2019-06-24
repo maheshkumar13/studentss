@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="ISO-8859-1">
+</head>
+<body>
+	<form th:action="@{/scaits/saveTicket}" id="ticketFormId" method="post"
+		enctype="multipart/form-data">
+		<input type="hidden" id="ticketId"
+			th:value="${(ticketUpdateId!=null)?ticketUpdateId.id:''}"
+			name="ticket">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<select name="city" id="city" class="form-control"
+						onchange="getCampusValue(this.value)">
+						<option th:value="0" th:text="${'Select City'}"></option>
+						<option
+							th:each="city,cityStatus:${@currentUser.getLoginEmpCityList()}"
+							th:value="${(ticketUpdateId!=null && ticketUpdateId.city!=null)?ticketUpdateId.city.cityId:''}"
+							th:selected="${ticketUpdateId!=null &&  ticketUpdateId.city!=null && city.cityId==ticketUpdateId.city.cityId}"
+							th:text="${city.cityName}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group ">
+					<select name="campus" id="campus" class="form-control"
+						onchange="getCategoryValue(this.value)">
+						<option th:value="0" th:text="${'Select Campus'}"></option>
+						<th:block th:each="campus:${campusList}">
+							<option th:value="${(campus!=null)?campus.id:''}"
+								th:selected="${ticketUpdateId!=null &&  ticketUpdateId.campus!=null && campus.id==ticketUpdateId.campus.id}"
+								th:text="${campus.campusName}"></option>
+						</th:block>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<select name="category" id="category" class="form-control"
+						onchange="getAssetValue(this.value)">
+						<option th:value="0" th:text="${'Select Category'}"></option>
+						<th:block th:each="category:${categoryList}">
+							<option th:value="${(category!=null)?category.id:''}"
+								th:selected="${ticketUpdateId!=null &&  ticketUpdateId.category!=null && category.id==ticketUpdateId.category.id}"
+								th:text="${category.categoryName}"></option>
+						</th:block>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<select name="asset" id="asset" class="form-control">
+						<option th:value="0" th:text="${'Select Asset'}"></option>
+						<th:block th:each="asset:${asset}">
+							<option th:value="${(asset!=null)?asset.id:''}"
+								th:selected="${ticketUpdateId!=null &&  ticketUpdateId.asset!=null && asset.id==ticketUpdateId.asset.id}"
+								th:text="${asset.assetName}"></option>
+						</th:block>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<input type="text" id="assetCode" name="assetCode"
+						class="form-control" placeholder="AssetCode"
+						th:value="${(ticketUpdateId!=null &&ticketUpdateId.assetVal!=null)?ticketUpdateId.assetVal.code:''}">
+
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<select name="ticketMode" id="ticketMode" class="form-control">
+						<option th:value="0" th:text="${'Select TicketMode'}"></option>
+						<th:block th:each="ticketModeListType:${ticketModeList}">
+							<option th:text="${ticketModeListType}"
+								th:selected="${ticketUpdateId!=null &&  ticketUpdateId.callMode!=null &&ticketModeListType==ticketUpdateId.callMode}"></option>
+						</th:block>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<input type="text" class="form-control input-sm"
+						placeholder="Ticket Raised By" id="ticketRaisedBy"
+						th:value="${(ticketUpdateId!=null &&ticketUpdateId.empTicket!=null)?ticketUpdateId.empTicket.name:''}">
+					<input type="hidden" id="ticketRaisedValId"
+						th:value="${(ticketUpdateId!=null &&ticketUpdateId.empTicket!=null)?ticketUpdateId.empTicket.employeeId:''}"
+						name="ticketRaisedBy">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<input type="text" id="phoneNo" placeholder="PhoneNumber"
+						name="phoneNo" class="form-control"
+						th:value="${(ticketUpdateId!=null )?ticketUpdateId.issueEmpNo:''}">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<input type="text" id="email" name="email" placeholder="Email"
+						class="form-control"
+						th:value="${(ticketUpdateId!=null )?ticketUpdateId.issueEmpEmail:''}">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<input type="text" class="form-control" name="startDate"
+						id="fixedStartDateId"
+						th:value="${(ticketUpdateId!=null )?ticketUpdateId.createdOn:''}">
+				</div>
+			</div>
+
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<select name="priority" id="priority" class="form-control">
+						<option th:value="0" th:text="${'Select Priority'}"></option>
+						<th:block th:each="priorityListType:${priorityList}">
+							<option th:text="${priorityListType}"
+								th:selected="${ticketUpdateId!=null &&  ticketUpdateId.campus!=null && priorityListType==ticketUpdateId.priority}"></option>
+						</th:block>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<input type="text" id="ticketAssignedTo" class="form-control"
+						placeholder="TicketAssignedTo"
+						th:value="${(ticketUpdateId!=null &&ticketUpdateId.assignedEmp!=null)?ticketUpdateId.assignedEmp.name:''}">
+					<input type="hidden" id="ticketAssignedValId"
+						th:value="${(ticketUpdateId!=null &&ticketUpdateId.assignedEmp!=null)?ticketUpdateId.assignedEmp.employeeId:''}"
+						name="ticketAssignedTo">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<input type="text" id="remarks" name="remarks" class="form-control"
+						placeholder="Remarks"
+						th:value="${(ticketUpdateId!=null)?ticketUpdateId.summary:''}">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<input type="text" id="session" placeholder="Session"
+						class="form-control"
+						th:value="${(ticketUpdateId!=null &&ticketUpdateId.tickSession!=null)?ticketUpdateId.tickSession.sessionName:''}">
+					<input type="hidden"
+						th:value="${(ticketUpdateId!=null &&ticketUpdateId.tickSession!=null)?ticketUpdateId.tickSession.id:''}"
+						name="session">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<input id="uplodeFile" type="file" name="uplodeFile"
+						class="file-input" onchange="checkPhoto(this)" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group ">
+					<button type="button" class="btn btn-primary"
+						onclick="saveTicketDetails()">Update</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<th:block layout:fragment="scripts">
+	<script
+		src="../assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"
+		type="text/javascript"></script>
+	<script
+		src="../assets/pages/scripts/components-date-time-pickers.min.js"
+		type="text/javascript"></script>
+
+	<script type="text/javascript">
+		$("#fixedStartDateId").datetimepicker({
+			format : 'dd-mm-yyyy hh:ii'
+		});
+		$(document).ready(function () {
+		    $("#ticketRaisedBy").autocomplete({
+		        source: function(request, response) {
+		            $.ajax({
+		                url: "/scaits/getAutoRaisedEmp",
+		                dataType: "json",
+		                data: {
+		                    term: request.term,
+		                },
+		                success: function(data) {
+		                	 response(data);
+		                }
+		            });
+		        },
+		        focus : function(event, ui) {
+				$("#ticketRaisedBy").val(
+						ui.item.value);
+				return false;
+			},
+			select : function(event, ui) {
+				$("#ticketRaisedBy").val(
+						ui.item.value);
+				$("#ticketRaisedValId").val(
+						ui.item.key);
+				
+				return false;
+			}
+			}).data("ui-autocomplete")._renderItem = function(
+					ul, item) {
+				return $("<li>").append(
+						"<a>" + item.value+ "</a>")
+						.appendTo(ul);
+				}; 
+					    });
+
+			$(document).ready(function () {
+			    $("#ticketAssignedTo").autocomplete({
+			        source: function(request, response) {
+			            $.ajax({
+			                url: "/scaits/getAutoAssignedEmp",
+			                dataType: "json",
+			                data: {
+			                    term: request.term,
+			                    category: document.getElementById('category').value
+			                },
+			                success: function(data) {
+			                	 response(data);
+			                }
+			            });
+			        },
+			        focus : function(event, ui) {
+					$("#ticketAssignedTo").val(
+							ui.item.value);
+					return false;
+				},
+				select : function(event, ui) {
+					$("#ticketAssignedTo").val(
+							ui.item.value);
+					$("#ticketAssignedValId").val(
+							ui.item.key);
+					
+					return false;
+				}
+				}).data("ui-autocomplete")._renderItem = function(
+						ul, item) {
+					return $("<li>").append(
+							"<a>" + item.value+ "</a>")
+							.appendTo(ul);
+					}; 
+						    });
+			
+	</script>
+</th:block>
+</html>

@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+label {
+ font-weight:bold;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover
+	{
+	background: #228be6 !important;
+	color: #ffffff;
+	display: block;
+	border-bottom: 3px solid #228be6 !important;
+}
+
+.nav-tabs>li.active>a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(34, 139, 230, 0);
+	border-top-color: #228be6;
+	border-width: 10px;
+	margin-left: -10px;
+}
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject ">Generator Information</span>
+			</div>
+
+		</div>
+
+		<div class="portlet-body">
+			<ul class="nav nav-tabs custom-tab-active">
+				<li class="active"><a href="#tab_1_1" onclick="showButton()" data-toggle="tab">
+						Create</a></li>
+				<li><a href="#tab_1_2" data-toggle="tab"
+					onclick="getTableData()"> View Status </a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade active in" id="tab_1_1">
+					<div class="custom-div">
+						<form th:action="@{/scaits/generatorinfoSave}" id="formId"
+							method="post" enctype="multipart/form-data">
+							<div class="row">
+								<div class="col-md-4">
+									<label>Building Name</label> <select class="form-control p-0"
+										id="building" name="building" onchange="return loadScno(); ">
+										<option value="0">Select Building</option>
+										<option th:each="buildings:${buildingList}"
+											th:value="${buildings.id}" th:text="${buildings.buildingName}"
+											th:selected="${building!=null &&  buildings.id==building}"></option>
+									</select>
+								</div>
+
+								<div class="col-md-4">
+									<label>Generator SNo </label><input type="text" name="genSNo"
+										id="genSNo" data-required="1"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Company Name </label><input name="companyName"
+										id="companyName"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline" type="text" value="" />
+								</div>
+
+
+								<div class="col-md-4">
+									<label> Model No </label> <input name="modelNo" id="modelNo"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline " type="text" value="" />
+								</div>
+                             
+								<div class="col-md-4">
+									<label>Purchase Date</label>   <input type="text"
+                                        class="form-control" name="purchaseDateStr"
+                                        id="purchaseDateStr" placeholder="date">
+								</div>
+
+								<div class="col-md-4">
+									<label>Capacity(KVA) </label><input name="capacity"
+										id="capacity" class="form-control form-control-inline "
+										type="text" value=""
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Fuel Capacity </label> <input name="fuelCapacity"
+										id="fuelCapacity"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline " type="text" value=""
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Dealer Name </label><input name="dealerName"
+										id="dealerName"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline " type="text" value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Dealer Address </label><input name="dealerAddress"
+										id="dealerAddress"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline " type="text" value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Contact Person </label> <input name="contactPerson"
+										id="contactPerson"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline " type="text" value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Mobile No </label><input name="mobileNo" id="mobileNo"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline " type="text" value=""
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Remarks </label><input name="remarks" id="remarks"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline " type="text" value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>AMC </label>&nbsp;&nbsp;<input name="amcChecked"
+										id="amcChecked" type="checkbox"
+										onchange="showAmcParticularId()" value="true" />
+								</div>
+								<div class="clearfix" style="margin-bottom: 20px"></div>
+								<div id="amc">
+									<div class="col-md-4">
+										<label>Company </label> <input name="amcCompany"
+											id="amcCompany"
+											onChange="javascript:this.value=this.value.toUpperCase();"
+											class="form-control form-control-inline " type="text"
+											value="" />
+									</div>
+
+									<div class="col-md-4">
+										<label>Contact Person </label><input name="amcContactPerson"
+											id="amcContactPerson"
+											onChange="javascript:this.value=this.value.toUpperCase();"
+											class="form-control form-control-inline " type="text"
+											value="" />
+									</div>
+
+									<div class="col-md-4">
+										<label>Mobile No </label><input name="amcMobileNo"
+											id="amcMobileNo"
+											onChange="javascript:this.value=this.value.toUpperCase();"
+											class="form-control form-control-inline " type="text"
+											value="" pattern="\d{3}[\-]\d{3}[\-]\d{4}" required
+											OnKeyPress="return DotAndNumericOnly(event)" />
+									</div>
+								</div>
+
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="tab_1_2">
+					<div th:replace="electricity/monthlyEleConDetailsInnerPage.html"></div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet-footer">
+			<div class="row" id="button">
+				<div class="col-md-12">
+					<button type="button" class="btn-pri" onClick="generatorInfoSave()">Insert</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn-pri" onclick="resetFields()">Reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script
+		src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+		type="text/javascript"></script>
+	<script type="text/javascript">
+	   $("#purchaseDateStr").datepicker({
+           format : 'dd-mm-yyyy',
+           autoclose: true
+       });
+		$(document).ready(function() {
+			$("#amc").hide();
+		});
+
+	function showButton(){
+		$('#button').show();
+	}
+
+		function getTableData() {
+			pageOverlay(0);
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getGeneratorInfo",
+				success : function(data) {
+					pageOverlay(1);
+					$('#tab_1_2').html(data);
+					 $('#button').hide();
+				},
+				error : function() {
+					pageOverlay(1);
+					alert('Error occured');
+				}
+			});
+		}
+
+		function generatorInfoSave() {
+			if ($("#building").val() == "" || $("#building").val() == 0) {
+				showToastr("Please Select  Building", "error");
+				$("#building").focus();
+				return false;
+			} else if ($("#genSNo").val() == "" || $("#genSNo").val() == 0) {
+				showToastr("Please Select  GenSNo", "error");
+				$("#genSNo").focus();
+				return false;
+			} else if ($("#companyName").val() == ""
+					|| $("#companyName").val() == 0) {
+				showToastr("Please Select  CompanyName", "error");
+				$("#companyName").focus();
+				return false;
+			} else if ($("#modelNo").val() == "" || $("#modelNo").val() == 0) {
+				showToastr("Please Select  ModelNo", "error");
+				$("#modelNo").focus();
+				return false;
+			} else if ($("#purchaseDateStr").val() == ""
+					|| $("#purchaseDateStr").val() == 0) {
+				showToastr("Please Select  PurchaseDate", "error");
+				$("#purchaseDateStr").focus();
+				return false;
+			} else if ($("#capacity").val() == "" || $("#capacity").val() == 0) {
+				showToastr("Please Select  Capacity", "error");
+				$("#capacity").focus();
+				return false;
+			} else if ($("#fuelCapacity").val() == ""
+					|| $("#fuelCapacity").val() == 0) {
+				showToastr("Please Select  FuelCapacity", "error");
+				$("#fuelCapacity").focus();
+				return false;
+			} else if ($("#dealerName").val() == ""
+					|| $("#dealerName").val() == 0) {
+				showToastr("Please Select  DealerName", "error");
+				$("#dealerName").focus();
+				return false;
+			} else if ($("#dealerAddress").val() == ""
+					|| $("#dealerAddress").val() == 0) {
+				showToastr("Please Select  DealerAddress", "error");
+				$("#dealerAddress").focus();
+				return false;
+			} else if ($("#fuelCapacity").val() == ""
+					|| $("#fuelCapacity").val() == 0) {
+				showToastr("Please Select  FuelCapacity", "error");
+				$("#fuelCapacity").focus();
+				return false;
+			} else if ($("#contactPerson").val() == ""
+					|| $("#contactPerson").val() == 0) {
+				showToastr("Please Select ContactPerson", "error");
+				$("#contactPerson").focus();
+				return false;
+			} else if ($("#mobileNo").val() == "" || $("#mobileNo").val() == 0) {
+				showToastr("Please Select  MobileNo", "error");
+				$("#mobileNo").focus();
+				return false;
+			} else if ($("#remarks").val() == "") {
+				showToastr("Please Enter Remarks", "error");
+				document.getElementById("remarks").focus();
+				return false;
+			}
+			if ($("#amcChecked").is(":checked")) {
+				if ($("#amcCompany").val() == "") {
+					showToastr("Please Enter AMC Company Name", "error");
+					$("#amcCompany").focus();
+					return false;
+				} else if ($("#amcContactPerson").val() == "") {
+					showToastr("Please Enter AMC Contact Person Name", "error");
+					$("#amcContactPerson").focus();
+					return false;
+				} else if ($("#amcMobileNo").val() == "") {
+					showToastr("Please Enter AMC Mobile Numbere", "error");
+					$("#amcMobileNo").focus();
+					return false;
+				} else if ($("#amcMobileNo").val().length > 10
+						|| $("#amcMobileNo").val().length < 10) {
+					showToastr("Please put 10  digit mobile number", "error");
+					$("#amcMobileNo").focus();
+					return false;
+				}
+			}
+			if (confirm("Do you want to insert this record")) {
+				$.ajax({
+					type : "post",
+					url : "/scaits/generatorinfoSave",
+					data : $("#formId").serialize(),
+					success : function(data) {
+						  if (data.indexOf("ERROR-") != -1) {
+	                            showToastr(data, "error");
+	                        } else if (data.indexOf("FEEDBACK-1") != -1) {
+	                            resetFields();
+	                             alert("Successfully Done!!!");
+	                        }
+						
+					},
+					error : function() {
+						alert('Error occured');
+						pageOverlay(1);
+					}
+				});
+			} else {
+				return false;
+			}
+		}
+
+		function showAmcParticularId() {
+			if ($("#amcChecked").is(":checked")) {
+				$("#amc").show();
+			} else {
+				$("#amc").hide();
+			}
+		}
+		function DotAndNumericOnly(evt) {
+			var key = (evt.which) ? evt.which : evt.keyCode;
+			if (key == 46)
+				return true;
+			if ((key >= 48 && key <= 57) || key == 8 || key == 9 || key == 46
+					|| (key >= 37 && key <= 40)) {
+				return true;
+			}
+			return false;
+		}
+
+		var filter = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/;
+	</script>
+</body>
+
+</html>
+

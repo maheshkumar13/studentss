@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style type="text/css">
+input, select, textarea {
+	margin-bottom: 15px;
+}
+
+.bg-grey-custom:hover {
+	background: #000000;
+	color: #ffffff
+}
+
+.bg-grey-custom {
+	background: #333333;
+	color: #ffffff
+}
+</style>
+</head>
+<body>
+	<form th:action="@{/scaits/sendSMS}" id="formId" method="post"
+		enctype="multipart/form-data">
+		<div class="portlet light portlet-fit bordered card-1">
+			<div class="portlet-title">
+				<div class="caption">
+					<span class="caption-subject ">SMS send</span>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="row">
+					<div>
+						<input type="hidden" name="studentsList" id="studentsList">
+					</div>
+					<div class="col-md-6">
+						<div class="row">
+							<div class="col-md-6 col-lg-3">
+								<label class="bold ">Message to</label> <select name="msgTo"
+									class="form-control" id="msgTo" onchange="toMsg(this.value)">
+									<option value="Select">SELECT</option>
+									<option value="STUDENT">Student</option>
+									<option value="OUTSTUDENT">OutStudent</option>
+									<option value="PARENT">Parent</option>
+									<option value="STAFF">Staff</option>
+									<option value="OTHERS">Others</option>
+									<option value="ROOKIESTUDENT">Rookie Student</option>
+								</select>
+							</div>
+							<div id="staff">
+								<div class="clearfix"></div>
+								<div class="col-sm-3">
+									<label class="bold">Class</label> <select class="form-control"
+										name="studyClass" id="studyClass" onchange="getYear(); ">
+										<option value="0">Select Class</option>
+										<th:block th:each="studyClass:${classList}">
+											<option th:value="${studyClass.id}"
+												th:text="${studyClass.displayName}"></option>
+										</th:block>
+									</select>
+								</div>
+								<div class="col-sm-3">
+									<label class="bold">Join year</label> <select name="joinYear"
+										id="joinYear" class="form-control" onchange="getStream(); ">
+										<option value="0">Select JoinYear</option>
+									</select>
+								</div>
+								<div class="col-xs-12">
+									<div class="form-md-line-input form-horizontal">
+										<label class="bold" for="form_control_1">Student type</label>
+										<div class="md-radio-inline">
+											<div class="md-radio">
+												<input type="radio" id="radio1" name="s_type"
+													class="md-radiobtn" value="allStudents" checked> <label
+													for="radio1"> <span></span> <span class="check"></span>
+													<span class="box "></span> All students
+												</label>
+											</div>
+											<div class="md-radio ">
+												<input type="radio" id="radio2" name="s_type"
+													class="md-radiobtn" value="individualStudents"> <label
+													for="radio2"> <span></span> <span class="check"></span>
+													<span class="box "></span> Individual students
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="individualStudents" class="desc">
+									<div class="col-md-6 col-lg-3">
+										<label class="bold">Stream</label> <select
+											class="form-control" name="stream" id="stream"
+											onchange="loadProgram();">
+											<option value="0">Select Stream</option>
+										</select>
+									</div>
+									<div class="col-md-6 col-lg-3">
+										<label class="bold">Programs</label> <select
+											class="form-control" name="program" id="program"
+											onchange="loadCourseTrack();">
+											<option value="0">Select Program Name</option>
+										</select>
+									</div>
+									<div class="col-md-6 col-lg-5">
+										<label class="bold">Course track</label> <select
+											class="form-control" name="campusTrack" id="campusTrack"
+											onchange="loadbatches();">
+											<option value="0">Select Course</option>
+										</select>
+									</div>
+									<div class="col-md-6 col-lg-3">
+										<label class="bold">Batch</label> <select class="form-control"
+											name="courseBatch" id="courseBatch"
+											onchange="loadSections();">
+											<option value="0">Select Batch</option>
+										</select>
+									</div>
+									<div class="col-md-6 col-lg-3">
+										<label class="bold">Section</label> <select
+											class="form-control" name="section" id="section"
+											onchange="loadBulkStudentList();">
+											<option value="0">Select Section</option>
+										</select>
+									</div>
+									<div class="col-md-6 col-lg-3">
+										<div style="margin-top: 24px">
+											<button type="button" class="btn bg-grey-custom"
+												id="btn-s-details" onclick="getStudents();">Search
+												students</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							<div id="marks">
+								<div class="clearfix"></div>
+								<div class="col-sm-6">
+									<label class="bold">Exam Type</label> <input
+										class="form-control" name="examType" id="examType">
+									<div class="clearfix"></div>
+									<label class="bold">Exam Date</label> <input type="text"
+										class="form-control  date-picker" name="examDate"
+										id="examDate" placeholder="ExamDate">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="bold">Message type</label>
+						<div class="clearfix"></div>
+						<select name="msgType" id="msgType" class="form-control"
+							style="width: 300px" onchange="getMessageList(this.value)">
+							<option value="0">Select Message Type</option>
+						</select>
+						<div id="message">
+							<div class="clearfix"></div>
+							<label class="bold">Message </label>
+							<div class="clearfix"></div>
+							<select class="form-control " name="smsMessage" id="smsMessage"
+								onchange="messageText(this.value)" style="width: 300px">
+								<option value="0">Select Message</option>
+							</select> <select hidden="true" name="smsMessage1" id="smsMessage1">
+							</select>
+							<div class="clearfix"></div>
+							<label class="bold">Message details</label>
+							<textarea name="messageid" id="messageid" cols="4" rows="3"
+								class="form-control" disabled></textarea>
+						</div>
+					</div>
+
+					<div id="fileDIV">
+						<div class="clearfix"></div>
+						<div class="col-sm-6">
+							<div class="clearfix"></div>
+							<label>Attach file</label>
+							<div class="clearfix"></div>
+							<div class="fileinput fileinput-new" data-provides="fileinput">
+								<div class="input-group input-large">
+									<div
+										class="form-control uneditable-input input-fixed input-medium"
+										data-trigger="fileinput">
+										<i class="fa fa-file fileinput-exists"></i>&nbsp; <span
+											class="fileinput-filename"> </span>
+									</div>
+									<span class="input-group-addon btn btn-file"
+										style="background: #333333; color: #ffffff"> <span
+										class="fileinput-new"> <i class="fa fa-paperclip"
+											style="margin-right: 7px"></i>Select
+									</span> <span class="fileinput-exists"> <i
+											class="fa fa-exchange" style="margin-right: 7px"></i>Change
+									</span> <input type="file" name="uploadFile" id="uploadFile">
+									</span> <a href="javascript:;"
+										class="input-group-addon btn fileinput-exists"
+										data-dismiss="fileinput" title="Remove"
+										style="background: #e60000; color: #ffffff"> <i
+										class="fa fa-trash-o"
+										style="margin-right: 7px; color: #ffffff"></i>Remove
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="s_details">
+						<hr class="divider">
+						<div class="col-md-12">
+							<div class="table-container" id="table"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="portlet-footer">
+				<div class="row" id="button">
+					<div class="col-md-12">
+						<button type="button" class="btn-pri" id="sendSMS">Send
+							SMS</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script
+		src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+		type="text/javascript"></script>
+	<script
+		src="../assets/pages/scripts/components-date-time-pickers.min.js"
+		type="text/javascript"></script>
+	<script>
+		$(document).ready(function() {
+			 $('#button').hide();
+			$('#marks').hide();
+			$('#fileDIV').hide();
+			$("div.desc").hide();
+			$("input[name$='s_type']").click(function() {
+				var test = $(this).val();
+				if(test=="allStudents"){
+				    $("#s_details").hide();
+				    $("#table").html("");
+				}
+				$("div.desc").hide();
+				$("#" + test).show();
+			});
+			$("#s_details").hide();
+			$("#btn-s-details").click(function() {
+				$("#s_details").show();
+			})
+		});
+
+		var mealsByCategory = {
+			SELECT : [ "Select Message Type" ],
+			STUDENT : [ "Select Message Type", "General", "Marks", "Payments","Marketing" ],
+			OUTSTUDENT : [ "Select Message Type", "General", "Marks",	"Payments", "Marketing" ],
+			PARENT : [ "Select Message Type", "General", "Marks", "Payments",		"Marketing" ],
+			STAFF : [ "Select Message Type", "General", "Marketing","Customize" ],
+			OTHERS : [ "Select Message Type", "General", "Marketing",	"Customize" ],
+			ROOKIESTUDENT : [ "Select Message Type", "General", "Marks",	"Payments", "Marketing" ]
+		}
+
+		function toMsg(msgTo) {
+	         $("#table").html("");
+			$('#marks').hide();
+			$('#fileDIV').hide();
+			if (msgTo == "STAFF" || msgTo == "OTHERS") {
+				$('#staff').hide();
+				$('#fileDIV').show();
+			} else {
+				$('#staff').show();
+				$('#fileDIV').hide();
+			}
+	
+			var select = $('#msgType');
+			select.find('option').remove();
+			$.each(mealsByCategory[msgTo.toUpperCase()], function(key, value) {
+				$('<option>').val(value.toUpperCase()).text(value).appendTo(
+						select);
+			});
+		}
+
+		function getYear() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getJoinYearSMS",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#joinYear');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+				}
+			});
+		}
+		function getStream() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getStreamSMS",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#stream');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+					$("select#programId").val('0');
+					$("select#courseId").val('0');
+					$("select#batchId").val('0');
+					$("select#sectionId").val('0');
+				}
+			});
+		}
+
+		function getMessageList(messageType) {
+		    $('#message').show();
+			if (($('#msgTo').val() == "OUTSTUDENT" && messageType == "GENERAL")|| messageType == "MARKS" || $('#msgTo').val() == "STAFF"	|| $('#msgTo').val() == "OTHERS") {
+				if (($('#msgTo').val() == "OUTSTUDENT" && messageType == "GENERAL")) {
+					$('#marks').hide();
+					$('#fileDIV').hide();
+				} else if ($('#msgTo').val() == "STAFF"|| $('#msgTo').val() == "OTHERS") {
+					$('#marks').hide();
+					$('#fileDIV').show();
+				} else {
+					$("#table").html("");
+			        $('#message').hide();
+					$('#marks').show();
+					$('#fileDIV').show();
+				}
+				$('#staff').hide();
+
+			} else {
+				$('#staff').show();
+				$('#marks').hide();
+				$('#fileDIV').hide();
+			}
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getMessageList",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#smsMessage');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+	                	if (key != 0) {
+							val1 = value.split(",")[1];
+						if(val1==""){
+							 val1 = value.split(",")[2];
+						}
+							val2 = val1.split(":")[0];
+							val = val2.substring(0, 30).concat("...");
+						} else {
+							val = value;
+						}
+						$('<option>').val(key).text(val).appendTo(select);
+					});
+					var select = $('#smsMessage1');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+				}
+			});
+		}
+
+		function messageText(myVal) {
+			if (myVal == 0) {
+				$('#messageid').text("");
+			}else{
+			    $("#smsMessage1").val([ myVal ]);
+                $('#messageid').text($("#smsMessage1 :selected").html());
+		}
+		}
+		$(document).ready(function() {
+			$('input[type="checkbox"]').click(function() {
+				if ($('#allStuCheckedId').is(":checked")) {
+					$("#showStuDetialsId").hide();
+				} else if ($('#allStuCheckedId').is(":not(:checked)")) {
+					$("#showStuDetialsId").show();
+				}
+			});
+		});
+		$(document).ready(function() {
+			$("#sendSMS").click(function() {
+				if($('#msgTo').val()=="STAFF"||$('#msgTo').val()=="OTHERS"){
+					
+					   if ($('#msgType').val() == "SELECT MESSAGE TYPE"|| $('#msgType').val() == "") {
+		                     showToastr("Please Select msgType", "error");
+		                     $("#msgType").focus();
+		                     return false;
+		                 }else  if ($('#smsMessage').val() == "0"|| $('#smsMessage').val() == "") {
+		                     showToastr("Please Select smsMessage", "error");
+		                     $("#smsMessage").focus();
+		                     return false;
+		                 }else  if ($('#uploadFile').val() == ""|| $('#uploadFile').val() == "") {
+                             showToastr("Please Select File", "error");
+                             $("#uploadFile").focus();
+                             return false;
+                        }else   if($('#uploadFile').val() != "" && !checkfile($('#uploadFile').val())){
+                            showToastr("Please Select  .xlsFile ", "error");
+                            $("#uploadFile").focus();
+                               return false;
+                        }
+	                } else{
+	                	if($("#msgType").val()=="MARKS"){
+	                		 if ($('#examType').val() == "") {
+	                             showToastr("Please Select examType", "error");
+	                                $("#examType").focus();
+	                                return false;
+	                     /*   }else  if ($('#examDate').val() == ""|| !isValidDate($('#examDate').val())) {
+	                           showToastr("Please Select examDate", "error");
+	                           $("#examDate").focus();
+	                           return false; */
+	                          }else  if ($('#uploadFile').val() == ""|| $('#uploadFile').val() == "") {
+	                               showToastr("Please Select File", "error");
+	                               $("#uploadFile").focus();
+	                               return false;
+	                          }else   if($('#uploadFile').val() != "" && !checkfile($('#uploadFile').val())){
+	                              showToastr("Please Select  .xlsFile ", "error");
+	                              $("#uploadFile").focus();
+	                                 return false;
+	                          }
+	                	}else{
+	                		  if ($('#msgTo').val() == "Select"|| $('#msgTo').val() =="") {
+	                              showToastr("Please Select MessageTO", "error");
+	                              $("#msgTo").focus();
+	                              return false;
+	                               }else  if ($('#studyClass').val() == "0"|| $('#studyClass').val() == "") {
+	                                showToastr("Please Select Class", "error");
+	                               $("#studyClass").focus();
+	                               return false;
+	                             }else  if ($('#joinYear').val() == "0"|| $('#joinYear').val() == "") {
+	                             showToastr("Please Select JoinYear", "error");
+	                             $("#joinYear").focus();
+	                             return false;
+	                            }else  if ($('#msgType').val() == "SELECT MESSAGE TYPE"|| $('#msgType').val() == "") {
+	                            showToastr("Please Select msgType", "error");
+	                            $("#msgType").focus();
+	                            return false;
+	                           }else  if ($('#smsMessage').val() == "0"|| $('#smsMessage').val() == "") {
+	                            showToastr("Please Select smsMessage", "error");
+	                            $("#smsMessage").focus();
+	                            return false;
+	                        }
+	                		  var radioValue = $("input[name='s_type']:checked").val();
+	                		  if(radioValue=="individualStudents" ){
+	                              if ($('#stream').val() == "0"|| $('#stream').val() =="") {
+	                                     showToastr("Please Select Stream", "error");
+	                                     $("#stream").focus();
+	                                     return false;
+	                                   }else   if ($('#program').val() == "0"|| $('#program').val() =="") {
+	                                      showToastr("Please Select Program", "error");
+	                                      $("#program").focus();
+	                                        return false;
+	                                   }else   if ($('#campusTrack').val() == "0"|| $('#campusTrack').val() =="") {
+	                                          showToastr("Please Select campusTrack", "error");
+	                                          $("#campusTrack").focus();
+	                                            return false;
+	                                   }else   if ($('#courseBatch').val() == "0"|| $('#courseBatch').val() =="") {
+	                                          showToastr("Please Select batch", "error");
+	                                          $("#courseBatch").focus();
+	                                            return false;
+	                                   }else   if ($('#section').val() == "0"|| $('#section').val() =="") {
+	                                          showToastr("Please Select section", "error");
+	                                          $("#section").focus();
+	                                            return false;
+	                                   }else    {
+	                                	   getIds();
+	                                	   if ($('#studentsList').val() == "0"|| $('#studentsList').val() =="") {
+	                                		      showToastr("Please select students from table", "error");
+	                                		      return false;
+	                                	   }
+	                                   }
+	                          }
+	                		
+	                	}
+	                }
+				 if (confirm("Are you sure you want to submit ?")) {
+	              
+	                        var form = $('#formId')[0];
+	                        var data = new FormData(form);
+	                        $.ajax({
+	                            type : 'post',
+	                            enctype : 'multipart/form-data',
+	                            url : $("#formId").attr("action"),
+	                            data : data,
+	                            processData : false,
+	                            contentType : false,
+	                            success : function(data) {
+	                                if (data.indexOf("ERROR-") != -1) {
+	                                } else if (data.indexOf("FEEDBACK-1") != -1) {
+	                                    alert("Successfully Done!!!");
+	                                    $('#msgTo').val("Select");
+	                                    $('#studyClass').val(0);
+	                                    $('#joinYear').val(0);
+	                                    toMsg("Select");
+	                                    $('#smsMessage').val(0);
+	                                    $('#messageid').val('');
+	                                    $('#examType').val('');
+	                                    $('#examDate').val('');
+	                                    $("select#stream").val('0');
+	                                    $("select#program").val('0');
+	                                    $("select#campusTrack").val('0');
+	                                    $("select#courseBatch").val('0');
+	                                    $("select#section").val('0');
+	                                    $("#table").html('');
+	                                    $("#table").hide();
+	                                }
+	                            }
+	                        });
+	                }
+			});
+		});
+		
+		$("#examDate").datetimepicker({
+			format : 'dd-mm-yyyy'
+		});
+
+		function loadProgram() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getProgramsSMS",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#program');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+					$("select#campusTrack").val('0');
+					$("select#courseBatch").val('0');
+					$("select#section").val('0');
+				}
+			});
+		}
+
+		function loadCourseTrack() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getCoursesSMS",
+				data : $("#formId").serialize(),
+				dataType : 'text',
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#campusTrack');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+					$("select#courseBatch").val('0');
+					$("select#section").val('0');
+				}
+			});
+
+		}
+		function loadbatches() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getbatchesSMS",
+				data : $("#formId").serialize(),
+				dataType : 'text',
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#courseBatch');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+					$("select#section").val('0');
+				}
+			});
+		}
+		function loadSections() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getsectionsSMS",
+				data : $("#formId").serialize(),
+				dataType : 'text',
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#section');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+
+				}
+			});
+		}
+
+		function getStudents() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getStudents",
+				data : $("#formId").serialize(),
+				dataType : 'text',
+				success : function(data) {
+					$("#table").html(data);
+				}
+			});
+
+		}
+
+		function getIds() {
+			var list = [];
+			$("#sample_3 input[type=checkbox]:checked").each(function() {
+				var row = $(this).closest("tr")[0];
+				var id = row.cells[1].innerHTML;
+				if (id) {
+					list.push(id);
+				}
+			});
+			$("#studentsList").val(list);
+		}
+		function isValidDate(dateString) {
+			  var regEx = /^\d{2}-\d{2}-\d{4}$/;
+			  return dateString.match(regEx) != null;
+			}
+		function checkfile(sender) {
+		    var validExts = new Array(".xlsx", ".xls");
+		    var fileExt = sender;
+		    fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+		    if (validExts.indexOf(fileExt) < 0) {
+		      return false;
+		    }
+		    else return true;
+		}
+	</script>
+</body>
+</html>

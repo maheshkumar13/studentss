@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style type="text/css">
+ol {
+	display: block;
+	list-style-type: upper-alpha;
+	margin-top: 1em;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 20px;
+}
+</style>
+<style>
+.vKeyboardSplKeys {
+	background-color: #DEDBE4;
+	border: 1px solid #666666;
+	border-radius: 6px;
+	display: inline-block;
+	color: #000000;
+	font-family: arial;
+	font-weight: bold;
+	padding: 3px 6px;
+	margin: 2px;
+	cursor: pointer;
+}
+
+.vKeyboardSplKeys:Hover {
+	background-color: #8cb82b;
+}
+
+.vKeyboardSplKeys:active {
+	position: relative;
+	top: 1px;
+}
+
+.vKeyboardKeys {
+	width: 24px;
+	background-color: #EEEEEE;
+	border: 1px solid #666666;
+	border-radius: 6px;
+	display: inline-block;
+	color: #000000;
+	font-family: arial;
+	font-weight: bold;
+	padding: 3px 8px;
+	margin: 2px;
+	cursor: pointer;
+}
+
+.vKeyboardKeys {
+	width: 24px;
+	background-color: #EEEEEE;
+	border: 1px solid #666666;
+	border-radius: 6px;
+	display: inline-block;
+	color: #000000;
+	font-family: arial;
+	font-weight: bold;
+	padding: 3px 8px;
+	margin: 2px;
+	cursor: pointer;
+}
+
+.vKeyboardKeys:Hover {
+	background-color: #CEE9FC;
+}
+
+.vKeyboardKeys:active {
+	position: relative;
+	top: 1px;
+}
+
+.vFloatKeyboardSplKeys {
+	background-color: #DEDBE4;
+	border: 1px solid #666666;
+	border-radius: 6px;
+	display: inline-block;
+	color: #000000;
+	font-family: arial;
+	font-weight: bold;
+	padding: 3px 6px;
+	margin: 2px;
+	cursor: pointer;
+}
+
+.vFloatKeyboardSplKeys:Hover {
+	background-color: #8cb82b;
+}
+
+.vFloatKeyboardSplKeys:active {
+	position: relative;
+	top: 1px;
+}
+
+.vFloatKeyboardKeys {
+	width: 24px;
+	background-color: #EEEEEE;
+	border: 1px solid #666666;
+	border-radius: 6px;
+	display: inline-block;
+	color: #000000;
+	font-family: arial;
+	font-weight: bold;
+	padding: 3px 8px;
+	margin: 2px;
+	cursor: pointer;
+}
+
+.vFloatKeyboardKeys {
+	width: 24px;
+	background-color: #EEEEEE;
+	border: 1px solid #666666;
+	border-radius: 6px;
+	display: inline-block;
+	color: #000000;
+	font-family: arial;
+	font-weight: bold;
+	padding: 3px 8px;
+	margin: 2px;
+	cursor: pointer;
+}
+
+.vFloatKeyboardKeys:Hover {
+	background-color: #CEE9FC;
+}
+
+.vFloatKeyboardKeys:active {
+	position: relative;
+	top: 1px;
+}
+
+.space {
+	padding: 3px 40px;
+}
+
+.vKeyboard {
+	border: 1px solid #DDDDDDD;
+	background-color: #F4F4F4;
+	padding: 5px;
+	text-align: center;
+}
+</style>
+<style type="text/css">
+#matrix2ColId ul, #matrix3ColId ul {
+	list-style: none;
+}
+
+.row {
+	margin: 0px;
+}
+</style>
+
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+						if (examAttemptCompleted) {
+							$("input").attr('readonly', true);
+						}
+						$('.vKeyboardKeys').click(
+								function() {
+									if (this.innerHTML != "."
+											&& this.innerHTML != "-") {
+										$('#answer-' + $(this).attr('id')).val(
+												this.innerHTML);
+										$('#answer-' + $(this).attr('id'))
+												.attr("id").focus();
+									}
+								});
+
+						$('.clearAllId').click(function() {
+							$('#answer-' + $(this).attr("id")).val('');
+						});
+
+						$("[id^='answer']")
+								.on(
+										'keyup',
+										function() {
+											if (isNaN(this.value)) {
+												$(this)
+														.val(
+																$(this)
+																		.val()
+																		.substring(
+																				0,
+																				$(
+																						this)
+																						.val().length - 1));
+											}
+										});
+
+						$(".backspace")
+								.click(
+										function() {
+											$("#answer-" + $(this).attr("id"))
+													.val(
+															$(
+																	"#answer-"
+																			+ $(
+																					this)
+																					.attr(
+																							"id"))
+																	.val()
+																	.substring(
+																			0,
+																			$(
+																					"#answer-"
+																							+ $(
+																									this)
+																									.attr(
+																											"id"))
+																					.val().length - 1));
+										});
+
+						$("#leftId")
+								.click(
+										function() {
+											setCaretToPos(
+													document
+															.getElementById("answer"),
+													document
+															.getElementById('answer').selectionStart - 1);
+										});
+
+						$("#rightId")
+								.click(
+										function() {
+											setCaretToPos(
+													$("#answer-"
+															+ $(this)
+																	.attr("id")),
+													$("#answer-"
+															+ $(this)
+																	.attr("id")).selectionStart + 1);
+										});
+
+						function setSelectionRange(input, selectionStart,
+								selectionEnd) {
+							if (input.setSelectionRange) {
+								input.focus();
+								input.setSelectionRange(selectionStart,
+										selectionEnd);
+							} else if (input.createTextRange) {
+								var range = input.createTextRange();
+								range.collapse(true);
+								range.moveStart('character', selectionStart);
+								range.moveEnd('character', selectionEnd);
+								range.select();
+							}
+						}
+
+						function setCaretToPos(input, pos) {
+							setSelectionRange(input, pos, pos);
+						}
+					});
+	
+
+	$(document)
+			.ready(
+					function() {
+						
+						$('.vFloatKeyboardKeys')
+								.click(
+										function() {
+											if (this.innerHTML != "-") {
+												
+												if($('#floatAnswer-'
+														+ $(this).attr(
+																'id'))
+												.val().length<=10){
+												
+
+												var preVal = $(
+														'#floatAnswer-'
+																+ $(this).attr(
+																		'id'))
+														.val()
+
+												$(
+														'#floatAnswer-'
+																+ $(this).attr(
+																		'id'))
+														.val(
+																$(
+																		'#floatAnswer-'
+																				+ $(
+																						this)
+																						.attr(
+																								'id'))
+																		.val()
+																		+ this.innerHTML);
+
+												var len = $(
+														'#floatAnswer-'
+																+ $(this).attr(
+																		'id'))
+														.val().length;
+												var index = $(
+														'#floatAnswer-'
+																+ $(this).attr(
+																		'id'))
+														.val().indexOf('.');
+												if (index > 0) {
+													var charAfterdot = (len + 1)
+															- index;
+													if (charAfterdot > 4) {
+														$(
+																'#floatAnswer-'
+																		+ $(
+																				this)
+																				.attr(
+																						'id'))
+																.val(preVal);
+													}
+												}
+											}
+
+											}
+										});
+
+						$('.floatClearAllId').click(function() {
+							$('#floatAnswer-' + $(this).attr("id")).val('');
+						});
+
+						$("[id^='floatAnswer']")
+								.on(
+										'keyup',
+										function() {
+											if (isNaN(this.value)) {
+												$(this)
+														.val(
+																$(this)
+																		.val()
+																		.substring(
+																				0,
+																				$(
+																						this)
+																						.val().length - 1));
+											}
+										});
+
+						$(".floatBackspace")
+								.click(
+										function() {
+											$(
+													"#floatAnswer-"
+															+ $(this)
+																	.attr("id"))
+													.val(
+															$(
+																	"#floatAnswer-"
+																			+ $(
+																					this)
+																					.attr(
+																							"id"))
+																	.val()
+																	.substring(
+																			0,
+																			$(
+																					"#floatAnswer-"
+																							+ $(
+																									this)
+																									.attr(
+																											"id"))
+																					.val().length - 1));
+										});
+
+						$("#floatLeftId")
+								.click(
+										function() {
+											setCaretToPos(
+													$("#floatAnswer-"
+															+ $(this)
+																	.attr("id")),
+													$("#floatAnswer-"
+															+ $(this)
+																	.attr("id")).selectionStart - 1);
+										});
+
+						$("#floatRightId")
+								.click(
+										function() {
+											setCaretToPos(
+													$("#floatAnswer-"
+															+ $(this)
+																	.attr("id")),
+													$("#floatAnswer-"
+															+ $(this)
+																	.attr("id")).selectionStart + 1);
+										});
+
+						function setSelectionRange(input, selectionStart,
+								selectionEnd) {
+							if (input.setSelectionRange) {
+								input.focus();
+								input.setSelectionRange(selectionStart,
+										selectionEnd);
+							} else if (input.createTextRange) {
+								var range = input.createTextRange();
+								range.collapse(true);
+								range.moveStart('character', selectionStart);
+								range.moveEnd('character', selectionEnd);
+								range.select();
+							}
+						}
+
+						function setCaretToPos(input, pos) {
+							setSelectionRange(input, pos, pos);
+						}
+					});
+
+	$('[id^=radio]').on('click', function() {
+		if (examAttemptCompleted) {
+			return false;
+		}
+		if (this.checked) {
+			$('[id^=radio]').prop("checked", false);
+			$(this).prop("checked", true);
+		}
+	});
+
+	$('[id^=type8radio]').on('click', function() {
+		if (examAttemptCompleted) {
+			return false;
+		}
+		if (this.checked) {
+			$('[id^=type8radio]').prop("checked", false);
+			$(this).prop("checked", true);
+		}
+	});
+
+	$('[id^=type9radio]').on('click', function() {
+		if (examAttemptCompleted) {
+			return false;
+		}
+		if (this.checked) {
+			$('[id^=type9radio]').prop("checked", false);
+			$(this).prop("checked", true);
+		}
+	});
+
+	$('[id^=assertionQue]').on('click', function() {
+		if (examAttemptCompleted) {
+			return false;
+		}
+		if (this.checked) {
+			$('[id^=assertionQue]').prop("checked", false);
+			$(this).prop("checked", true);
+		}
+	});
+
+	$('[id^=statementQue]').on('click', function() {
+		if (examAttemptCompleted) {
+			return false;
+		}
+		if (this.checked) {
+			$('[id^=statementQue]').prop("checked", false);
+			$(this).prop("checked", true);
+		}
+	});
+
+	$('[id^=compreQue]').on('click', function() {
+		if (examAttemptCompleted) {
+			return false;
+		}
+		if (this.checked) {
+			$('[id^=compreQue]').prop("checked", false);
+			$(this).prop("checked", true);
+		}
+	});
+
+</script>
+</head>
+<body>
+	<strong> <span th:text="${'Question No . '+questionNo}"></span>
+	</strong>
+	<hr>
+
+	<input type="hidden" name="autonext" id="autonext" value="1" />
+
+	<div
+		th:if="${question.questionType.id==1 || question.questionType.id==2 || question.questionType.id==3 ||  question.questionType.id==6||  question.questionType.id==7 || question.questionType.id==8 ||  question.questionType.id==26}">
+		<span
+			th:utext="${@currentUser.getQuestionText(question.questionText)}"></span>
+	</div>
+
+	<div id="optiongroup" style="padding-top: 15px;">
+		<th:block
+			th:if="${question.questionType.id==1 || question.questionType.id==6 || question.questionType.id==7 || question.questionType.id == 15}">
+
+			<th:block th:each="choice1,qcstat1:${question.choices}">
+				<div class="row" th:if="${(qcstat1.index)+1==1}">
+					<div class="col-sm-4">
+						<b th:text="${'(A)'}"></b> <span
+							th:utext="${@currentUser.getQuestionText(choice1.choiceText)}"></span>
+					</div>
+
+					<div class="col-sm-4"
+						th:if="${question.choices.get((qcstat1.index)+1)!=null}">
+						<b th:text="${'(B)'}"></b> <span
+							th:utext="${@currentUser.getQuestionText(question.choices.get((qcstat1.index)+1).choiceText)}">
+						</span>
+					</div>
+				</div>
+
+				<div class="row" th:if="${(qcstat1.index)+1==3}">
+					<div class="col-sm-4">
+						<b th:text="${'(C)'}"></b> <span
+							th:utext="${@currentUser.getQuestionText(choice1.choiceText)}"></span>
+					</div>
+					<div class="col-sm-4"
+						th:if="${question.choices.get((qcstat1.index)+1)!=null}">
+						<b th:text="${'(D)'}"></b> <span
+							th:utext="${@currentUser.getQuestionText(question.choices.get((qcstat1.index)+1).choiceText)}"></span>
+					</div>
+				</div>
+			</th:block>
+
+			<div style="margin-top: 20px;">
+				<th:block th:each="choice,qcstat:${question.choices}">
+					<div class="row">
+						<div class="col-xs-4 col-xs-6">
+							<input th:id="'radio-'+${choice.id}"
+								th:checked="${qattempt!=null && (qattempt.answer==((qcstat.index) + 1))}"
+								class="magic-radio" type="checkbox" name="answer"
+								data-radio="iradio_flat-blue" th:value="${(qcstat.index) + 1}"
+								th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + ((qcstat.index) + 1) + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+							<label style="margin-bottom: 0px;" th:for="'radio-'+${choice.id}"><span
+								th:utext="${(qcstat.index)+1==1?'A':((qcstat.index)+1==2?'B':(qcstat.index)+1==3?'C':('D'))}"></span>
+								<th:block th:if="${attempt.isCompleted()}">
+									<i class="fa fa-check"
+										style="color: green; padding-left: 12px;"
+										th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==((qcstat.index) + 1))}"></i>
+									<th:block
+										th:if="${qattempt!=null && (qattempt.answer==((qcstat.index) + 1))}">
+										<i class="fa fa-remove"
+											style="color: red; padding-left: 12px;"
+											th:if="${!qattempt.isCorrect()}"></i>
+									</th:block>
+								</th:block></label>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</th:block>
+	</div>
+
+
+	<th:block th:if="${question.questionType.id==2}">
+		<th:block th:each="choice1,qcstat1:${question.choices}">
+			<div class="row" th:if="${(qcstat1.index)+1==1}">
+				<div class="col-sm-4">
+					<b th:text="${'(A)'}"></b> <span
+						th:utext="${@currentUser.getQuestionText(choice1.choiceText)}"></span>
+				</div>
+
+				<div class="col-sm-4"
+					th:if="${question.choices.get((qcstat1.index)+1)!=null}">
+					<b th:text="${'(B)'}"></b> <span
+						th:utext="${@currentUser.getQuestionText(question.choices.get((qcstat1.index)+1).choiceText)}"></span>
+				</div>
+			</div>
+			<div class="row" th:if="${(qcstat1.index)+1==3}">
+				<div class="col-sm-4">
+					<b th:text="${'(C)'}"></b> <span
+						th:utext="${@currentUser.getQuestionText(choice1.choiceText)}"></span>
+				</div>
+
+				<div class="col-sm-4"
+					th:if="${question.choices.get((qcstat1.index)+1)!=null}">
+					<b th:text="${'(D)'}"></b><span
+						th:utext="${@currentUser.getQuestionText(question.choices.get((qcstat1.index)+1).choiceText)}"></span>
+				</div>
+			</div>
+		</th:block>
+
+		<th:block th:each="choice,qcstat:${question.choices}">
+			<div class="row">
+				<div class="col-md-4" style="padding-left: 0px">
+					<div class="col-xs-4 col-xs-6">
+						<input th:id="'myradio-'+${choice.id}" type="checkbox"
+							name="answer" class="magic-checkbox"
+							th:value="${qcstat.index + 1}"
+							th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + (question.choices.get(0).id) + ',' + (question.choices.get(1).id) + ',' + (question.choices.get(2).id) + ',' + (question.choices.get(3).id) + ',' + question.id +')'}"
+							th:checked="${qattempt==null?'false':(((qattempt.answer)%10==((qcstat.index) + 1))? 'true':(((qattempt.answer/10)%10==((qcstat.index) + 1))? 'true':(((qattempt.answer/100)%10==((qcstat.index) + 1))? 'true':(((qattempt.answer/1000)%10==((qcstat.index) + 1)))? 'true':'false')))}">
+
+						<label style="margin-bottom: 0px;"
+							th:for="'myradio-'+${choice.id}"><span
+							th:utext="${(qcstat.index)+1==1?'A':((qcstat.index)+1==2?'B':(qcstat.index)+1==3?'C':('D'))}"></span>
+							<th:block th:if="${attempt.isCompleted()}">
+
+								<i class="fa fa-check" style="color: green; padding-left: 12px;"
+									th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==((qcstat.index) + 1))}"></i>
+								<th:block
+									th:if="${qattempt!=null && (qattempt.answer==((qcstat.index) + 1))}">
+									<i class="fa fa-remove" style="color: red; padding-left: 12px;"
+										th:if="${!qattempt.isCorrect()}"></i>
+								</th:block>
+							</th:block></label>
+					</div>
+				</div>
+			</div>
+		</th:block>
+	</th:block>
+
+	<th:block th:if="${question.questionType.id==3}">
+
+		<div class="row" id="numericKeyBoardDiv">
+			<div class="col-sm-6">
+				<input th:id="'answer-'+${question.id}"
+					th:name="${'answerInt'+question.id}" class="inputtextsm"
+					maxlength="1" style="width: 145px;"
+					th:value="${(qattempt!=null && qattempt.answer!=0)?qattempt.answer:''}"
+					type="text"
+					th:onchange="${'javascript:qattempt(' + question.questionType.id  + ',' + questionNo + ',' + questionNo  + ',' + question.id + ',' + question.id + ',' + question.id +')'}"
+					th:readonly="${attempt.isCompleted()}">
+
+				<th:block th:if="${attempt.isCompleted()}">
+					<i class="fa fa-check" style="color: green; padding-top: 12px;"
+						th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==(qattempt.answer))}"></i>
+					<i class="fa fa-remove" style="color: red; padding-top: 12px;"
+						th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)!=(qattempt.answer))}"></i>
+				</th:block>
+
+				<div id="vKeyboard" class="vKeyboard" style="width: 145px;"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + questionNo + ',' + questionNo  + ',' + question.id + ',' + question.id + ',' + question.id +')'}"
+					th:if="${!attempt.isCompleted()}">
+					<span class="vKeyboardSplKeys backspace"
+						style="border-radius: 6px;" th:id="${question.id}">Backspace</span><br>
+					<span class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">7</span><span class="vKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">8</span><span
+						class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">9</span><br> <span
+						class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">4</span><span class="vKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">5</span><span
+						class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">6</span><br> <span
+						class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">1</span><span class="vKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">2</span><span
+						class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">3</span><br> <span
+						class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">0</span><span class="vKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">.</span><span
+						class="vKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">-</span><br> <span
+						class="vKeyboardSplKeys" data="left"
+						style="font-weight: normal; border-radius: 6px;" id="leftId">&larr;</span><span
+						class="vKeyboardSplKeys" data="right"
+						style="font-weight: normal; border-radius: 6px;" id="rightId">&rarr;</span><br>
+					<span class="vKeyboardSplKeys clearAllId"
+						style="border-radius: 6px;" th:id="${question.id}">Clear
+						All</span><br>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:if="${question.questionType.id==26}">
+		<div class="row" id="numericKeyBoardDiv">
+			<div class="col-sm-6">
+				<input th:id="'floatAnswer-'+${question.id}"
+					th:name="${'answerInt'+question.id}" class="inputtextsm"
+					maxlength="10" style="width: 145px;"
+					th:value="${(qattempt!=null && qattempt.numericAnswer!=0)?qattempt.numericAnswer:''}"
+					type="text"
+					th:onchange="${'javascript:qattempt(' + question.questionType.id  + ',' + questionNo + ',' + questionNo  + ',' + question.id + ',' + question.id + ',' + question.id +')'}"
+					th:readonly="${attempt.isCompleted()}">
+				<th:block th:if="${attempt.isCompleted()}">
+					<i class="fa fa-check" style="color: green; padding-top: 12px;"
+						th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==(qattempt.answer))}"></i>
+					<i class="fa fa-remove" style="color: red; padding-top: 12px;"
+						th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)!=(qattempt.answer))}"></i>
+				</th:block>
+				<div id="vKeyboard" class="vKeyboard" style="width: 145px;"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + questionNo + ',' + questionNo  + ',' + question.id + ',' + question.id + ',' + question.id +')'}"
+					th:if="${!attempt.isCompleted()}">
+					<span class="vFloatKeyboardSplKeys floatBackspace"
+						style="border-radius: 6px;" th:id="${question.id}">Backspace</span><br>
+					<span class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">7</span><span class="vFloatKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">8</span><span
+						class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">9</span><br> <span
+						class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">4</span><span class="vFloatKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">5</span><span
+						class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">6</span><br> <span
+						class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">1</span><span class="vFloatKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">2</span><span
+						class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">3</span><br> <span
+						class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">0</span><span class="vFloatKeyboardKeys"
+						style="border-radius: 6px;" th:id="${question.id}">.</span><span
+						class="vFloatKeyboardKeys" style="border-radius: 6px;"
+						th:id="${question.id}">-</span><br> <span
+						class="vFloatKeyboardSplKeys" data="left"
+						style="font-weight: normal; border-radius: 6px;" id="floatLeftId">&larr;</span><span
+						class="vFloatKeyboardSplKeys" data="right"
+						style="font-weight: normal; border-radius: 6px;" id="floatRightId">&rarr;</span><br>
+					<span class="vFloatKeyboardSplKeys floatClearAllId"
+						style="border-radius: 6px;" th:id="${question.id}">Clear
+						All</span><br>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:if="${question.questionType.id==8}">
+	
+		<div id="matrix2ColId">
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="col-sm-4 col-xs-6">
+						<strong>Column A</strong>
+					</div>
+					<div class="col-sm-4 col-xs-6">
+						<strong>Column B</strong>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 col-xs-12"
+					th:each="matrix,matrixStat:${question.matrix}">
+					<div class="col-sm-4 col-xs-6">
+						<!-- column A -->
+						<ul>
+							<li
+								th:if="${matrix.columnA!=null && matrix.columnA.trim().length()>0}"><ol
+									type="A" th:start="${(matrixStat.index)+1}">
+									<li><span th:utext="${matrix.columnA}"></span></li>
+								</ol></li>
+						</ul>
+					</div>
+					<div class="col-sm-4 col-xs-6">
+						<!-- column B -->
+						<ul>
+							<li
+								th:if="${matrix.columnB!=null && matrix.columnB.trim().length()>0}"><ol
+									type="A" th:start="${(matrixStat.index)+16}">
+									<li><span th:utext="${matrix.columnB}"></span></li>
+								</ol></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="row">
+					<input th:id="'type8radio-'+${question.matrix[0].choices[0].id}"
+						th:checked="${qattempt!=null && (qattempt.answer==1)}"
+						class="magic-radio" type="checkbox" name="answer"
+						data-radio="iradio_flat-blue"
+						th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '1' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+
+					<label style="margin-bottom: 0px;"
+						th:for="'type8radio-'+${question.matrix[0].choices[0].id}"><span
+						style="white-space: nowrap;"><strong>A)</strong> <!-- options A-->
+							<th:block
+								th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[0].choiceText!=null && question.matrix[0].choices[0].choiceText.trim().length()>0}">
+								<th:block th:each="matrix,matrixStat1:${question.matrix}">
+									<th:block
+										th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+										<span
+											th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+										<span th:text="${matrix.choices[0].choiceText}"> </span>&nbsp;&nbsp;&nbsp;
+										</th:block>
+								</th:block>
+							</th:block> <th:block th:if="${attempt.isCompleted()}">
+								<i class="fa fa-check" style="color: green;"
+									th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==1)}"></i>
+								<th:block th:if="${qattempt!=null && (qattempt.answer==1)}">
+									<i class="fa fa-remove" style="color: red;"
+										th:if="${!qattempt.isCorrect()}"></i>
+								</th:block>
+							</th:block></span></label>
+				</div>
+				<div class="row">
+					<input th:id="'type8radio-'+${question.matrix[0].choices[1].id}"
+						th:checked="${qattempt!=null && (qattempt.answer==2)}"
+						class="magic-radio" type="checkbox" name="answer"
+						data-radio="iradio_flat-blue"
+						th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '2' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+
+					<label style="margin-bottom: 0px;"
+						th:for="'type8radio-'+${question.matrix[0].choices[1].id}"><span
+						style="white-space: nowrap;"><strong>B)</strong> <!-- options B-->
+							<th:block
+								th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[1].choiceText!=null && question.matrix[0].choices[1].choiceText.trim().length()>0}">
+								<th:block th:each="matrix,matrixStat1:${question.matrix}">
+									<span
+										th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+										<span
+										th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+										<span th:text="${matrix.choices[1].choiceText}"></span>&nbsp;&nbsp;&nbsp;
+									</span>
+								</th:block>
+								<th:block th:if="${attempt.isCompleted()}">
+									<i class="fa fa-check" style="color: green;"
+										th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==2)}"></i>
+									<th:block th:if="${qattempt!=null && (qattempt.answer==2)}">
+										<i class="fa fa-remove" style="color: red;"
+											th:if="${!qattempt.isCorrect()}"></i>
+									</th:block>
+								</th:block>
+							</th:block></span></label>
+				</div>
+				<div class="row">
+					<input th:id="'type8radio-'+${question.matrix[0].choices[2].id}"
+						th:checked="${qattempt!=null && (qattempt.answer==3)}"
+						class="magic-radio" type="checkbox" name="answer"
+						data-radio="iradio_flat-blue"
+						th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '3' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+
+					<label style="margin-bottom: 0px;"
+						th:for="'type8radio-'+${question.matrix[0].choices[2].id}"><span
+						style="white-space: nowrap;"><strong>C)</strong> <!-- options C-->
+							<th:block
+								th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[2].choiceText!=null && question.matrix[0].choices[2].choiceText.trim().length()>0}">
+								<th:block th:each="matrix,matrixStat1:${question.matrix}">
+									<th:block
+										th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+										<span
+											th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+										<span th:text="${matrix.choices[2].choiceText}"></span>&nbsp;&nbsp;&nbsp;
+											</th:block>
+								</th:block>
+								<th:block th:if="${attempt.isCompleted()}">
+									<i class="fa fa-check" style="color: green;"
+										th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==3)}"></i>
+									<th:block th:if="${qattempt!=null && (qattempt.answer==3)}">
+										<i class="fa fa-remove" style="color: red;"
+											th:if="${!qattempt.isCorrect()}"></i>
+									</th:block>
+								</th:block>
+							</th:block></span></label>
+				</div>
+				<div class="row">
+					<input th:id="'type8radio-'+${question.matrix[0].choices[3].id}"
+						th:checked="${qattempt!=null && (qattempt.answer==4)}"
+						class="magic-radio" type="checkbox" name="answer"
+						data-radio="iradio_flat-blue"
+						th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '4' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+					<label style="margin-bottom: 0px;"
+						th:for="'type8radio-'+${question.matrix[0].choices[3].id}"><span
+						style="white-space: nowrap;"><strong>D)</strong> <!-- options D-->
+							<th:block
+								th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[3].choiceText!=null && question.matrix[0].choices[3].choiceText.trim().length()>0}">
+								<th:block th:each="matrix,matrixStat1:${question.matrix}">
+									<th:block
+										th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+										<span
+											th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+										<span th:text="${matrix.choices[3].choiceText}"></span>&nbsp;&nbsp;&nbsp;
+											</th:block>
+								</th:block>
+								<th:block th:if="${attempt.isCompleted()}">
+									<i class="fa fa-check" style="color: green;"
+										th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==4)}"></i>
+									<th:block th:if="${qattempt!=null && (qattempt.answer==4)}">
+										<i class="fa fa-remove" style="color: red;"
+											th:if="${!qattempt.isCorrect()}"></i>
+									</th:block>
+								</th:block>
+							</th:block></span></label>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:if="${question.questionType.id==4}">
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Assertion:</strong>
+			</div>
+			<div class="col-xs-10">
+				<p th:utext="${question.assertionText}"></p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Reason:</strong>
+			</div>
+			<div class="col-xs-10">
+				<p th:utext="${question.reasoningText}"></p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Choices:</strong>
+			</div>
+			<div class="col-xs-10"></div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-xs-10">
+				<input th:id="assertionQueChoice1"
+					th:checked="${qattempt!=null && (qattempt.answer==1)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '1' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="assertionQueChoice1">
+					A) Assertion is True, Reason is True and Reason is correct
+					explanation of Assertion</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-xs-10">
+				<input th:id="assertionQueChoice2"
+					th:checked="${qattempt!=null && (qattempt.answer==2)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '2' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="assertionQueChoice2">B)
+					Assertion is True, Reason is True but Reason is not correct
+					explanation of Assertion</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-xs-10">
+				<input th:id="assertionQueChoice3"
+					th:checked="${qattempt!=null && (qattempt.answer==3)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '3' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="assertionQueChoice3">C)
+					Assertion is True, Reason is False</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-xs-10">
+				<input th:id="assertionQueChoice4"
+					th:checked="${qattempt!=null && (qattempt.answer==4)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '4' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="assertionQueChoice4">
+					D) Assertion is True, Reason is True</label>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:if="${question.questionType.id==5}">
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Statement-I:</strong>
+			</div>
+			<div class="col-xs-10">
+				<p th:utext="${question.assertionText}"></p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Statement-II:</strong>
+			</div>
+			<div class="col-xs-10">
+				<p th:utext="${question.reasoningText}"></p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Choices:</strong>
+			</div>
+			<div class="col-xs-10">
+				<input th:id="statementQueChoice1"
+					th:checked="${qattempt!=null && (qattempt.answer==1)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '1' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="statementQueChoice1"><strong>A)</strong>
+					Statement I is True, Statement II is True and Statement II is
+					correct explanation of Statement I</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-xs-10">
+				<input th:id="statementQueChoice2"
+					th:checked="${qattempt!=null && (qattempt.answer==2)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '2' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="statementQueChoice2"><strong>B)</strong>
+					Statement I is True, Statement II is True but Statement II is not
+					correct explanation of Statement I</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-xs-10">
+				<input th:id="statementQueChoice3"
+					th:checked="${qattempt!=null && (qattempt.answer==3)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '3' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="statementQueChoice3">
+					<strong>C)</strong> Statement I is True, Statement II is False
+				</label>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-xs-10">
+				<input th:id="statementQueChoice4"
+					th:checked="${qattempt!=null && (qattempt.answer==4)}"
+					class="magic-radio" type="checkbox" name="answer"
+					data-radio="iradio_flat-blue"
+					th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '4' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+				<label style="margin-bottom: 0px;" th:for="statementQueChoice4">
+					<strong>D)</strong> Statement I is False, Statement II is True
+				</label>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:if="${question.questionType.id==11}">
+		<div class="row">
+			<div class="col-sm-2">
+				<strong>Paragraph Text:</strong>
+			</div>
+			<div class="col-xs-10">
+				<p
+					th:utext="${@currentUser.getQuestionText(question.paragraphText)}"></p>
+			</div>
+		</div>
+
+		<div th:each="cquestion,cquestionStatus:${question.choiceQuestions}">
+
+			<div
+				th:if="${examQueVal.compreQuestion!=null && examQueVal.compreQuestion==true && examQueVal.comprehensionQuestion!=null && examQueVal.comprehensionQuestion.id==cquestion.id}">
+
+				<div class="row">
+					<div class="col-sm-2">
+						<strong>Question:</strong>
+					</div>
+					<div class="col-xs-10">
+						<p th:utext="${cquestion.questionText}"></p>
+					</div>
+				</div>
+
+				<div class="row">
+					<th:block th:if="${cquestion.choicesPerLine>2}">
+						<th:block th:each="choice,choiceStat:${cquestion.choices}">
+							<div class="row">
+								<div class="col-md-4">
+									<input th:id="'compreQueChoice-'+${choiceStat.index+1}"
+										th:checked="${qattempt!=null && (qattempt.answer==((choiceStat.index)+1))}"
+										class="magic-radio" type="checkbox" name="answer"
+										data-radio="iradio_flat-blue"
+										th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + (choiceStat.index+1) + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+
+									<label style="margin-bottom: 0px;"
+										th:for="'compreQueChoice-'+${choiceStat.index+1}"><strong>
+											<span
+											th:text="${applicationUtil.getChar(choiceStat.index+1)}"></span>
+									</strong>)<span th:utext="${choice.choiceText}"></span></label>
+								</div>
+							</div>
+						</th:block>
+					</th:block>
+					<th:block th:if="${cquestion.choicesPerLine<2}">
+						<div class="row">
+							<th:block th:each="choice,choiceStat:${cquestion.choices}">
+								<div class="col-md-6">
+									<input th:id="'compreQueChoice-'+${choiceStat.index+1}"
+										th:checked="${qattempt!=null && (qattempt.answer==((choiceStat.index+1))}"
+										class="magic-radio" type="checkbox" name="answer"
+										data-radio="iradio_flat-blue"
+										th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + (choiceStat.index+1) + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+									<label style="margin-bottom: 0px;"
+										th:for="'compreQueChoice-'+${choiceStat.index+1}"><strong><span
+											th:text="${applicationUtil.getChar(choiceStat.index+1)}"></span>)</strong></label>
+								</div>
+								<div class="col-md-6">
+									<span th:utext="${choice.choiceText}"></span>
+								</div>
+							</th:block>
+						</div>
+					</th:block>
+					<th:block th:if="${cquestion.choicesPerLine==2}">
+						<div class="row">
+							<div class="col-md-6">
+								<input th:id="'compreQueChoice-'+${cquestion.choices.get(0).id}"
+									th:checked="${qattempt!=null && (qattempt.answer==1)}"
+									class="magic-radio" type="checkbox" name="answer"
+									data-radio="iradio_flat-blue"
+									th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + (choiceStat.index+1) + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+								<label style="margin-bottom: 0px;"
+									th:for="'compreQueChoice-'+${cquestion.choices.get(0).id}">
+									<strong>A)</strong> <span
+									th:utext="${cquestion.choices.get(0).choiceText}"></span>
+								</label>
+							</div>
+							<div class="col-md-6">
+								<input th:id="'compreQueChoice-'+${cquestion.choices.get(1).id}"
+									th:checked="${qattempt!=null && (qattempt.answer==1)}"
+									class="magic-radio" type="checkbox" name="answer"
+									data-radio="iradio_flat-blue"
+									th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + (choiceStat.index+1) + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+								<label style="margin-bottom: 0px;"
+									th:for="'compreQueChoice-'+${cquestion.choices.get(0).id}">
+									<strong>B)</strong> <span
+									th:utext="${cquestion.choices.get(1).choiceText}"></span>
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<input th:id="'compreQueChoice-'+${cquestion.choices.get(2).id}"
+									th:checked="${qattempt!=null && (qattempt.answer==1)}"
+									class="magic-radio" type="checkbox" name="answer"
+									data-radio="iradio_flat-blue"
+									th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + (choiceStat.index+1) + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+								<label style="margin-bottom: 0px;"
+									th:for="'compreQueChoice-'+${cquestion.choices.get(0).id}">
+									<strong>C)</strong> <span
+									th:utext="${cquestion.choices.get(2).choiceText}"></span>
+								</label>
+							</div>
+							<div class="col-md-6">
+								<input th:id="'compreQueChoice-'+${cquestion.choices.get(3).id}"
+									th:checked="${qattempt!=null && (qattempt.answer==1)}"
+									class="magic-radio" type="checkbox" name="answer"
+									data-radio="iradio_flat-blue"
+									th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + (choiceStat.index+1) + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+								<label style="margin-bottom: 0px;"
+									th:for="'compreQueChoice-'+${cquestion.choices.get(0).id}">
+									<strong>D)</strong> <span
+									th:utext="${cquestion.choices.get(3).choiceText}"></span>
+								</label>
+							</div>
+						</div>
+					</th:block>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:if="${question.questionType.id==9}">
+
+
+
+		<div id="matrix3ColId">
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="col-sm-3 col-xs-4">
+						<strong>Column A</strong>
+					</div>
+					<div class="col-sm-3 col-xs-4">
+						<strong>Column B</strong>
+					</div>
+					<div class="col-sm-3 col-xs-4">
+						<strong>Column C</strong>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 col-xs-12"
+					th:each="matrix,matrixStat:${question.matrix}">
+					<div class="col-sm-3 col-xs-4">
+						<ul>
+							<!-- Column A-->
+							<li
+								th:if="${matrix.columnA!=null && matrix.columnA.trim().length()>0}"><ol
+									type="A" th:start="${(matrixStat.index)+1}">
+									<li><span th:utext="${matrix.columnA}"></span></li>
+								</ol></li>
+						</ul>
+					</div>
+					<div class="col-sm-3 col-xs-4">
+						<!--Column B-->
+						<ul>
+							<li
+								th:if="${matrix.columnB!=null && matrix.columnB.trim().length()>0}"><ol
+									type="A" th:start="${(matrixStat.index)+16}">
+									<li><span th:utext="${matrix.columnB}"></span></li>
+								</ol></li>
+						</ul>
+					</div>
+
+					<div class="col-sm-3 col-xs-4">
+						<!-- Column C-->
+						<ul>
+							<li
+								th:if="${matrix.columnB!=null && matrix.columnB.trim().length()>0}"><ol
+									type="A" th:start="${(matrixStat.index)+7}">
+									<li><span th:utext="${matrix.columnC}"></span></li>
+								</ol></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="col-sm-2">
+
+					<!-- options-->
+					<div class="row">
+						<input th:id="'type9radio-'+${question.matrix[0].choices[0].id}"
+							th:checked="${qattempt!=null && (qattempt.answer==1)}"
+							class="magic-radio" type="checkbox" name="answer"
+							data-radio="iradio_flat-blue"
+							th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '1' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+						<label style="margin-bottom: 0px;"
+							th:for="'type9radio-'+${question.matrix[0].choices[0].id}"><span
+							style="white-space: nowrap;"><strong>A)</strong> <th:block
+									th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[0].choiceText!=null && question.matrix[0].choices[0].choiceText.trim().length()>0}">
+									<th:block th:each="matrix,matrixStat1:${question.matrix}">
+										<th:block
+											th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+											<span
+												th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+											<span th:text="${matrix.choices[0].choiceText}"> </span>&nbsp;&nbsp;&nbsp;
+							</th:block>
+
+									</th:block>
+
+									<th:block th:if="${attempt.isCompleted()}">
+										<i class="fa fa-check"
+											style="color: green; padding-top: 12px;"
+											th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==1)}"></i>
+										<th:block th:if="${qattempt!=null && (qattempt.answer==1)}">
+											<i class="fa fa-remove"
+												style="color: red; padding-top: 12px;"
+												th:if="${!qattempt.isCorrect()}"></i>
+										</th:block>
+									</th:block>
+								</th:block></span></label>
+					</div>
+
+
+					<div class="row">
+						<input th:id="'type9radio-'+${question.matrix[0].choices[1].id}"
+							th:checked="${qattempt!=null && (qattempt.answer==2)}"
+							class="magic-radio" type="checkbox" name="answer"
+							data-radio="iradio_flat-blue"
+							th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '2'+ ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+						<label style="margin-bottom: 0px;"
+							th:for="'type9radio-'+${question.matrix[0].choices[1].id}"><span
+							style="white-space: nowrap;"><strong>B)</strong> <!-- options B -->
+								<th:block
+									th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[1].choiceText!=null && question.matrix[0].choices[1].choiceText.trim().length()>0}">
+									<th:block th:each="matrix,matrixStat1:${question.matrix}">
+										<th:block
+											th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+											<span
+												th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+											<span th:text="${matrix.choices[1].choiceText}"> </span>&nbsp;&nbsp;&nbsp;
+										</th:block>
+
+									</th:block>
+
+								</th:block> <th:block th:if="${attempt.isCompleted()}">
+									<i class="fa fa-check" style="color: green; padding-top: 12px;"
+										th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==2)}"></i>
+									<th:block th:if="${qattempt!=null && (qattempt.answer==2)}">
+										<i class="fa fa-remove" style="color: red; padding-top: 12px;"
+											th:if="${!qattempt.isCorrect()}"></i>
+									</th:block>
+								</th:block></span></label>
+					</div>
+
+
+					<div class="row">
+						<input th:id="'type9radio-'+${question.matrix[0].choices[2].id}"
+							th:checked="${qattempt!=null && (qattempt.answer==3)}"
+							class="magic-radio" type="checkbox" name="answer"
+							data-radio="iradio_flat-blue"
+							th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '3' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+
+
+						<label style="margin-bottom: 0px;"
+							th:for="'type9radio-'+${question.matrix[0].choices[2].id}"><span
+							style="white-space: nowrap;"><strong>C)</strong> <!-- options C-->
+								<th:block
+									th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[2].choiceText!=null && question.matrix[0].choices[2].choiceText.trim().length()>0}">
+									<th:block th:each="matrix,matrixStat1:${question.matrix}">
+										<th:block
+											th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+											<span
+												th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+											<span th:text="${matrix.choices[2].choiceText}"></span>&nbsp;&nbsp;&nbsp;
+										</th:block>
+									</th:block>
+
+									<th:block th:if="${attempt.isCompleted()}">
+										<i class="fa fa-check"
+											style="color: green; padding-top: 12px;"
+											th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==3)}"></i>
+										<th:block th:if="${qattempt!=null && (qattempt.answer==3)}">
+											<i class="fa fa-remove"
+												style="color: red; padding-top: 12px;"
+												th:if="${!qattempt.isCorrect()}"></i>
+										</th:block>
+									</th:block>
+								</th:block></span></label>
+					</div>
+
+
+					<div class="row">
+						<input th:id="'type9radio-'+${question.matrix[0].choices[3].id}"
+							th:checked="${qattempt!=null && (qattempt.answer==4)}"
+							class="magic-radio" type="checkbox" name="answer"
+							data-radio="iradio_flat-blue"
+							th:onclick="${'javascript:qattempt(' + question.questionType.id  + ',' + '4' + ',' + questionNo + ',' + question.id + ',' + question.id + ',' + question.id +')'}">
+						<label style="margin-bottom: 0px;"
+							th:for="'type9radio-'+${question.matrix[0].choices[3].id}"><span
+							style="white-space: nowrap;"><strong>D)</strong> <!-- options D-->
+								<th:block
+									th:if="${question.matrix[0]!=null && question.matrix[0].choices[0]!=null && question.matrix[0].choices[3].choiceText!=null && question.matrix[0].choices[3].choiceText.trim().length()>0}">
+									<th:block th:each="matrix,matrixStat1:${question.matrix}">
+										<th:block
+											th:if="${(matrix!=null && matrix.choices!=null && matrix.choices.size()>0)}">
+											<span
+												th:text="${applicationUtil.getChoice(matrixStat1.index)+' -->'}"></span>
+											<span th:text="${matrix.choices[3].choiceText}"> </span>&nbsp;&nbsp;&nbsp;
+										</th:block>
+									</th:block>
+
+									<th:block th:if="${attempt.isCompleted()}">
+										<i class="fa fa-check"
+											style="color: green; padding-top: 12px;"
+											th:if="${qattempt!=null && (applicationUtil.getCorrectAnswer(question.id)==4)}"></i>
+										<th:block th:if="${qattempt!=null && (qattempt.answer==4)}">
+											<i class="fa fa-remove"
+												style="color: red; padding-top: 12px;"
+												th:if="${!qattempt.isCorrect()}"></i>
+										</th:block>
+									</th:block>
+
+								</th:block></span></label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+
+	<th:block th:if="${attempt.isCompleted()}">
+		<div class="row">
+			<th:block
+				th:if="${question.questionType.id==1 ||  question.questionType.id==6 || question.questionType.id==7 || question.questionType.id == 15}">
+				<div>
+					<strong>Correct Answer : </strong><span
+						th:text="${applicationUtil.getCorrectAnswer(question.id)==1?'A':(applicationUtil.getCorrectAnswer(question.id)==2?'B':(applicationUtil.getCorrectAnswer(question.id)==3?'C':(applicationUtil.getCorrectAnswer(question.id)==4?'D':(applicationUtil.getCorrectAnswer(question.id)==12?'AB':(applicationUtil.getCorrectAnswer(question.id)==13?'AC':(applicationUtil.getCorrectAnswer(question.id)==14?'AD':(applicationUtil.getCorrectAnswer(question.id)==21?'BA':(applicationUtil.getCorrectAnswer(question.id)==23?'BC':(applicationUtil.getCorrectAnswer(question.id)==24?'BD':(applicationUtil.getCorrectAnswer(question.id)==31?'CA':(applicationUtil.getCorrectAnswer(question.id)==32?'AB':(applicationUtil.getCorrectAnswer(question.id)==34?'CD':(applicationUtil.getCorrectAnswer(question.id)==41?'DA':(applicationUtil.getCorrectAnswer(question.id)==42?'DB':(applicationUtil.getCorrectAnswer(question.id)==43?'DC':'')))))))))))))))}"></span>
+				</div>
+			</th:block>
+
+			<th:block th:if="${question.questionType.id==2}">
+				<div>
+					<strong>Correct Answer : </strong><span
+						th:text="${applicationUtil.getCorrectAnswer(question.id)==1?'A':(applicationUtil.getCorrectAnswer(question.id)==2?'B':(applicationUtil.getCorrectAnswer(question.id)==3?'C':(applicationUtil.getCorrectAnswer(question.id)==4?'D':(applicationUtil.getCorrectAnswer(question.id)==12?'AB':(applicationUtil.getCorrectAnswer(question.id)==13?'AC':(applicationUtil.getCorrectAnswer(question.id)==14?'AD':(applicationUtil.getCorrectAnswer(question.id)==21?'BA':(applicationUtil.getCorrectAnswer(question.id)==23?'BC':(applicationUtil.getCorrectAnswer(question.id)==24?'BD':(applicationUtil.getCorrectAnswer(question.id)==31?'CA':(applicationUtil.getCorrectAnswer(question.id)==32?'AB':(applicationUtil.getCorrectAnswer(question.id)==34?'CD':(applicationUtil.getCorrectAnswer(question.id)==41?'DA':(applicationUtil.getCorrectAnswer(question.id)==42?'DB':(applicationUtil.getCorrectAnswer(question.id)==43?'DC':'')))))))))))))))}"></span>
+				</div>
+			</th:block>
+			<th:block
+				th:if="${(question.questionType.id==3) || (question.questionType.id==26)}">
+				<div>
+					<strong>Correct Answer : </strong><span
+						th:text="${applicationUtil.getCorrectAnswer(question.id)}"></span>
+				</div>
+			</th:block>
+		</div>
+
+		<div class="row">
+
+			<th:block
+				th:if="${qattempt!=null && (question.questionType.id==1  || question.questionType.id==4  || question.questionType.id==5 || question.questionType.id==6 || question.questionType.id==7 || question.questionType.id==8  || question.questionType.id==9 || question.questionType.id==15 || question.questionType.id==11)}">
+				<div>
+					<strong>Your Answer : </strong> <span
+						th:text="${qattempt.answer==1?'A':(qattempt.answer==2?'B':(qattempt.answer==3?'C':(qattempt.answer==4?'D':(qattempt.answer==12?'AB':(qattempt.answer==13?'AC':(qattempt.answer==14?'AD':(qattempt.answer==21?'BA':(qattempt.answer==23?'BC':(qattempt.answer==24?'BD':(qattempt.answer==31?'CA':(qattempt.answer==32?'AB':(qattempt.answer==34?'CD':(qattempt.answer==41?'DA':(qattempt.answer==42?'DB':(qattempt.answer==43?'DC':'UN ATTEMPT')))))))))))))))}"></span>
+				</div>
+			</th:block>
+			<th:block
+				th:if="${(question.questionType.id==3  && qattempt!=null)}">
+				<div>
+					<strong>Your Answer : </strong><span
+						th:text="${qattempt.answer}"></span>
+				</div>
+			</th:block>
+			<th:block
+				th:if="${(question.questionType.id==26 && qattempt!=null)}">
+				<div>
+					<strong>Your Answer : </strong><span
+						th:text="${qattempt.numericAnswer}"></span>
+				</div>
+			</th:block>
+			<th:block th:if="${qattempt==null}">
+				<div>
+					<strong>Your Answer : </strong> <span>UN ATTEMPT</span>
+				</div>
+			</th:block>
+
+		</div>
+
+		<div class="row">
+			<th:block th:if="${question.questionType.id==11}">
+			</th:block>
+			<th:block th:if="${question.questionType.id!=11}">
+				<strong>Solution : </strong>
+				<div style="padding-left: 70px;">
+					<p th:utext="${@currentUser.getQuestionText(question.solution)}"></p>
+				</div>
+			</th:block>
+		</div>
+	</th:block>
+</body>
+</html>

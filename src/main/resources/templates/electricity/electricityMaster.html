@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+label {
+ font-weight:bold;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover
+	{
+	background: #228be6 !important;
+	color: #ffffff;
+	display: block;
+	border-bottom: 3px solid #228be6 !important;
+}
+
+.nav-tabs>li.active>a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(34, 139, 230, 0);
+	border-top-color: #228be6;
+	border-width: 10px;
+	margin-left: -10px;
+}
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject ">Electricity Master</span>
+			</div>
+
+		</div>
+
+		<div class="portlet-body">
+			<ul class="nav nav-tabs custom-tab-active">
+				<li class="active"><a href="#tab_1_1" data-toggle="tab">
+						Create</a></li>
+				<li><a href="#tab_1_2" data-toggle="tab"
+					onclick="getTableData()"> View Status </a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade active in" id="tab_1_1">
+					<div class="custom-div">
+						<form th:action="@{/scaits/eleMasterSave}" id="formId"
+							method="post" enctype="multipart/form-data">
+							<div class="row">
+								<input type="text" name="rid" id="rid" hidden="true" />
+								<div class="col-md-4">
+									<label>Building Name</label><select class="form-control p-0"
+										id="building" name="building">
+										<option th:value="0">Select Building</option>
+										<option
+											th:each="buildings:${buildingList}"
+											th:value="${buildings.id}" th:text="${buildings.buildingName}"
+											th:selected="${building!=null &&  buildings.id==building}"></option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>ERO No</label> <input type="text" name="erono"
+										id="erono"
+										onchange="javascript:this.value=this.value.toUpperCase();"
+										data-required="1" class="form-control" required="required" />
+								</div>
+								<div class="col-md-4">
+									<label>ERO Name</label> <input name="eroname" id="eroname"
+									   onchange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control form-control-inline" size="16" type="text"
+										value="" required="required" />
+								</div>
+								<div class="col-md-4">
+									<label>Date</label> <input type="text"
+										class="form-control  date-picker" name="readingDate"
+										id="readingDate" placeholder="date">
+								</div>
+								<div class="col-md-4">
+									<label>SCNO(<a href='/assets/global/img/ElecBill.JPG'
+										target="_blank">PreviewBill</a>)
+									</label> <input name="scno" id="scno"
+										class="form-control form-control-inline " size="16"
+										type="text" value="" />
+								</div>
+								<div class="col-md-4">
+									<label>ServiceHolder Name </label><input name="scholderName"
+										id="scholderName" class="form-control form-control-inline "
+										size="16" type="text" value="" required="required" />
+								</div>
+								<div class="col-md-4">
+									<label>Address</label> <input name="address" id="address"
+										class="form-control form-control-inline " size="16"
+										type="text" value="" required="required" />
+								</div>
+								<div class="col-md-4">
+									<label>Category</label><select class="form-control p-0"
+										name="category" id="category" required="required"
+										data-required="1">
+										<option value="0">Select Category</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Load Capacity</label> <input name="loadCapacity"
+										id="loadCapacity" class="form-control form-control-inline "
+										size="16" type="text" value="" required="required"
+										OnKeyPress="return DotAndNumericOnly(event)" />
+								</div>
+								<div class="col-md-4">
+									<label>Load Capacity Unit Type</label> <select
+										class="form-control p-0" id="loadCapacityUnitId"
+										name="loadUnit" required="required" data-required="1">
+										<option value="0">Select LoadCapacityUnitId</option>
+										<option value="KW">KW</option>
+										<option value="HP">HP</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Load Capacitor</label><select class="form-control p-0"
+										id="loadCapaciter" name="loadCapaciter" required="required"
+										data-required="1">
+										<option value="0">Select LoadCapaciter</option>
+										<option value="HT">HT</option>
+										<option value="LT">LT</option>
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="tab_1_2">
+					<div th:replace="electricity/electricityMasterInnerPage.html"></div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet-footer">
+			<div class="row" id="button">
+				<div class="col-md-12">
+					<button type="button" class="btn-pri" onClick="eleMasterSave()">Insert</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn-pri" onclick="resetFields()">Reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script
+		src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+		type="text/javascript"></script>
+	<script
+		src="../assets/pages/scripts/components-date-time-pickers.min.js"
+		type="text/javascript"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("a").click(function() {
+				$('#button').show();
+			});
+		});
+		function getTableData() {
+			pageOverlay(0);
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getTableData",
+				success : function(data) {
+					pageOverlay(1);
+					$('#tab_1_2').html(data);
+					$('#button').hide();
+					
+				},
+				error : function() {
+					pageOverlay(1);
+					alert('Error occured');
+				}
+			});
+		}
+	        $("#readingDate").datetimepicker({
+	            format : 'dd-mm-yyyy'
+	        });
+
+		function resetFields() {
+			$('#building').val(0);
+			$('#scno').val('');
+			$('#erono').val('');
+			$('#eroname').val('');
+			$('#readingDate').val('');
+			$('#scholderName').val('');
+			$('#address').val('');
+			$('#category').val(0);
+			$('#loadCapacity').val('');
+			$('#loadCapacityUnitId').val(0);
+			$('#loadCapaciter').val(0);
+			$('#rid').val('');
+			$('#SubmitId').innerHTML = 'Insert';
+
+		}
+
+		function editEleMaster(id) {
+			$.ajax({
+				type : "get",
+				url : "/scaits/editEleMaster",
+				data : {
+					id : id
+				},
+				success : function(data) {
+					$('a[href="#tab_1_1"]').click();
+					var prePopulate = JSON.parse(data);
+					$('#building').val(prePopulate[0]);
+					$('#erono').val(prePopulate[1]);
+					$('#eroname').val(prePopulate[2]);
+					$('#readingDate').val(prePopulate[3]);
+					$('#scno').val(prePopulate[4]);
+					$('#scholderName').val(prePopulate[5]);
+					$('#address').val(prePopulate[6]);
+					$('#category').val(prePopulate[7]);
+					$('#loadCapacity').val(prePopulate[8]);
+					$('#loadCapacityUnitId').val(prePopulate[9]);
+					$('#loadCapaciter').val(prePopulate[10]);
+					$("#rid").val(prePopulate[11]);
+					$("#example").DataTable({});
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+
+		function eleMasterSave() {
+			if (document.getElementById("building").selectedIndex == 0) {
+				showToastr("Please select building", "error");
+				document.getElementById("building").focus();
+				return false;
+			} else if (document.getElementById("erono").value == "") {
+			    showToastr("Please enter the Ero No", "error");
+				document.getElementById("erono").focus();
+				return false;
+			} else if (document.getElementById("eroname").value == "") {
+				 showToastr("Please enter valied Ero Name", "error");
+				document.getElementById("eroname").focus();
+				return false;
+			} else if (document.getElementById("readingDate").value == "") {
+				 showToastr("Please select the  date", "error");
+				document.getElementById("readingDate").focus();
+				return false;
+			} else if (document.getElementById("scno").value == "") {
+				 showToastr("Please enter the sc no", "error");
+				document.getElementById("scno").focus();
+				return false;
+			} else if (document.getElementById("scholderName").value == "") {
+			     showToastr("Please enter the service holder name", "error");
+				document.getElementById("scholderName").focus();
+				return false;
+			} else if (document.getElementById("address").value == "") {
+				   showToastr("Please enter the Address", "error");
+				document.getElementById("address").focus();
+				return false;
+			} else if (document.getElementById("category").selectedIndex == 0) {
+				 showToastr("Please enter the category", "error");
+				document.getElementById("category").focus();
+				return false;
+			} else if (document.getElementById("loadCapacity").value == "") {
+				showToastr("Please enter the loadCapacity", "error");
+				document.getElementById("loadCapacity").focus();
+				return false;
+			} else if (document.getElementById("loadCapaciter").selectedIndex == 0) {
+			    showToastr("Please enter the loadCapaciter", "error");
+				document.getElementById("loadCapaciter").focus();
+				return false;
+			} else if (confirm("Do you want to insert this record")) {
+				$.ajax({
+					type : "post",
+					url : "/scaits/eleMasterSave",
+					data : $("#formId").serialize(),
+					success : function(data) {
+		                        if (data.indexOf("ERROR-") != -1) {
+		                            showToastr(data, "error");
+		                        } else if (data.indexOf("FEEDBACK-1") != -1) {
+		                            resetFields();
+		                             alert("Successfully Done!!!");
+		                        }
+						pageOverlay(1);
+					},
+					error : function() {
+						alert('Error occured');
+						pageOverlay(1);
+					}
+				});
+			} else {
+				return false;
+			}
+		}
+
+		function DotAndNumericOnly(evt) {
+			var key = (evt.which) ? evt.which : evt.keyCode;
+			if (key == 46)
+				return true;
+			if ((key >= 48 && key <= 57) || key == 8 || key == 9 || key == 46
+					|| (key >= 37 && key <= 40)) {
+				return true;
+			}
+			return false;
+		}
+	</script>
+</body>
+
+</html>
+

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+	<div th:fragment="sidebar">
+		<div class="page-sidebar-wrapper">
+			<!-- BEGIN SIDEBAR -->
+			<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+			<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+			<div class="page-sidebar navbar-collapse collapse">
+				<!-- BEGIN SIDEBAR MENU -->
+				<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+				<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+				<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+				<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+				<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+				<ul class="page-sidebar-menu  page-sidebar-menu-closed " data-keep-expanded="false"
+					data-auto-scroll="true" data-slide-speed="200">
+					<li class="nav-item start  open"><a href="/"
+						class="nav-link nav-toggle"> <i class="icon-home"></i> <span
+							class="title">Dashboard</span> <span class="selected"></span>
+
+					</a></li>
+					
+					 <li class="nav-item"><a href="" class="nav-link nav-toggle">
+							<i class="icon-layers"></i> <span
+							class="title">Test Analysis</span> <span class="selected"></span>
+							<span class="arrow open"></span>
+					</a>
+						<ul class="sub-menu">
+							<li class="nav-item"><a
+								href="javascript:showPage('/qb/testAnalysis',false)"
+								class="nav-link "> <span class="title">Test Analysis
+										Pages</span>
+							</a></li>
+							<li class="nav-item"><a
+								href="javascript:showPage('/qb/testCreation',false)"
+								class="nav-link"> <span class="title">Test Creation</span>
+							</a></li>
+							<li class="nav-item"><a
+								href="javascript:showPage('/qb/uploadStudentData',false)"
+								class="nav-link "> <span class="title">Test Upload</span> <span
+									class="selected"></span>
+							</a></li>
+							<li class="nav-item"><a
+								href="javascript:showPage('/qb/generateStudentMarks',false)"
+								class="nav-link "> <span class="title">Marks
+										Geneartion</span> <span class="selected"></span>
+							</a></li>
+							<li class="nav-item"><a
+								href="javascript:showPage('/qb/getRankGenerationView',false)"
+								class="nav-link "> <span class="title">Rank
+										Generation</span> <span class="selected"></span>
+							</a></li>
+
+							<li class="nav-item"><a
+								href="javascript:showPage('/qb/getAnalysisCampusView',false)"
+								class="nav-link "> <span class="title">Analysis
+										Campus Report</span> <span class="selected"></span>
+							</a></li>
+						</ul></li>
+					<li class="nav-item  "><a href="javascript:;"
+						class="nav-link nav-toggle"> <i class="icon-docs"></i> <span class="title">Reports</span> <span
+							class="arrow"></span>
+					</a>
+						<ul class="sub-menu">
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/onlineTestReports',false);"
+								class="nav-link "> <span class="title">Online Test
+										Reports</span>
+							</a></li>
+						</ul></li>
+					<li class="nav-item  "><a href="javascript:;"
+						class="nav-link nav-toggle"> <i class="icon-pencil"></i> <span class="title">Online
+								Exam</span> <span class="arrow"></span>
+					</a>
+						<ul class="sub-menu">
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/createExamPattern',false);"
+								class="nav-link "> <span class="title">Create Exam
+										Pattern</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/createExamSchedule',false);"
+								class="nav-link "> <span class="title">Create Exam
+										Schedule</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/createExamScheduleCampuses',false);"
+								class="nav-link "> <span class="title">Exam Schedule
+										Campuses</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/createExamKeyModifications',false);"
+								class="nav-link "> <span class="title">Key
+										Modifications</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/createExamScheduleGeneration',false);"
+								class="nav-link "> <span class="title">Schedule
+										Generation</span>
+							</a></li>
+						</ul></li>
+					<li class="nav-item  "><a href="javascript:;"
+						class="nav-link nav-toggle"> <i class="icon-question"></i> <span class="title">Questions</span> <span
+							class="arrow"></span>
+					</a>
+						<ul class="sub-menu">
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/questionList',true);"
+								class="nav-link "> <span class="title">Question List</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/questionSearch',true);"
+								class="nav-link "> <span class="title">Question
+										Search</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/questionStatistics',true);"
+								class="nav-link "> <span class="title">Question
+										Statistics</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/viewQuestions',true);"
+								class="nav-link "> <span class="title">View Questions</span>
+							</a></li>
+							<li class="nav-item  "><a href="javascript:showPage('');"
+								class="nav-link "> <span class="title">Generate
+										Questions</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/userPermitions');"
+								class="nav-link "> <span class="title">User
+										Permitions</span>
+							</a></li>
+						</ul></li>
+					<li class="nav-item  "><a href="javascript:;"
+						class="nav-link nav-toggle"> <i class="icon-docs"></i> <span class="title">Question Paper</span> <span class="arrow"></span>
+					</a>
+						<ul class="sub-menu">
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/questionPaperVerification',false);"
+								class="nav-link "> <span class="title">Verification</span>
+							</a></li>
+							<li class="nav-item  "><a
+								href="javascript:showPage('/qb/questionPapers',false);"
+								class="nav-link "> <span class="title">Previous
+										Question Papers</span>
+							</a></li>
+						</ul></li>
+				</ul>
+				<!-- END SIDEBAR MENU -->
+			</div>
+			<!-- END SIDEBAR -->
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<head>
+<style>
+.questionClass {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<tr>
+				<td width="6%"><b>Question</b></td>
+				<td><span
+					th:utext=${@currentUser.getQuestionText(question.questionText)}></span>
+					<th:block th:if="${question.choicesPerLine &lt; 2}">
+						<table>
+							<tr th:each="choiceVal,choiceStat : ${question.choices}">
+								<td style="padding-right: 25px;"><b
+									th:if=${choiceStat.index==0}>1)&nbsp;</b> <b
+									th:if=${choiceStat.index==1}>2)&nbsp;</b> <b
+									th:if=${choiceStat.index==2}>3)&nbsp;</b> <b
+									th:if=${choiceStat.index==3}>4)&nbsp;</b> <b
+									th:if=${choiceStat.index==4}>5)&nbsp;</b> <span
+									th:utext="${@currentUser.getQuestionText(choiceVal.choiceText)}"></span>
+								</td>
+							</tr>
+						</table>
+					</th:block> <th:block th:if="${question.choicesPerLine &gt; 2}">
+						<table>
+							<tr>
+								<td style="padding-right: 25px;"
+									th:each="choiceVal,choiceStat : ${question.choices}"><b
+									th:if=${choiceStat.index==0}>1)&nbsp;</b> <b
+									th:if=${choiceStat.index==1}>2)&nbsp;</b> <b
+									th:if=${choiceStat.index==2}>3)&nbsp;</b> <b
+									th:if=${choiceStat.index==3}>4)&nbsp;</b> <b
+									th:if=${choiceStat.index==4}>5)&nbsp;</b> <span
+									th:utext="${@currentUser.getQuestionText(choiceVal.choiceText)}"></span>
+								</td>
+							</tr>
+						</table>
+					</th:block> <th:block th:if="${question.choicesPerLine==2}">
+						<table>
+							<tr>
+								<td style="padding-right: 25px;"
+									th:if="${question.choices.size()>0}"><b>1)</b>&nbsp;<span
+									th:utext="${@currentUser.getQuestionText(question.choices.get(0).choiceText)}"></span></td>
+								<td style="padding-right: 25px;"
+									th:if="${question.choices.size()>1}"><b>2)</b>&nbsp;<span
+									th:utext="${@currentUser.getQuestionText(question.choices.get(1).choiceText)}"></span></td>
+							</tr>
+							<tr>
+								<td style="padding-right: 25px;"
+									th:if="${question.choices.size()>2}"><b>3)</b>&nbsp;<span
+									th:utext="${@currentUser.getQuestionText(question.choices.get(2).choiceText)}"></span></td>
+								<td style="padding-right: 25px;"
+									th:if="${question.choices.size()>3}"><b>4)</b>&nbsp;<span
+									th:utext="${@currentUser.getQuestionText(question.choices.get(3).choiceText)}"></span></td>
+							</tr>
+							<tr th:if="${question.choices.size()>4}">
+								<td style="padding-right: 25px;"
+									th:if="${question.choices.size()>4}"><b>5)</b>&nbsp;<span
+									th:utext="${@currentUser.getQuestionText(question.choices.get(4).choiceText)}"></span></td>
+							</tr>
+						</table>
+					</th:block></td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Answer</b></td>
+				<td><th:block th:each="choice,choiceStat:${question.choices}">
+						<span th:if=${choice.correctAnswer}
+							th:text="${'('+(choiceStat.index+1)+')'}"
+							style="color: #8E44AD !important; font-weight: bold;"> </span>
+					</th:block></td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Solution</b></td>
+				<td><span
+					th:utext="${@currentUser.getQuestionText(question.solution)}"
+					style="color: #337ab7;"></span></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

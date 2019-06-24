@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Uniform Issue Details</div>
+		</div>
+		<div th:replace="group/groupOperations"></div>
+		<div id="uniformIssueDetailsGrid"></div>
+		</div>
+		<script th:inline="javascript">
+		 $(document).ready(function(){
+		    $('#issueDate').css('display','block'); 
+				}); 
+function loadBulkStudentList() {
+	$.ajax({
+		type : "GET",
+		url : "/scaits/getUniformIssueDetailsGrid",
+		data : $("#formId").serialize(),
+		success : function(data) {
+			$('#uniformIssueDetailsGrid').html('');
+			$('#uniformIssueDetailsGrid').html(data);
+		},
+		error : function() {
+			alert('Error occured');
+		}
+	});
+}
+	</script>
+</body>
+
+
+</html>
+

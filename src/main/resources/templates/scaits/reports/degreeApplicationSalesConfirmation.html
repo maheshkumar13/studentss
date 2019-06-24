@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Degree Application  sales Confirmation Deatils</div>
+		</div>
+	
+					
+		<div class="portlet-body">
+			<div class="custom-div">
+				<form class="form-horizontal" action="/scaits/degreeTermApplicationSalesConfirmation" method="post" id="formId">
+					<div class="col-md-4">
+						<button type="button" class="btn btn-info" id="searchBtnId"
+							onclick="getdegreeData('confirmed');">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;Confirmed
+							Students
+						</button>
+					</div>
+
+					<div class="col-md-4">
+						<button type="button" class="btn btn-info" id="searchId"
+							onclick="getdegreeData('not confirmed');">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;Not
+							Confirmed
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div id="studentDeatailsGridId"></div>
+            </div>                                                                           
+
+<script th:inline="javascript">
+function getdegreeData(status) {
+	
+		$.ajax({
+			type : "GET",
+			url : "/scaits/degreeApplicationSalesConfirmationDetailsData",
+			data : {
+				status  : status
+			},
+		dataType: 'text',
+			success : function(data) {
+				$('#studentDeatailsGridId').html('');
+				$('#studentDeatailsGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+			}
+		});
+	}
+	
+	
+
+</script>
+</body>
+</html>

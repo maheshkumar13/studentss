@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+label {
+ font-weight:bold;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover
+	{
+	background: #228be6 !important;
+	color: #ffffff;
+	display: block;
+	border-bottom: 3px solid #228be6 !important;
+}
+
+.nav-tabs>li.active>a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(34, 139, 230, 0);
+	border-top-color: #228be6;
+	border-width: 10px;
+	margin-left: -10px;
+}
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject "> Fuel Filling Details</span>
+			</div>
+		</div>
+		<div class="portlet-body">
+			<ul class="nav nav-tabs custom-tab-active">
+				<li class="active"><a href="#tab_1_1" onclick="showButton()"
+					data-toggle="tab"> Create</a></li>
+				<li><a href="#tab_1_2" data-toggle="tab"
+					onclick="getTableData()"> View Status </a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade active in" id="tab_1_1">
+					<div class="custom-div">
+						<form th:action="@{/scaits/saveFuelFilingDetails}" id="formId"
+							method="post" enctype="multipart/form-data">
+							<div class="row">
+								<div class="col-md-4">
+									<label>Building Name</label> <select class="form-control p-0"
+										id="building" name="building" onchange="return loadScno(); ">
+										<option value="0">Select Building</option>
+										<option th:each="buildings:${buildingList}"
+											th:value="${buildings.id}" th:text="${buildings.buildingName}"
+											th:selected="${building!=null &&  buildings.id==building}"></option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Generator SNo</label> <select class="form-control"
+										name="genSNo" id="genSNo" onchange="getStock()">
+										<option value="0">Select Service</option>
+									</select>
+								</div>
+
+								<div class="col-md-4">
+									<label>Generator Fuel Capacity </label><input name="genFuelQty"
+										id="genFuelQty" class="form-control " readonly type="text"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										value="" />
+								</div>
+
+
+								<div class="col-md-4">
+									<label> Prev Filled Date </label> <input
+										name="prevFilledDateStr" id="prevFilledDateStr"
+										class="form-control  " type="text"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										value="" readonly />
+								</div>
+
+								<div class="col-md-4">
+									<label>Prev Filled Qty</label><input name="prevFilledQty"
+										id="prevFilledQty" class="form-control  " type="text" value=""
+										onchange="checkPurchaseDate()" readonly />
+								</div>
+
+								<div class="col-md-4">
+									<label>Current Fuel Qty </label> <input name="genCurrentFuel"
+										id="genCurrentFuel" class="form-control  " type="text"
+										value="" readonly />
+								</div>
+
+								<div class="col-md-4">
+									<label>Present Fill Date </label><input name="presFillDateStr"
+										id="presFillDateStr" class="form-control  " type="text"
+										value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Present Filling Qty </label><input name="presFillingQty"
+										id="presFillingQty" class="form-control  " type="text"
+										onchange="sumData()"
+										OnKeyPress="return DotAndNumericOnly(event)" value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Remaining Fuel Qty </label><input
+										name="remainingFuelQty" id="remainingFuelQty"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control" type="text" readonly="readonly" value="" />
+								</div>
+
+								<div class="col-md-4">
+									<label>Remarks </label><input name="remarks" id="remarks"
+										onChange="javascript:this.value=this.value.toUpperCase();"
+										class="form-control  " type="text" value="" />
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="tab_1_2">
+					<div th:replace="electricity/monthlyEleConDetailsInnerPage.html"></div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet-footer">
+			<div class="row" id="button">
+				<div class="col-md-12">
+					<button type="button" class="btn-pri" onClick="saveGeneratorDiesel()">Insert</button>
+					&nbsp;&nbsp;
+					<button type="button" class="btn-pri" onclick="resetFields()">Reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script
+        src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+        type="text/javascript"></script>
+	<script type="text/javascript">
+	   $(document).ready(function() {
+           $("a").click(function() {
+               $('#button').show();
+           });
+       });
+	
+		$("#prevFilledDateStr,#presFillDateStr").datepicker({
+			  format : 'dd-mm-yyyy',
+	           autoclose: true
+		
+		});
+		  function getTableData() {
+	            pageOverlay(0);
+	            $.ajax({
+	                type : "GET",
+	                url : "/scaits/getGeneratorFuelInfo",
+	                success : function(data) {
+	                    pageOverlay(1);
+	                    $('#tab_1_2').html(data);
+	                     $('#button').hide();
+	                },
+	                error : function() {
+	                    pageOverlay(1);
+	                    alert('Error occured');
+	                }
+	            });
+	        }
+
+		function loadScno() {
+			$.ajax({
+				type : "get",
+				url : "/scaits/getGenList",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#genSNo');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+					});
+				}
+			});
+		}
+		function getStock() {
+			$.ajax({
+				type : "get",
+				url : "/scaits/getFuelFilingStock",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					$('#genFuelQty').val(prePopulate[0]);
+					$('#prevFilledDateStr').val(prePopulate[1]);
+					$('#prevFilledQty').val(prePopulate[2]);
+					$('#genCurrentFuel').val(prePopulate[3]);
+				}
+			});
+		}
+		function saveGeneratorDiesel() {
+			if ($('#building').val() == 0) {
+				alert("Please select building");
+				$('#building').focus();
+				return false;
+			} else if ($('#genSNo').value == "") {
+				alert("Please enter  Generator SNo ");
+				$('#genSNo').focus();
+				return false;
+			} else if ($('#presFillDateStr').val() == "") {
+				alert("Please enter  Present Fill Date ");
+				$('#presFillDateStr').focus();
+				return false;
+			} else if ($('#presFillingQty').val() == "") {
+				alert("Please enter  Present Filling Qty");
+				$('#presFillingQty').focus();
+				return false;
+			} else if ($('#presFillingQty').val() == 0) {
+				alert("Please enter  valied Present Filling Qty");
+				$('#presFillingQty').focus();
+				return false;
+			} else if ($('#remarks').val() == "") {
+				alert("Please enter  Remarks");
+				$('#remarks').focus();
+				return false;
+			} else if (confirm("Do you want to insert this record")) {
+				$.ajax({
+					type : "post",
+					url : "/scaits/saveFuelFilingDetails",
+					data : $("#formId").serialize(),
+					success : function(data) {
+						  if (data.indexOf("ERROR-") != -1) {
+                              showToastr(data, "error");
+                          } else if (data.indexOf("FEEDBACK-1") != -1) {
+                              resetFields();
+                               alert("Successfully Done!!!");
+                          }
+						pageOverlay(1);
+					},
+					error : function() {
+						alert('Error occured');
+						pageOverlay(1);
+					}
+				});
+			} else {
+				return false;
+			}
+		}
+
+		function DotAndNumericOnly(evt) {
+			var key = (evt.which) ? evt.which : evt.keyCode;
+			if (key == 46)
+				return true;
+			if ((key >= 48 && key <= 57) || key == 8 || key == 9 || key == 46
+					|| (key >= 37 && key <= 40)) {
+				return true;
+			}
+			return false;
+		}
+		function sumData() {
+			if ($('#building').val() == 0) {
+				showToastr("Please Select Building", "error");
+				$('#presFillingQty').val('');
+				$('#building').focus();
+				return false;
+			} else if ($('#genSNo').val() == 0) {
+				showToastr("Please Select Generator Type", "error");
+				$('#presFillingQty').val('');
+				$('#genSNo').focus();
+				return false;
+			} else if ($('#presFillingQty').val() == "") {
+				showToastr("Please Enter Present Filling  Qty", "error");
+				$('#presFillingQty').val('');
+				$('#presFillingQty').focus();
+			} else if ($('#genCurrentFuel').val() == "") {
+				showToastr("Current fule quantity is empty", "error");
+				$('#presFillingQty').val('');
+			} else if (parseFloat($('#genCurrentFuel').val()) < parseFloat($('#presFillingQty').val())) {
+				showToastr(	"Present filling quantity must be less than or equal current fuel quantity","error");
+				$('#presFillingQty').val('');
+				$('#remainingFuelQty').val('');
+				$('#presFillingQty').focus();
+			} else if (parseFloat($('#genFuelQty').val()) < parseFloat($('#presFillingQty').val())) {
+				showToastr("Present filling quantity must be less than or equal generator fuel capacity","error");
+				$('#presFillingQty').val('');
+				$('#remainingFuelQty').val('');
+				$('#presFillingQty').focus();
+			} else {
+				var currentQty = (parseFloat($('#genCurrentFuel').val()) - parseFloat($('#presFillingQty').val()));
+				$('#remainingFuelQty').val(currentQty);
+			}
+		}
+		function checkPurchaseDate() {
+			if ($('#genPriousPurchaseDate').val() != '') {
+				if ($('#genPriousPurchaseDate').val() >= $('#purchaseDateStr').val()) {
+					alert("PurchaseDate should grather than PriousPurchaseDate.");
+					$('#purchaseDateStr').val('');
+					$('#purchaseDateStr').focus();
+				}
+			}
+		}
+		
+		   function  resetFields(){
+
+	            $('#building').val(0);
+	               $('#genSNo').val(0);
+	               $('#genFuelQty').val('');
+	               $('#prevFilledDateStr').val('');
+	               $('#prevFilledQty').val('');
+	               $('#genCurrentFuel').val('');
+	               $('#presFillDateStr').val('');
+	               $('#presFillingQty').val('');
+	               $('#remainingFuelQty').val('');
+	               $('#remarks').val('');
+	            
+	            
+	           }
+		
+	</script>
+</body>
+
+</html>
+

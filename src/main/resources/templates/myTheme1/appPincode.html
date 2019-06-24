@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+
+<input type="hidden" th:value="${pinCode!=null?pinCode.districtId.state.id:''}" id="pincodeState" />
+	<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>District:</label> <input type="text"
+										id="ddlCityDistName" placeholder="District"
+										class="form-control" th:value="${(appVal!=null && appVal.commDistrict!=null)?appVal.commDistrict.districtName:(district!=null?district:'')}"/>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Mandal:</label> 
+									
+										<select class="form-control" name="commMandal"
+															id="ddlMandalName" >
+															<option value="0">Select Mandal</option>
+															<option th:each="districtmandal: ${districtmandalList}"
+														th:value="${districtmandal.id}"
+														th:selected="${appVal!=null && appVal.mandal!=null && appVal.mandal.id==districtmandal.id}"
+														th:text="${districtmandal.mandalName}" ></option>
+															</select>
+										
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>City:</label> 
+									
+										<select class="form-control" name="commCity"
+															id="ddlCityName" >
+															<option value="0">Select City</option>
+															<option th:each="districtcity: ${districtcitiesList}"
+														th:value="${districtcity.cityId}"
+														th:selected="${appVal!=null && appVal.commCity!=null && appVal.commCity.cityId==districtcity.cityId}"
+														th:text="${districtcity.cityName}" ></option>
+															</select>
+								</div>
+							</div>
+						</div>
+</body>
+</html>

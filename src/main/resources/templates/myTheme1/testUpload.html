@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<script th:inline="javascript">
+	function onExamTypeChange() {
+		$("#groupId").val("0");
+		$('#testTypeId').empty(); //remove all child nodes
+		var newOption = $('<option value="0">Select Test Type</option>');
+		$('#testTypeId').append(newOption);
+
+		$('#testCodeId').empty(); //remove all child nodes
+		var newOption = $('<option value="0">Select Test Code</option>');
+		$('#testCodeId').append(newOption);
+	}
+
+	function onStudyClassChange() {
+		$("#examTypeId").val("0");
+		$("#groupId").val("0");
+		$('#testTypeId').empty(); //remove all child nodes
+		var newOption = $('<option value="0">Select Test Type</option>');
+		$('#testTypeId').append(newOption);
+
+		$('#testCodeId').empty(); //remove all child nodes
+		var newOption = $('<option value="0">Select Test Code</option>');
+		$('#testCodeId').append(newOption);
+
+	}
+
+	function onGroupChange() {
+		if ($('#groupId').val() != "0") {
+			$.ajax({
+				type : "GET",
+				url : "/qb/getTestTypeData",
+				data : {
+					examTypeId : $('#examTypeId').val(),
+					groupId : $('#groupId').val()
+				},
+				success : function(data) {
+					$('#testTypeId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					document.getElementById("groupId").focus();
+					return false;
+				}
+			});
+		} else {
+			alert("Please Select Group");
+			document.getElementById("groupId").focus();
+			return false;
+		}
+	}
+
+	function onTestTypeChange() {
+		if ($('#testTypeId').val() != "0") {
+			$.ajax({
+				type : "GET",
+				url : "/qb/getTestCodeData",
+				data : {
+					testTypeId : $('#testTypeId').val(),
+				},
+				success : function(data) {
+					$('#testCodeId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					document.getElementById("testTypeId").focus();
+					return false;
+				}
+			});
+		} else {
+			alert("Please Select Test Type");
+			document.getElementById("testTypeId").focus();
+			return false;
+		}
+	}
+</script>
+
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="portlet light card-1 portlet-fit portlet-form bordered">
+					<div class="portlet-title">
+						<div class="caption">
+							 <span class="caption-subject">Test Upload</span>
+						</div>
+					</div>
+					<div class="portlet-body">
+						<form th:action="@{/qb/readStudentData}" method="post"
+							class="form-horizontal" enctype="multipart/form-data"
+							id="readStudentDataFormId">
+							<div class="form-body">
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">Study Class<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="studyClassId"
+											required="required" data-required="1" name="academicId"
+											onchange="onStudyClassChange();">
+											<option value="0">Select Study Class</option>
+											<option th:each="academicData : ${academicList}"
+												th:value="${academicData.id}"
+												th:text="${academicData.studyclass.displayName}"></option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">Exam Type<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="examTypeId"
+											required="required" data-required="1"
+											onchange="onExamTypeChange();">
+											<option value="0">Select Exam Type</option>
+											<option th:each="examType : ${examTypeList}"
+												th:value="${examType.id}" th:text="${examType.examTypeName}"></option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">Group<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="groupId"
+											required="required" data-required="1"
+											onchange="onGroupChange();">
+											<option value="0">Select Group</option>
+											<option th:each="group : ${groupList}" th:value="${group.id}"
+												th:text="${group.groupName}"></option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">Test Type<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="testTypeId"
+											onchange="onTestTypeChange();" required="required"
+											data-required="1">
+											<option value="0">Select Test Type</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">Test Code<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="testCodeId"
+											name="testCodeId" required="required" data-required="1">
+											<option value="0">Select Test Code</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label "> </label>
+									<div class="col-md-4">
+										<input type="file" name="fileName" class="filestyle"
+											data-buttonname="btn-primary">
+									</div>
+
+								</div>
+								
+								<!--  
+								<div class="form-actions">
+									<div class="row">
+										<div class="col-md-offset-3 col-md-9">
+											<button type="button" onclick="uploadFile()"
+												id="uploadButtonId"
+												class="btn btn-primary waves-effect waves-light">Upload
+												File</button>
+										</div>
+									</div>
+								</div>
+								-->
+								
+								
+							</div>
+						</form>
+					</div>
+				  
+				  <div class="portlet-footer">                                  
+                                      <button type="button" class="btn btn-pri" onclick="uploadFile()"
+												id="uploadButtonId">Upload
+												File</button>
+</div>
+				
+				</div>
+			</div>
+		</div>
+		<div id="testUploadDivId"></div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			function uploadFile() {
+				if ($("#studyClassId").val() == "0") {
+					showToastr("Please Select Study Class", "error");
+					$("#studyClassId").focus();
+					return false;
+				} else if ($("#examTypeId").val() == "0") {
+					showToastr("Please Select Exam Type", "error");
+					$("#examTypeId").focus();
+					return false;
+				} else if ($("#groupId").val() == "0") {
+					showToastr("Please Select Group", "error");
+					$("#groupId").focus();
+					return false;
+				} else if ($("#testTypeId").val() == "0") {
+					showToastr("Please Select Test Type", "error");
+					$("#testTypeId").focus();
+					return false;
+				} else if ($("#testCodeId").val() == "0") {
+					showToastr("Please Select Test Code", "error");
+					$("#testCodeId").focus();
+					return false;
+				} else {
+					if (confirm("Do You Want To Upload ? ")) {
+						//	$("#readStudentDataFormId").submit();
+						pageOverlay(0);
+						var form = $('#readStudentDataFormId')[0];
+						var data = new FormData(form);
+						$("#uploadButtonId").prop("disabled", true);
+
+						$.ajax({
+									type : 'post',
+									enctype : 'multipart/form-data',
+									url : '/qb/readStudentData',
+									data : data,
+									processData : false,
+									contentType : false,
+									cache : false,
+									timeout : 1000000,
+									success : function(data) {
+										$("#uploadButtonId").prop("disabled",
+												false);
+										$('#testUploadDivId').html(data);
+										pageOverlay(1);
+										$("#readStudentDataFormId")[0].reset();
+										$('#testTypeId').empty(); //remove all child nodes
+										var newOption = $('<option value="0">Select Test Type</option>');
+										$('#testTypeId').append(newOption);
+
+										$('#testCodeId').empty(); //remove all child nodes
+										var newOption = $('<option value="0">Select Test Code</option>');
+										$('#testCodeId').append(newOption);
+										$("#studyClassId").focus();
+									},
+									error : function() {
+										pageOverlay(1);
+										showToastr("Unable to load details.",
+												"error");
+									}
+								});
+					}
+				}
+				/* $.ajax({
+					type : "POST",
+					enctype : 'multipart/form-data',
+					url : '/qb/readStudentData',
+					data : $("#readStudentDataFormId").serialize(), // serializes the form's elements.
+					success : function(data) {
+						alert(data); // show response from the php script.
+					}
+				}); */
+			}
+
+			$("#readStudentDataFormId").submit(function() {
+				pageOverlay(1);
+			});
+		</script>
+	</th:block>
+</body>
+</html>

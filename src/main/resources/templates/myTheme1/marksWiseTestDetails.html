@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="row">
+		<div class="col-lg-3 col-xs-12 col-sm-12">
+			<div class="portlet light tasks-widget bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<span class="caption-subject bold uppercase font-dark"
+							style="white-space: nowrap;"
+							th:text="${offQueStuSummary.offlineExam.testCode}"> </span> <span>
+							<i class="fa fa-check" style="color: green;"
+							th:text="${offQueStuSummary.correct}"></i> <i
+							class="fa fa-remove" style="color: red;"
+							th:text="${offQueStuSummary.wrong}"></i> <i class="fa fa-circle"
+							style="color: #cecece;" th:text="${offQueStuSummary.unattempt}">
+						</i><span
+							th:text="${#calendars.format(offQueStuSummary.offlineExam.testDate,'dd-MM-yyyy')}">
+						</span>
+						</span>
+					</div>
+					<div class="actions">
+						<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:void(0)"> </a>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="task-content">
+						<div class="scroller" style="height: 312px; overflow: scroll;"
+							data-always-visible="1" data-rail-visible1="1">
+							<div class="btn-group btn-group-solid"
+								th:each="testQuesVal:${testQuestions}">
+								<form action="" method="post" id="marksWiseTestDetailsFormId">
+									<input type="hidden" id="qNoId" name="qNo"> <input
+										type="hidden" id="offlineExamId" name="offlineExamId"
+										th:value="${offQueStuSummary.offlineExam.id}"> <input
+										type="hidden" id="summaryId" name="testSummaryId"
+										th:value="${offQueStuSummary.id}"> <a
+										th:href="${'javascript:getQuestionWise(' + testQuesVal.qno +',' + testQuesVal.offlineExam.id + ',' + testQuesVal.id + ')'}">
+										<div class="questionClass">
+											<i class="fa fa-check pull-right"
+												th:if="${testQuesVal.correct==1}" style="color: green;"></i>
+											<i class="fa fa-remove pull-right"
+												th:if="${testQuesVal.wrong==1}" style="color: red;"></i> <i
+												class="fa fa-circle pull-right" style="color: #cecece;"
+												th:if="${testQuesVal.unattempt==1}"></i> <span
+												th:text="${testQuesVal.qno}"></span>
+
+										</div>
+									</a>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 col-xs-12 col-sm-12" id="questionContentId">
+		</div>
+		<div class="col-lg-3 col-xs-12 col-sm-12" id="studentContentId">
+			<div class="portlet light tasks-widget bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<span class="caption-subject bold uppercase font-dark">Student
+							Details </span>
+					</div>
+					<div class="actions">
+						<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:void(0)"> </a>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="task-content">
+						<div class="scroller" style="height: 312px;"
+							data-always-visible="1" data-rail-visible1="1">
+							<!-- START TASK LIST -->
+							<ul class="task-list">
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> Present 2013 Year IPO
+											Statistics at Board Meeting </span> <span
+											class="label label-sm label-success">Company</span> <span
+											class="task-bell"> <i class="fa fa-bell-o"></i>
+										</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> Hold An Interview for
+											Marketing Manager Position </span> <span
+											class="label label-sm label-danger">Marketing</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> AirAsia Intranet System
+											Project Internal Meeting </span> <span
+											class="label label-sm label-success">AirAsia</span> <span
+											class="task-bell"> <i class="fa fa-bell-o"></i>
+										</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> Technical Management
+											Meeting </span> <span class="label label-sm label-warning">Company</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> Kick-off Company CRM
+											Mobile App Development </span> <span
+											class="label label-sm label-info">Internal Products</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> Prepare Commercial Offer
+											For SmartVision Website Rewamp </span> <span
+											class="label label-sm label-danger">SmartVision</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> Sign-Off The Comercial
+											Agreement With AutoSmart </span> <span
+											class="label label-sm label-default">AutoSmart</span> <span
+											class="task-bell"> <i class="fa fa-bell-o"></i>
+										</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group dropup">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li>
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> Company Staff Meeting </span> <span
+											class="label label-sm label-success">Cruise</span> <span
+											class="task-bell"> <i class="fa fa-bell-o"></i>
+										</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group dropup">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+								<li class="last-line">
+									<div class="task-checkbox">
+										<label
+											class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+											<input type="checkbox" class="checkboxes" value="1" /> <span></span>
+										</label>
+									</div>
+									<div class="task-title">
+										<span class="task-title-sp"> KeenThemes Investment
+											Discussion </span> <span class="label label-sm label-warning">KeenThemes
+										</span>
+									</div>
+									<div class="task-config">
+										<div class="task-config-btn btn-group dropup">
+											<a class="btn btn-sm default" href="javascript:;"
+												data-toggle="dropdown" data-hover="dropdown"
+												data-close-others="true"> <i class="fa fa-cog"></i> <i
+												class="fa fa-angle-down"></i>
+											</a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="javascript:;"> <i class="fa fa-check"></i>
+														Complete
+												</a></li>
+												<li><a href="javascript:;"> <i class="fa fa-pencil"></i>
+														Edit
+												</a></li>
+												<li><a href="javascript:;"> <i
+														class="fa fa-trash-o"></i> Cancel
+												</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<!-- END START TASK LIST -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(
+					function() {
+						getQuestionWise(1, $("#offlineExamId").val(), $(
+								"#summaryId").val())
+					});
+
+			$(".questionClass").click(function() {
+				$(".questionClass").css("border", "");
+				$(this).css("border", "2px solid green");
+			});
+
+			function getQuestionWise(qNo, offlineExamId, summaryId) {
+				$("#qNoId").val(qNo);
+				$("#offlineExamId").val(offlineExamId);
+				$("#summaryId").val(summaryId);
+				pageOverlay(0);
+				$.ajax({
+					url : '/qb/showQuestionWise',
+					type : 'GET',
+					data : $("#marksWiseTestDetailsFormId").serialize(),
+					success : function(data) {
+						$('#questionContentId').html(data);
+						pageOverlay(1);
+						testWiseStudentDetails();
+					},
+					error : function() {
+						alert("Unable to load details.");
+						pageOverlay(1);
+					}
+				});
+			}
+			
+			function testWiseStudentDetails(){
+				pageOverlay(0);
+				$.ajax({
+					url : '/qb/getWrongAnswerStudents?testSummaryId='+$("#summaryId").val(),
+					type : 'GET',
+					success : function(data) {
+						$('#studentContentId').html(data);
+						pageOverlay(1);
+					},
+					error : function() {
+						alert("Unable to load details.");
+						pageOverlay(1);
+					}
+				});
+			}
+		</script>
+	</th:block>
+</body>
+</html>

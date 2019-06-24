@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+
+
+	<div class="row" id="queSerachInnerId">
+		<!-- BEGIN EXAMPLE TABLE PORTLET-->
+		<div class="portlet light ">
+			<div class="portlet-title">
+				<div class="caption font-dark">
+					<span class="caption-subject bold uppercase"
+						th:text="${'Question Search'}"></span>
+				</div>
+			</div>
+			
+			<div class="portlet-body">
+				<div th:if="${!results.isEmpty()}">
+					<div class="table-responsive">
+						<table id="catQuesTableId"
+							class="table table-bordered display nowrap" style="width: 100%">
+							<thead>
+								<tr>
+
+								<tr>
+									<th>Id</th>
+					<th>Question Type</th>
+					<th>Question Text</th>
+					<th>Difficulty</th>
+					<th>Question Class</th>
+					<th>Created Time</th>
+					<th>Author</th>
+					<th>Keywords</th>
+					<th>Objective</th>
+					<th>Status</th>
+					<th>Video</th>
+				</tr>
+								
+									</thead>
+									<tbody id="reportTableId">
+										<tr th:each="result,status:${results}">
+											<td th:text="${(pageNumber*pageSize)+(status.index+1)}"></td>
+					<td th:text="${result.questionType.name}"></td>
+					<td th:utext="${(result.questionType.name eq 'Assertion Reason' || result.questionType.name eq 'Statement I,Statement II')?result.assertionText:(result.questionType.name eq 'Comprehensive'?result.paragraphText:(result.questionText!=null?result.questionText:''))}"></td>
+					<td th:text="${result.difficultyLevel!=null?result.difficultyLevel.name:''}"></td>
+					<td th:text="${result.queClass.className}"></td>
+					<td th:text="${#dates.format(result.createdTime, 'dd-MM-yyyy')}"></td>
+					<td th:text="${result.author.loginId}"></td>
+					<td th:text="${result.keywords}"></td>
+					<td th:text="${result.questionObjective.name}"></td>
+					<td th:text="${result.status}"></td>
+					<td><input type="checkbox"></td>
+										</tr>
+									</tbody>
+
+								</table>
+							</div>
+							<div class="row">
+								<strong>Total Results:</strong><span th:text="${totalResults}"></span>
+								<ul class="pagination pull-right">
+									<li th:class="${pageNumber== 0} ? disabled"><a
+								th:onclick="@{'javascript:showReport(0)'}">First</a></li>
+									<li th:class="${pageNumber== 0} ? disabled"><a
+								th:onclick="@{${pageNumber==0}?'':'javascript:showReport('+${pageNumber-1}+')'}">Previous</a></li>
+									<li th:each="number,status:${pageNos}"
+								th:class="${(pageNumber==number)?'active':''}"><a
+								th:onclick="@{'javascript:showReport('+${number}+')'}"
+								th:text="${number+1}"></a></li>
+										<li
+								th:class="${((pageNumber==(lastPageNumber) ||pageNumber==(lastPageNumber-1) ) &&pageNumber>=10) || (pageNumber==(lastPageNumber) &&pageNumber<10 )} ? disabled"><a
+								th:onclick="@{${pageNumber<(lastPageNumber)}?'javascript:showReport('+${pageNumber+1}+')':''}">Next</a></li>
+																	<li
+								th:class="${((pageNumber==(lastPageNumber) ||pageNumber==(lastPageNumber-1) ) &&pageNumber>=10) || (pageNumber==(lastPageNumber) &&pageNumber<10 )} ? disabled"><a
+								th:onclick="@{'javascript:showReport('+${lastPageNumber}+')'}">Last</a></li>
+								</ul>
+							</div>
+						</div>
+						<div th:if="${results.isEmpty()}">
+							<p style="color: red; text-align: center; font-weight: bold;">No
+								Records Found</p>
+						</div>
+					</div>
+				</div>
+				<!-- END EXAMPLE TABLE PORTLET-->
+			</div>
+			
+			
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#catQuesTableId').dataTable( {
+					 dom: 'Bfrtip',
+					 paging: false,
+				        buttons: [
+				            'copyHtml5',
+				            'excelHtml5',
+				            'csvHtml5',
+				            'pdfHtml5'
+				        ]
+				} );
+			});
+			
+			
+
+		</script>
+	</th:block>
+</body>
+</html>

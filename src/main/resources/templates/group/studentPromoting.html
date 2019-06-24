@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+    margin-bottom: 15px;
+}
+
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Student Promoting</div>
+		</div>
+		<div th:replace="group/groupOperations"></div>
+		<div id="studentPromotingGrid"></div>
+	</div>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$('#campus').css('display', 'block');
+		});
+		function loadBulkStudentList() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getStudentPromotingGrid",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentPromotingGrid').html('');
+					$('#studentPromotingGrid').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+				}
+			});
+		}
+		function joinInto(joinInto) {
+		 $.ajax({
+		 type : "GET",
+		 url : "/scaits/getJoinYearID",
+		 data : $("#formId").serialize(),
+		 success : function(data) {
+		 var prePopulate = JSON.parse(data);
+		 var select = $('#JoinYearId');
+		 select.find('option').remove();
+		 $.each(prePopulate, function(key, value) {
+		 $('<option>').val(key).text(value).appendTo(select);
+		 });
+		 document.getElementById("StreamId").selectedIndex = "0";
+		 document.getElementById("ProgramId").selectedIndex = "0";
+		 document.getElementById("courseId").selectedIndex = "0";
+		 document.getElementById("BatchId").selectedIndex = "0";
+		 document.getElementById("sectionId").selectedIndex = "0";
+		 }
+		 });
+		 } 
+	</script>
+</body>
+</html>
+

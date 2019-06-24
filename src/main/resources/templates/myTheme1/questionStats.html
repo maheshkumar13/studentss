@@ -1,0 +1,483 @@
+<!-- <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Question Statistics</title>
+<style type="text/css">
+.pq-select-text {
+	font-size: 12px;
+}
+</style>
+<script type="text/javascript">
+	function fn_onload() {
+		document.getElementById("filter").style.display = "none";
+	}
+	function fn_submit() {
+		document.show.submit();
+	}
+	function fn_filter() {
+		document.getElementById("filter").style.display = "block";
+	}
+	function fn_cancel() {
+		document.getElementById("filter").style.display = "none";
+	}
+	$(document).ready(function() {
+		$(function() {
+			$("#fromDateId").datepicker({
+				changeMonth : true,
+				changeYear : true,
+				dateFormat : 'mm/dd/yy',
+				maxDate : '+0d'
+			});
+		});
+
+		$(function() {
+			$("#toDateId").datepicker({
+				changeMonth : true,
+				changeYear : true,
+				dateFormat : 'mm/dd/yy',
+				maxDate : '+0d'
+			});
+		});
+
+		$("#zones").pqSelect({
+			multiplePlaceholder : 'Please Select Zone',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#questionTypes").pqSelect({
+			multiplePlaceholder : 'Please Select Question Type',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#authors").pqSelect({
+			multiplePlaceholder : 'Please Select Author',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#objectives").pqSelect({
+			multiplePlaceholder : 'Please Select Objective',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#difficultyLevels").pqSelect({
+			multiplePlaceholder : 'Please Select Difficulty Level',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#statusList").pqSelect({
+			multiplePlaceholder : 'Please Select Status',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#categories").pqSelect({
+			multiplePlaceholder : 'Please Select Category',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#referenceBooks").pqSelect({
+			multiplePlaceholder : 'Please Select Reference Book',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+		$("#campusList").pqSelect({
+			multiplePlaceholder : 'Please Select Campus',
+			deselect : true,
+			checkbox : true,
+			search : true,
+			width : 810,
+			maxDisplay : 1
+		});
+
+	});
+</script>
+</head>
+<body>
+	<p style="font-size: 25px; text-align: center">
+		<strong>Question Statistics</strong>
+	</p>
+
+	<form th:action="@{/questionReports}" id='show' theme="simple" method="POST"
+		enctype="multipart/form-data">
+		<div style="width: 81.5%;" align="right">
+			<input type="button" class="btn-style" value="Refine"
+				onClick="fn_filter()" />&nbsp;
+		</div>
+		<div id="filter">
+			<table width="995" border="0" align="center" cellpadding="0"
+				cellspacing="0">
+				<tr>
+					<td colspan="2" align="right" valign="top">
+						<table width="98%" border="0" align="center" cellpadding="0"
+							cellspacing="0">
+							<tr>
+								<td width="3%" height="30" align="left" valign="middle"><label
+									for="checkbox"> <input type="checkbox"
+										name="selection.zoneFilter" value="true"
+										th:checked="${selection.zoneFilter}"
+										 />
+								</label></td>
+								<td width="14%" height="30" align="left" valign="middle">Zone</td>
+								<td width="83%" height="30" align="left" valign="middle"><label
+									for="select"></label> <select name="selection.zones"
+									multiple="multiple" id="zones">
+										<s:iterator value="zones" id="znid">
+											<option value="<s:property/>"
+												<s:if test="selection.zones.contains(#znid)"> selected="selected"</s:if>><s:property /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.typeFilter" value="true"
+									<s:if test="selection.typeFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Question Type</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.questionTypes" multiple="multiple"
+									id="questionTypes">
+										<s:iterator value="questionTypes" id="qtid">
+											<option value="<s:property value="id"/>"
+												<s:if test="selection.questionTypes.contains(#qtid)"> selected="selected"</s:if>><s:property
+													value="name" /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.authorFilter" value="true"
+									<s:if test="selection.authorFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Creator</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.authors" multiple="multiple" id="authors">
+										<s:iterator value="authors" id="auid">
+											<option value="<s:property value="id"/>"
+												<s:if test="selection.authors.contains(#auid)"> selected="selected"</s:if>><s:property
+													value="loginId" /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.objectiveFilter" value="true"
+									<s:if test="selection.objectiveFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Objective</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.objectives" multiple="multiple" id="objectives">
+										<s:iterator value="objectives" id="elid">
+											<option value="<s:property value="id"/>"
+												<s:if test="selection.objectives.contains(#elid)"> selected="selected"</s:if>><s:property
+													value="name" /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.difficultyFilter" value="true"
+									<s:if test="selection.difficultyFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Difficulty</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.difficultyLevels" multiple="multiple"
+									id="difficultyLevels">
+										<s:iterator value="difficultyLevels" id="elid">
+											<option value="<s:property value="id"/>"
+												<s:if test="selection.difficultyLevels.contains(#elid)"> selected="selected"</s:if>><s:property
+													value="name" /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.statusFilter" value="true"
+									<s:if test="selection.statusFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Status</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.statusList" multiple="multiple" id="statusList">
+										<option value="Create"
+											<s:if test='selection.statusList.contains("Create")'> selected="selected"</s:if>>Create</option>
+										<option value="Scrutiny"
+											<s:if test='selection.statusList.contains("Scrutiny")'> selected="selected"</s:if>>Scrutiny</option>
+										<option value="Approved"
+											<s:if test='selection.statusList.contains("Approved")'> selected="selected"</s:if>>Approved</option>
+										<option value="Final"
+											<s:if test='selection.statusList.contains("Final")'> selected="selected"</s:if>>Final</option>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.timeFilter" value="true"
+									<s:if test="selection.timeFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Created Time</td>
+								<td height="30" align="left" valign="middle"><table
+										width="50%" border="0" cellspacing="0" cellpadding="0">
+										<tr>
+											<td width="39%"><input type="text" id="fromDateId" readonly="readonly"
+												name="selection.startDate" maxlength="10" size="10"
+												title="mm/dd/yyyy"
+												value="<s:property value="selection.startDate"/>"
+												class="txtbox01" /></td>
+											<td width="12%" align="center">TO</td>
+											<td width="49%"><input type="text" id="toDateId"
+												readonly="readonly" name="selection.endDate" maxlength="10"
+												size="10" title="mm/dd/yyyy"
+												value="<s:property value="selection.endDate"/>"
+												class="txtbox01" /></td>
+										</tr>
+									</table></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.categoryFilter" value="true"
+									<s:if test="selection.categoryFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Category</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.categories" multiple="multiple" id="categories">
+										<s:iterator value="categories" id="elid">
+											<option style="width: 100px; overflow: scroll;"
+												value="<s:property value="id"/>"
+												<s:if test="selection.categories.contains(#elid)"> selected="selected"</s:if>><s:property
+													value="path" /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.yearFilter" value="true"
+									<s:if test="selection.yearFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Exam Year</td>
+								<td height="30" align="left" valign="middle"><input
+									type="text" name="selection.examYear" class="txtbox01"
+									value="<s:property value="selection.examYear"/>" /></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.referenceBookFilter"
+									value="true"
+									<s:if test="selection.referenceBookFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Reference Book</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.referenceBooks" multiple="multiple"
+									id="referenceBooks">
+										<s:iterator value="referenceBooks" id="elid">
+											<option value="<s:property value="id"/>"
+												<s:if test="selection.referenceBooks.contains(#elid)"> selected="selected"</s:if>><s:property
+													value="referenceBook" /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+							<tr>
+								<td height="30" align="left" valign="middle"><input
+									type="checkbox" name="selection.campusFilter" value="true"
+									<s:if test="selection.campusFilter"> checked="checked"</s:if> /></td>
+								<td height="30" align="left" valign="middle">Campus Name</td>
+								<td height="30" align="left" valign="middle"><select
+									name="selection.campusList" multiple="multiple" id="campusList">
+										<s:iterator value="campusList" id="campid">
+											<option value="<s:property/>"
+												<s:if test="selection.campusList.contains(#campid)"> selected="selected"</s:if>><s:property /></option>
+										</s:iterator>
+								</select></td>
+							</tr>
+
+
+							<tr>
+								<td height="30" colspan="2" align="left" valign="middle">&nbsp;</td>
+								<td height="30" align="left" valign="middle"><input
+									type="button" class="btn-style" value="Cancel"
+									onClick="fn_cancel()" />&nbsp; <input type="submit"
+									class="btn-style" value="Submit" /></td>
+							</tr>
+							<tr>
+								<td height="20" colspan="3">&nbsp;</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div style="overflow: auto; width: 995px; margin: 0 auto;">
+			<s:set name="cols" value="0" />
+			<table width="995" border="0" align="center" cellpadding="0"
+				cellspacing="0">
+				<tr>
+					<td colspan="2" align="right" valign="top">
+						<table width="98%" border="1" bordercolor="#cecece"
+							style="border-collapse: collapse;" align="center" cellpadding="3"
+							cellspacing="0" class="border">
+							<tr>
+								<td width="5%" height="30" bgcolor="#D6D6D6"><strong>S.No</strong></td>
+								<s:if test="selection.zoneFilter">
+									<td width="15%" bgcolor="#D6D6D6"><strong>Zone</strong></td>&nbsp;<s:set
+										name="cols" value="%{#cols + 1}" />&nbsp;
+								</s:if>
+								<s:if test="selection.typeFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Question
+											Type</strong></td>&nbsp; <s:set name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.objectiveFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Question
+											Objective</strong></td>&nbsp;<s:set name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.difficultyFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Difficulty
+											Level</strong></td>&nbsp;<s:set name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.timeFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Created
+											Time</strong></td>&nbsp;<s:set name="cols" value="%{#cols + 1}" />&nbsp; 
+	</s:if>
+								<s:if test="selection.authorFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Creator</strong></td>&nbsp;<s:set
+										name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.statusFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Status</strong></td>&nbsp;<s:set
+										name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.referenceBookFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Reference
+											Book</strong></td>&nbsp;<s:set name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.yearFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Exam
+											Year</strong></td>&nbsp;<s:set name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.campusFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Campus
+											Name</strong></td>&nbsp; <s:set name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<s:if test="selection.categoryFilter">
+									<td width="10%" bgcolor="#D6D6D6"><strong>Category</strong></td>&nbsp;<s:set
+										name="cols" value="%{#cols + 1}" />&nbsp;
+	</s:if>
+								<td width="10%" bgcolor="#D6D6D6"><strong>Count</strong></td>
+							</tr>
+							<s:set name="total" value="0" />
+							<s:iterator value="stats" var="stats" status="quesstat">
+								<tr>
+									<td height="22"><s:property value="%{(#quesstat.index)+1}" /></td>
+									<s:url action="questionSearchResult"
+										id="questionSearchResultLink">
+										<s:param name="selection.zones" value="%{#stats.zone}" />
+										<s:param name="selection.questionTypes"
+											value="%{#stats.questionType.id}" />
+										<s:param name="selection.objectives"
+											value="%{#stats.questionObjective.id}" />
+										<s:param name="selection.difficultyLevels"
+											value="%{#stats.difficultyLevel.id}" />
+										<s:param name="selection.startDate">
+											<s:date name="createdTime" format="MM/dd/yyyy" />
+										</s:param>
+										<s:param name="selection.endDate">
+											<s:date name="createdTime" format="MM/dd/yyyy" />
+										</s:param>
+										<s:param name="selection.authors" value="%{#stats.author.id}" />
+										<s:param name="selection.categories"
+											value="%{#stats.category.id}" />
+										<s:param name="selection.statusList" value="%{#stats.status}" />
+										<s:param name="selection.referenceBooks"
+											value="%{#stats.referenceBook.id}" />
+										<s:param name="selection.examYear" value="%{#stats.examYear}" />
+										<s:param name="selection.campusList" value="%{#stats.campus}" />
+									</s:url>
+									<s:if test="selection.zoneFilter">
+										<td><s:property value="%{#stats.zone}" /></td>
+									</s:if>
+									<s:if test="selection.typeFilter">
+										<td><s:property value="%{#stats.questionType.name}" /></td>
+									</s:if>
+									<s:if test="selection.objectiveFilter">
+										<td><s:property value="%{#stats.questionObjective.name}" /></td>
+									</s:if>
+									<s:if test="selection.difficultyFilter">
+										<td><s:property value="%{#stats.difficultyLevel.name}" /></td>
+									</s:if>
+									<s:if test="selection.timeFilter">
+										<td><s:property value="%{#stats.createdTime}" /></td>
+									</s:if>
+									<s:if test="selection.authorFilter">
+										<td><s:property value="%{#stats.author.loginId}" /></td>
+									</s:if>
+									<s:if test="selection.statusFilter">
+										<td><s:property value="%{#stats.status}" /></td>
+									</s:if>
+									<s:if test="selection.referenceBookFilter">
+										<td><s:property
+												value="%{#stats.referenceBook.referenceBook}" /></td>
+									</s:if>
+									<s:if test="selection.yearFilter">
+										<td><s:property value="%{#stats.examYear}" /></td>
+									</s:if>
+									<s:if test="selection.campusFilter">
+										<td><s:property value="%{#stats.campus}" /></td>
+									</s:if>
+									<s:if test="selection.categoryFilter">
+										<td><s:property value="%{#stats.category.name}" /></td>
+										<s:if test='%{#stats.category.parent==null}'>
+											<s:set name="total" value="%{#total + #stats.count}" />
+										</s:if>
+									</s:if>
+									<s:else>
+										<s:set name="total" value="%{#total + #stats.count}" />
+									</s:else>
+									<td><s:a href="%{#questionSearchResultLink}">
+											<s:property value="%{#stats.count}" />
+										</s:a></td>
+								</tr>
+							</s:iterator>
+							<tr>
+								<td height="40" colspan="<s:property value="%{#cols + 1}" />"
+									align="left"><strong>Total</strong></td>
+								<td bgcolor="#FFFFFF"><strong><s:property
+											value="%{#total}" /></strong></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</form>
+	date picker scripts & CSS
+	<link rel="stylesheet" type="text/css"
+		href="<s:url value='/media/style/jquery-ui-1.8.4.custom.css' encode='false' includeParams='none'/>">
+	date picker scripts & CSS
+
+	<script src="../media/js/jquery-ui-1.10.2.js"></script>
+	<link rel="stylesheet" href="../media/css/pqselect.dev.css"></link>
+	<script src="../media/js/pqselect.dev.js"></script>
+</body>
+</html> -->

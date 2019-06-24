@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<style>
+th, td {
+	white-space: nowrap;
+}
+
+.inmodal .modal-header {
+	padding: 10px 15px;
+}
+
+.inmodal .modal-title {
+	font-size: 18px;
+}
+
+.control-label {
+	white-space: nowrap;
+}
+
+.label {
+	font-size: 100%;
+	font-weight: normal;
+	line-height: 2.5;
+	padding: 0.3em 0.6em 0.5em;
+}
+</style>
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+  var arrayDates =/*[[${reqDateList}]]*/;
+
+ /*]]>*/
+</script>
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+						var $remaining = $('#reasonRemaining'), $messages = $remaining
+								.next();
+
+						$('#reasonId')
+								.keyup(
+										function() {
+											var chars = this.value.length, messages = Math
+													.ceil(chars / 200), remaining = messages
+													* 200
+													- (chars % (messages * 200) || messages * 200);
+											if (document
+													.getElementById("reasonId").value == "") {
+												$remaining
+														.text(200 + ' characters remaining');
+											} else {
+												$remaining
+														.text(remaining
+																+ ' characters remaining');
+											}
+											$messages.text(messages
+													+ ' message(s)');
+										});
+					});
+
+	function verify() {
+
+		arrayDates=arrayDates.toString();
+		arrayDates = arrayDates.replace("[", "");
+		arrayDates = arrayDates.replace("]", "");
+		var arrayDatesSplit = arrayDates.split(",");
+		var startDate = new Date();
+		startDate.setHours(0, 0, 0, 0);
+		 for (var i = 0; i < arrayDatesSplit.length; i++) {
+			//alert("arrayDatesSplit[i]"+arrayDatesSplit[i]);
+			//alert(new Date(arrayDatesSplit[i].trimLeft()));
+			if (new Date(arrayDatesSplit[i].trimLeft()) != startDate
+					&& new Date(arrayDatesSplit[i].trimLeft()) < startDate) {
+				alert('Cancel Date is Not Valid,Contact Support Team');
+				return false;
+			}
+		}
+ 
+		if ($("#reasonId").val() == "") {
+			alert("Please Enter Reason");
+			$("#reasonId").focus();
+			return false;
+		} else if (confirm("Are you sure you want to Cancel?")) {
+			saveForm('saveCancelFormId');
+		} else {
+			return false;
+		}
+	}
+
+	function saveForm(formId) {
+		var serverurl = $("#" + formId).attr('action');
+
+		$.ajax({
+			type : "GET",
+			url : "/leaveManagement/saveLeaveCancel",
+			data : {
+				leave : document.getElementById("leaveCancelId").value,
+				comment:document.getElementById("reasonId").value
+			},
+			success : function(data) {
+				if (data.indexOf("SUCCESS-") != -1) {
+					msg = data.substring(data.indexOf("SUCCESS-") + 8);
+					alert(msg);
+					$('#leaveCancelPopupId').modal('toggle');
+					showPage('/leaveManagement/leaveCancel');
+				}else if (data.indexOf("FEEDBACK-") != -1) {
+					msg = data.substring(data.indexOf("FEEDBACK-") + 9);
+					alert(msg);
+				}
+			}
+		});
+		return false;
+	}
+</script>
+<body>
+<div th:if="${empLeaveDates!=null && empLeaveDates.size()>0}">
+	<div class="contact-box center-version">
+
+		<a href="javascript:void(0)"> <img alt="image" class="img-circle"
+		th:src="'http://scaits.info/attachment/empImage/'+${leave.employee.employeeDetails[0].tempPayroll}+'_Photo.jpg'">
+			<div class="h3 m-b-xs">
+				<strong>
+				<span th:text="${leave.employee.userName}"></span>
+				<br>
+				<span th:text="${leave.employee.payRollId}"></span>
+				</strong>
+			</div>
+			<span th:text="${leave.employee.designation}"></span>
+			 <hr style="border: 1px solid #cecece; margin-top: 10px; height: 0px;">
+					<strong style="color: orange;">Total Leaves</strong><br> <strong
+					style="color: #1c84c6; font-size: 18px;">-</strong>
+			<hr style="border: 1px solid #cecece; margin-top: 10px; height: 0px;">
+			<div class="m-t-md">
+
+				<strong style="color: orange;">
+				<span th:text="${leave.leaveType.leaveType}"></span>
+				( <span th:text="${leave.status}"></span>)</strong><br> <strong
+					style="color: #1c84c6; font-size: 18px;">
+					<span th:text="${leave.totalDuration}"></span>
+					</strong>&nbsp;Day(s)<br> <strong
+					style="color: #1ab394;">
+					<span th:text="${#dates.format(leave.fromDate, 'dd-MM-yyyy')}"></span>
+					</strong>(
+				<div th:if='${empLeaveDates.get(0).session.equals("FH")}'>First Half</div>
+				<div th:if='${empLeaveDates.get(0).session.equals("SH")}'>Second Half</div>
+				<div th:if='${empLeaveDates.get(0).session.equals("F")}'>Full Day</div>
+				)
+				<div th:if="${empLeaveDates.size()>1}">- <strong
+						style="color: #1ab394;"> 
+						<span th:text="${#dates.format(leave.toDate, 'dd-MM-yyyy')}"></span>
+						</strong> (
+						<div th:if='${empLeaveDates.get(empLeaveDates.size()-1).session.equals("FH")}'>First Half</div>
+						<div th:if='${empLeaveDates.get(empLeaveDates.size()-1).session.equals("SH")}'>Second Half</div>
+						<div th:if='${empLeaveDates.get(empLeaveDates.size()-1).session.equals("F")}'>Full Day</div>
+						)</div>
+				<hr
+					style="border: 1px solid #cecece; margin-top: 10px; height: 0px;">
+				<br>
+				<p align="left">
+					<strong>Reason</strong><br>
+					<span th:text="${leave.reason}"></span>
+				</p>
+				<div th:if="${leave.comments!=null}">
+					<p align="left">
+						<strong>Comments</strong> <br>
+						<span th:text="${leave.comments}"></span>
+					</p>
+				</div>
+			</div>
+
+		</a>
+	</div>
+
+	<div th:if="${allowCancel}">
+			<form id="saveCancelFormId" class="form-horizontal"
+		th:action="@{/leaveManagement/saveLeaveCancel}" >
+		
+		<input type="hidden" name="leave" th:value="${empLeaveDates.get(0).leaveId.leaveId}" id="leaveCancelId">
+
+			<div class="form-group">
+				<div class="col-xs-12">
+					<label for="comment">Cancel Reason</label>
+						<textarea  id="reasonId" maxlength="200" ondrop="return false" cols="33" rows="2"
+										onchange="this.value=this.value.toUpperCase();" 
+									ondrag="return false" name="comment"></textarea>
+									
+					<span id="reasonRemaining">200 characters only</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-11">
+					<div class="form-group" align="center">
+						<div class="col-lg-offset-2 col-lg-10">
+							<button type="button" class="btn btn-primary center-block"
+								onclick="return verify()">Cancel Leave</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div th:if="${!(empLeaveDates!=null && empLeaveDates.size()>0)}">
+	<p align="center">
+		<strong>No Records Found.</strong>
+	</p>
+</div></body>

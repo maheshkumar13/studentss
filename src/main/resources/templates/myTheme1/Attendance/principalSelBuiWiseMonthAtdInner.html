@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<style>
+.dataTables_wrapper {
+	padding-bottom: 0px;
+}
+</style>
+
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+  
+   var monthNum= /*[[${monthVal}]]*/;
+   var totalDays =/*[[${totalDays}]]*/; 
+   var atdList=/*[[${monthlyAttendancebos!=null?monthlyAttendancebos.size():0}]]*/;
+ /*]]>*/
+</script>
+<script type="text/javascript">
+
+			$(document).ready(function() {
+				 $('#principalAtdCloseId').DataTable({
+					scrollY : "300px",
+					scrollX : true,
+					scrollCollapse : false,
+					paging : false,
+					"dom": '<"html5buttons"B>lTfgtip',
+					"buttons": [ 'excel' ]
+				}); 
+				
+				var monthShortNames = [ "January", "February", "March", "April", "May", "June",
+				            			"July", "August", "September", "October", "November", "December" ];
+
+				            		$("#monthNameId").html(monthShortNames[parseInt(monthNum) - 1]);
+				            		
+				            		$("#totalDaysId").html(totalDays);
+			});
+			
+			
+			function saveAttendanceClose(){
+				
+				 $('#principalAtdCloseId').DataTable().search('').draw(false);
+					for(var i=0;i<parseInt(atdList);i++){
+						if(notValid!=0){
+							document.getElementById("lopSelId"+notValid).focus();
+							notValid=0;
+							return false;
+						}
+						 if(parseFloat(document.getElementById("lopSelId"+i).value)<parseFloat(document.getElementById("lopId"+i).value)){
+								if(document.getElementById("selDescriptionId"+i).value==""){
+									alert("Please Enter Description");
+									document.getElementById("selDescriptionId"+i).focus();
+									return false;
+								}
+							}
+					 }
+					if(confirm("Are you sure you want to close monthly attendance daysheet?")){
+						saveForm();
+					}else{
+						return false;
+					}
+					
+			}
+			
+			
+			
+			
+				function saveForm(){
+					 
+					 var data = $('#savePrincipalMonthAttendanceFormId').serializeArray();
+					 data.push({name: 'buildingVal', value: document.getElementById('empSelBuildingListId').value});
+					$.ajax({
+						type : 'POST',
+						url :  $('#savePrincipalMonthAttendanceFormId').attr('action'),
+						data : data,
+						dataType : 'json',
+						success : function(data) {
+							
+							if(data.indexOf("FEEDBACK-") != -1 && data.indexOf("SUCCESFULLY DONE") != -1){
+								alert("successfully done");
+								document.getElementById("savePrincipalMonthAttendanceFormId").reset();
+								showPage('/scaits/principalMonthlyEmpAttendanceClose');
+								
+							}else if(data!="" && data.indexOf("FEEDBACK-") != -1 && data.length<=100){
+								msg = data.substring(data.indexOf("-", 9) + 1);
+								alert(msg);
+							}
+						}
+					});
+					return false;
+				}
+	</script>
+<div class="panel-body">
+	<div class="row">
+
+		<div class="col-lg-12">
+
+			<div
+				th:if="${monthlyAttendancebos!=null && monthlyAttendancebos.size()>0}">
+				<div class="container" style="font-size: 20px;">
+					<span class="label label-info">Total Employees&nbsp;<span
+						class="badge">
+							<span th:text="${monthlyAttendancebos.size()}"></span>
+					</span></span> <span class="label label-danger"><span id="monthNameId"></span>&nbsp;<span
+						class="badge" id="totalDaysId"></span></span>
+				</div>
+				<div class="form-group">
+					<form id="savePrincipalMonthAttendanceFormId"
+						class="form-horizontal"
+						th:action="@{/scaits/savePrincipalMonthDayAttendanceClose}"
+						method="post">
+
+
+						<div class="table-responsive"
+							style="width: 98%; padding-left: 18px; margin-top: 10px;">
+							<table
+								class="table table-striped table-bordered table-hover dataTables-example"
+								id="principalAtdCloseId">
+								<thead>
+									<tr>
+										<th>SNO</th>
+										<th>PAYROLL ID</th>
+										<th>NAME</th>
+										<th>DESIGNATION</th>
+										<th>STATUS</th>
+										<th>No Of Working Days</th>
+										<th>No Of Holidays</th>
+										<th>No Of Present</th>
+										<th>No Of OnDuty</th>
+										<th>No Of Leaves</th>
+										<th>Proposed LOP</th>
+										<!-- <th>Reverse LOP</th> -->
+										<th>Remarks</th>
+										<th>Campus</th>
+										<th>Building</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr
+										th:each="campusWiseAttedanceVar,campusListNo : ${monthlyAttendancebos}">
+										<input type="hidden" th:value="${campusWiseAttedanceVar.id}"
+											th:name="${'monthlyAttendancebos['+campusListNo.index+']'}"
+											id="idsVal" />
+										<td><span th:text="${campusListNo.index+1}"></span></td>
+										<td><span
+											th:text="${campusWiseAttedanceVar.employee.payRollId}"></span>
+										</td>
+										<td><span
+											th:text="${campusWiseAttedanceVar.employee.userName}"></span>
+										</td>
+										<td><span
+											th:text="${campusWiseAttedanceVar.employee.designation}"></span>
+										</td>
+										<td>
+
+											<div
+												th:if='${campusWiseAttedanceVar.employee.status.equalsIgnoreCase("LEFT")}'>
+												<div th:if="${campusWiseAttedanceVar.employee.dol!=null}">
+													<span th:text="${campusWiseAttedanceVar.employee.status}"></span>
+													ON <span
+														th:text="${#dates.format(campusWiseAttedanceVar.employee.dol, 'dd-MM-yyyy')}"></span>
+												</div>
+												<div th:if="${!(campusWiseAttedanceVar.employee.dol!=null)}">
+													<span th:text="${campusWiseAttedanceVar.employee.status}"></span>
+												</div>
+											</div>
+
+											<div
+												th:if='${!(campusWiseAttedanceVar.employee.status.equalsIgnoreCase("LEFT"))}'>
+												<span th:text="${campusWiseAttedanceVar.employee.status}"></span>
+											</div>
+										</td>
+										<td><span
+											th:text="${campusWiseAttedanceVar.noWorkingDays}"></span></td>
+										<td><span
+											th:text="${campusWiseAttedanceVar.noOfHoliday+campusWiseAttedanceVar.NO_WEEK_OFF}"></span>
+										</td>
+										<td><span th:text="${campusWiseAttedanceVar.noOfPresent}"></span>
+										</td>
+										<td><span th:text="${campusWiseAttedanceVar.noOfOnDuty}"></span>
+										</td>
+										<td>
+										<span th:text="${campusWiseAttedanceVar.noOfLeaves+campusWiseAttedanceVar.noOfAbsent}" style="display: none;"></span>
+										<input type="text" class="form-control"
+											style="width: 75px;"
+											
+											th:value="${campusWiseAttedanceVar.noOfLeaves+campusWiseAttedanceVar.noOfAbsent}"
+											th:id="'lopId'+${campusListNo.index}" ondrop="return false"
+											ondrag="return false" autocomplete="off" readonly="readonly"
+											maxlength="2" /></td>
+
+										<td><input type="text" class="form-control"
+											style="width: 75px;"
+											th:name="${'lopList['+campusListNo.index+']'}"
+											th:value="${campusWiseAttedanceVar.noOfLeaves+campusWiseAttedanceVar.noOfAbsent}"
+											th:id="'lopSelId'+${campusListNo.index}"
+											ondrop="return false" ondrag="return false"
+											onkeypress="return isNumberKey(event)" autocomplete="off"
+											maxlength="4"
+											th:onchange="${'javascript:return checkLopDays('+campusListNo.index+','+campusWiseAttedanceVar.noOfLeaves+campusWiseAttedanceVar.noOfAbsent+')'}" /></td>
+										<td><input class="form-control"
+											th:name="${'description['+campusListNo.index+']'}"
+											placeholder="Remarks"
+											th:id="'selDescriptionId'+${campusListNo.index}" type="text"
+											maxlength="200" /></td>
+										<td><span
+											th:text="${campusWiseAttedanceVar.employee.campus.campusName}"></span>
+										</td>
+										<td><span
+											th:text="${campusWiseAttedanceVar.employee.building.buildingName}"></span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</form>
+					<div class="row">
+						<div class="form-group">
+							<button type="button" class="btn btn-primary btn-sm"
+								onclick="return	saveAttendanceClose();"
+								style="margin-left: 45%;" id="submitId">
+								Approved By Principal (<span th:text="${currentUser.userName}"></span>)
+							</button>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+			<div
+				th:if="${!(monthlyAttendancebos!=null && monthlyAttendancebos.size()>0)}">
+				<p align="center">
+					<b>No Records found...</b>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

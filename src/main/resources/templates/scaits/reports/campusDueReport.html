@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet box green">
+		<div class="portlet-title">
+			<div class="caption">CAMPUS DUE REPORT</div>
+		</div>
+		<div th:replace="reports/campusDueReportFilter"></div>
+		<div id="studentDeatailsGridId"></div>
+	</div>
+</body>
+<script th:inline="javascript">
+	$(document).ready(function() {
+		/* $('#FeeDiv').css('display', 'none');
+		$('#duePayDiv').css('display', 'none');
+		$('#sectionDiv').css('display', 'none');
+		$('#DueId').css('display', 'none');
+		$('#paidId').css('display', 'none');
+		$('#ReportDiv').css('display', 'none');
+		$('#amountDiv').css('display', 'none'); */
+
+		
+		$('#FeeDiv').css('display', 'none');
+		$('#duePayDiv').css('display', 'none');
+		$('#sectionDiv').css('display', 'none');
+		$('#ReportDiv').css('display', 'none');
+		
+	});
+	function campusReport() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/campusDueShowReport",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				$('#studentDeatailsGridId').html('');
+				$('#studentDeatailsGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+				pageOverlay(1);
+			}
+		});
+	}
+
+	function loadBulkStudentList() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getStudentDetailsGrid",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				loadToProgram();
+				$('#studentDeatailsGridId').html('');
+				$('#studentDeatailsGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+				pageOverlay(1);
+			}
+		});
+
+	}
+</script>
+
+</html>
+

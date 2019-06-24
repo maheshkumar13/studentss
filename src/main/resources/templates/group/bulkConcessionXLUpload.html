@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet box green">
+		<div class="portlet-title">
+			<div class="caption">BULK CONCESSIONEXCEL UPLOAD</div>
+		</div>
+	</div>
+	<form th:action="@{/scaits/getBulkConcessionXLUploadGrid}" id="formId"
+		method="post" enctype="multipart/form-data">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="uploadid" class="col-md-2 control-label">Upload
+						Excel File</label>
+					<div class="col-md-10">
+						<input type="file" id="uplodeFile" name="uplodeFile">
+					</div>
+					<div id="uploadValId" style="visibility: visible;">
+						<a href="/ConcessionUpload.xls" id="smsrequestID" class="lblalert">
+							Sample Excel</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<button type="button" class="btn btn-primary " onclick="saveFile()">saveFile</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script th:inline="javascript">
+	function saveFile() {
+		var form = $('#formId')[0];
+		var data = new FormData(form);
+		$.ajax({
+			type : "post",
+			url : $("#formId").attr("action"),
+			data : data,
+			enctype : 'multipart/form-data',
+			processData : false,
+			contentType : false,
+			success : function(data) {
+			},
+			error : function() {
+				alert('Error occured');
+			}
+		});
+	}
+</script>
+</html>
+

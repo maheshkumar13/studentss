@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/assets/global/plugins/jquery-multiselect-search/jquery.dropdown.min.css}">
+<script
+	th:src="@{/assets/global/plugins/jquery-multiselect-search/jquery.dropdown.min.js}"></script>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="row">
+			<div class="col-md-12">
+				<form th:action="@{/qb/saveQuestionPaperVerification}" id="formId"
+					method="post">
+					<!-- BEGIN VALIDATION STATES-->
+					<div class="portlet light card-1 portlet-fit portlet-form bordered">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subject ">Question
+									Paper Verification Approval</span>
+							</div>
+							<button class="btn btn-pri-sm pull-right" type="button"
+								id="qpBtnId">View Entire Question Paper</button>
+							<div class="modal fade" data-width="760" id="qpModalId">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"
+											aria-hidden="true"></button>
+										<h4 class="modal-title">Question Paper</h4>
+									</div>
+									<div class="modal-body">
+										<div id="qpModalDataId"
+											style="max-height: 400px; overflow-y: auto;"></div>
+									</div>
+									<div class="modal-footer">
+										<button class="btn default" data-dismiss="modal"
+											aria-hidden="true">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="portlet-body" style="padding: 0 20px">
+							<div class="row">
+								<div class="col-md-3">
+									<div class="jquerySel">
+										<select class="form-control" id="examScheduleId"
+											name="examSchedule">
+											<option value="">Select Exam Schedule</option>
+											<th:block th:each="examSchedule:${examSchedules}">
+												<option th:value="${examSchedule.id}"
+													th:text="${examSchedule.examName}"></option>
+											</th:block>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-3">
+									<select class="form-control" id="subjectId" name="category"
+										onchange="viewQuestionPaper()">
+										<option value="">Select Subject</option>
+									</select>
+								</div>
+								<div class="clearfix" style="margin-bottom: 20px"></div>
+								<div id="questionPaperDivId"></div>
+							</div>
+							<br>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$('.jquerySel')
+					.dropdown(
+							{
+								input : '<input type="text" maxLength="20" placeholder="Search">',
+								searchNoData : '<li style="color:#ddd">No Results</li>',
+								choice : function() {
+									viewScheduleSubjects($("#examScheduleId")
+											.val());
+								}
+							});
+
+			function viewQuestionPaper() {
+				var examSchedule = $("#examScheduleId").val();
+				var category = $("#subjectId").val();
+				if (examSchedule == "") {
+					alert("Please Select Exam Schedule");
+					$("#questionPaperDivId").html('');
+					return false;
+				} else if (category == "") {
+					alert("Please Select Subject");
+					$("#questionPaperDivId").html('');
+					return false;
+				} else {
+					pageOverlay(0);
+					$.ajax({
+						url : '/qb/viewQuestionPaper?examSchedule='
+								+ examSchedule + '&category=' + category,
+						success : function(data) {
+							$("#questionPaperDivId").html(data);
+							pageOverlay(1);
+						},
+						error : function() {
+							alert("Unable to load details");
+							pageOverlay(1);
+						}
+					});
+				}
+			}
+
+			function viewScheduleSubjects(examSchedule) {
+				if (examSchedule != "") {
+					pageOverlay(0);
+					$.ajax({
+						url : '/qb/viewScheduleSubjects?examSchedule='
+								+ examSchedule,
+						dataType : 'text',
+						success : function(data) {
+							var prePopulate = JSON.parse(data);
+							console.log(prePopulate);
+							var select = $('#subjectId');
+							select.find('option').remove();
+							$('<option>').val('').text('Select Subject')
+									.appendTo(select);
+							$.each(prePopulate, function(key, value) {
+								$('<option>').val(key).text(value).appendTo(
+										select);
+							});
+							pageOverlay(1);
+						},
+						error : function() {
+							alert("Unable to load details");
+							pageOverlay(1);
+						}
+					});
+				}
+			}
+
+			$("#qpBtnId")
+					.click(
+							function() {
+								if ($("#examScheduleId").val() == "") {
+									alert("Please Select Exam Schedule");
+									$("#examScheduleId").foucs();
+									return false;
+								} else {
+									var serverUrl = '/qb/viewEntireQuestionPaper?examSchedule='
+											+ $("#examScheduleId").val();
+									$.ajax({
+										url : serverUrl,
+										success : function(data) {
+											$("#qpModalDataId").html(data);
+											$("#qpModalId").modal();
+										},
+										error : function() {
+											$("#insModalId").modal();
+											showToastr(
+													"Unable to load details.",
+													"error");
+										}
+									});
+								}
+							});
+		</script>
+	</th:block>
+</body>
+</html>

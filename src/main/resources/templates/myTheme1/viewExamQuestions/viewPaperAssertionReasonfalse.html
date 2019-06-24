@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<style>
+.questionClass {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+}
+</style>
+<body>
+<tr>
+	<td width="60px" align="right" valign="top"><b>Assertion:</b></td>
+	<td colspan="8" style= "word-wrap: break-word"><s:property value="question.assertionText" escape="false"/></td>
+</tr>
+<tr>
+	<td width="60px" align="right"><b>Reason :</b></td>
+	<td colspan="8" style= "word-wrap: break-word"><s:property value="question.reasoningText" escape="false"/></td>    
+</tr>
+<tr>
+	<td width="60px" align="right" valign="top"><b>Choices :</b></td>
+	<td><b>A)</b> Assertion is True, Reason is True and Reason is correct explanation of Assertion<br>
+	<b>B)</b> Assertion is True, Reason is True but Reason is not correct explanation of Assertion<br>
+	<b>C)</b> Assertion is True, Reason is False<br>
+	<b>D)</b> Assertion is False, Reason is False
+	<%-- <td colspan="8" style= "word-wrap: break-word"><s:property value="question.reasoningText" escape="false"/></td> --%>
+</tr>    
+
+</body>

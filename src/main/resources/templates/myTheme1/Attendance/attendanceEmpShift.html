@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<style>
+    .portlet.light .dataTables_wrapper .dt-buttons {
+	     margin-top: -42px
+      }
+	.dataTables_wrapper .dataTables_filter {
+		margin-top: -47px;
+	}	
+	#sample_3 select { font-size:12px !important; padding:0}
+
+.bg-in { background:#f8f8f8}
+.bg-out { background:#f3f3f3}
+.bg-brk { background:#FFFFE6;}
+.bg-total { background:#0080C010; color:#005177}  
+    </style>
+<link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+	var availableTime="";
+
+	function changeAttendanceStatusSession1Time(statusObj) {
+		if(document.getElementById("dtbox1").value!="" &&  document.getElementById("dtbox2").value!="" && document.getElementById("stBreakBox1").value!=""){
+			calculate();
+			if(availableTime!=""){
+				$('div[id^= "dvSession1time_"]').each(function() {
+					$(this).find('select').each(function() {
+						$(this).val($(statusObj).val());
+					});
+				});
+			}else{
+				$('div[id^= "dvSession1time_"]').each(function() {
+					$(this).find('select').each(function() {
+						$(this).val("");
+					});
+				});
+				alert("Please enter valid shift timings")
+	    		document.getElementById("dtbox1").focus();
+	    		return false;
+			}
+		}else{
+			$('div[id^= "dvSession1time_"]').each(function() {
+				$(this).find('select').each(function() {
+					$(this).val($(statusObj).val())
+				});
+			});
+			var empShiftSize =  document.getElementById("empShiftSizeId").value;
+			for(i=0;i<empShiftSize;i++){
+				changeAvailableTime1(i);
+			}
+			
+		}
+	}
+	function changeAttendanceStatusSession2Time(statusObj) {
+		if(document.getElementById("dtbox1").value!="" &&  document.getElementById("dtbox2").value!="" && document.getElementById("stBreakBox1").value!=""){
+			calculate();
+			if(availableTime!=""){
+				$('div[id^= "dvSession2time_"]').each(function() {
+					$(this).find('select').each(function() {
+						$(this).val($(statusObj).val());
+					});
+				});
+			}else{
+				$('div[id^= "dvSession2time_"]').each(function() {
+					$(this).find('select').each(function() {
+						$(this).val("");
+					});
+				});
+				alert("Please enter valid shift timings")
+	    		document.getElementById("dtbox2").focus();
+	    		return false;
+			}
+		}else{
+			$('div[id^= "dvSession2time_"]').each(function() {
+				$(this).find('select').each(function() {
+					$(this).val($(statusObj).val())
+				});
+			});
+			var empShiftSize =  document.getElementById("empShiftSizeId").value;
+			for(i=0;i<empShiftSize;i++){
+				changeAvailableTime2(i);
+			}
+		}
+	}
+
+	function changeAttendanceStatusSession3Time(statusObj) {
+		if(document.getElementById("dtbox1").value!="" &&  document.getElementById("dtbox2").value!="" && document.getElementById("stBreakBox1").value!=""){
+			calculate();
+			if(availableTime!=""){
+				$('div[id^= "dvSession3time_"]').each(function() {
+					$(this).find('select').each(function() {
+						$(this).val($(statusObj).val());
+					});
+				});
+			}else{
+				$('div[id^= "dvSession3time_"]').each(function() {
+					$(this).find('select').each(function() {
+						$(this).val("");
+					});
+				});
+				alert("Please enter valid shift timings")
+	    		document.getElementById("stBreakBox1").focus();
+	    		return false;
+			}
+		}else{
+			$('div[id^= "dvSession3time_"]').each(function() {
+				$(this).find('select').each(function() {
+					$(this).val($(statusObj).val());
+				});
+			});
+			var empShiftSize =  document.getElementById("empShiftSizeId").value;
+			for(i=0;i<empShiftSize;i++){
+				changeAvailableTime3(i);
+			}
+		}
+		
+	}
+
+	 function calculate() {
+		var breakMinutes = document.getElementById("stBreakBox1").value;
+	    var hours = parseInt(document.getElementById("dtbox2").value.split(':')[0], 10) - parseInt(document.getElementById("dtbox1").value.split(':')[0], 10);
+	    var minutes = parseInt(document.getElementById("dtbox2").value.split(':')[1], 10) - parseInt(document.getElementById("dtbox1").value.split(':')[1], 10);
+	    var totalMinutes = parseInt((hours * 60)) +  parseInt(minutes) - parseInt(breakMinutes);
+	    if(parseInt(totalMinutes)<0){
+	    	availableTime="";
+	    }else{
+	   	 	var totalhours = Math.floor(parseInt(totalMinutes)/60); 
+	    	if(totalhours=="0"){
+	    		availableTime = totalMinutes +" Minutes"
+	   		}else{
+	    		var missedMin = parseInt(totalMinutes) - parseInt((parseInt(totalhours) * 60))    
+	    		if(missedMin=="0"){
+	    			availableTime = totalhours +" Hrs";
+	    		}else{
+	    			availableTime = totalhours +" Hrs" + " " + missedMin+ " Minutes";
+	    		}
+	    	}
+	    }
+	    document.getElementById("availableTimeId").value=availableTime;
+	    $('div[id^= "dvSession4time_"]').each(function() {
+			$(this).find('input').each(function() {
+				$(this).val(availableTime);
+			});
+		});
+	}
+
+	function changeAvailableTime(index) {
+		if(document.getElementById("inTimeId_"+index+"").value!="" &&  document.getElementById("outTimeId_"+index+"").value!="" && document.getElementById("breakTimeId_"+index+"").value!=""){
+			var breakMinutes = document.getElementById("breakTimeId_"+index+"").value;
+	    	var hours = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[0], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[0], 10);
+	    	var minutes = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[1], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[1], 10);
+	    	var totalMinutes = parseInt((hours * 60)) +  parseInt(minutes) - parseInt(breakMinutes);
+	    	if(parseInt(totalMinutes)<0){
+		    	availableTime="";
+	    	}else{
+	   	 		var totalhours = Math.floor(parseInt(totalMinutes)/60); 
+	    		if(totalhours=="0"){
+	    			availableTime = totalMinutes +" Minutes"
+		   		}else{
+	    			var missedMin = parseInt(totalMinutes) - parseInt((parseInt(totalhours) * 60))    
+	    			if(missedMin=="0"){
+	    				availableTime = totalhours +" Hrs";
+	    			}else{
+	    				availableTime = totalhours +" Hrs" + " " + missedMin+ " Minutes";
+	    			}
+	    		}
+	    	}
+	   		document.getElementById("availableTimeId_"+index+"").value=availableTime;
+	    	if(availableTime==""){
+	    		alert("Please enter valid shift timings")
+	    		document.getElementById("breakTimeId_"+index+"").focus();
+	    		return false;
+	    	}
+		}else{
+			  document.getElementById("availableTimeId_"+index+"").value="";
+		}
+	}
+
+	function changeAvailableTime1(index) {
+		if(document.getElementById("outTimeId_"+index+"").value!="" && document.getElementById("breakTimeId_"+index+"").value!=""){
+			var breakMinutes = document.getElementById("breakTimeId_"+index+"").value;
+	    	var hours = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[0], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[0], 10);
+	    	var minutes = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[1], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[1], 10);
+	    	var totalMinutes = parseInt((hours * 60)) +  parseInt(minutes) - parseInt(breakMinutes);
+	    	if(parseInt(totalMinutes)<0){
+		    	availableTime="";
+	    	}else{
+	   	 		var totalhours = Math.floor(parseInt(totalMinutes)/60); 
+	    		if(totalhours=="0"){
+	    			availableTime = totalMinutes +" Minutes"
+		   		}else{
+	    			var missedMin = parseInt(totalMinutes) - parseInt((parseInt(totalhours) * 60))    
+	    			if(missedMin=="0"){
+	    				availableTime = totalhours +" Hrs";
+	    			}else{
+	    				availableTime = totalhours +" Hrs" + " " + missedMin+ " Minutes";
+	    			}
+	    		}
+	    	}
+	   		document.getElementById("availableTimeId_"+index+"").value=availableTime;
+		}else{
+			  document.getElementById("availableTimeId_"+index+"").value="";
+		}
+	}
+
+	function changeAvailableTime2(index) {
+		if(document.getElementById("inTimeId_"+index+"").value!="" && document.getElementById("breakTimeId_"+index+"").value!=""){
+			var breakMinutes = document.getElementById("breakTimeId_"+index+"").value;
+	    	var hours = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[0], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[0], 10);
+	    	var minutes = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[1], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[1], 10);
+	    	var totalMinutes = parseInt((hours * 60)) +  parseInt(minutes) - parseInt(breakMinutes);
+	    	if(parseInt(totalMinutes)<0){
+		    	availableTime="";
+	    	}else{
+	   	 		var totalhours = Math.floor(parseInt(totalMinutes)/60); 
+	    		if(totalhours=="0"){
+	    			availableTime = totalMinutes +" Minutes"
+		   		}else{
+	    			var missedMin = parseInt(totalMinutes) - parseInt((parseInt(totalhours) * 60))    
+	    			if(missedMin=="0"){
+	    				availableTime = totalhours +" Hrs";
+	    			}else{
+	    				availableTime = totalhours +" Hrs" + " " + missedMin+ " Minutes";
+	    			}
+	    		}
+	    	}
+	   		document.getElementById("availableTimeId_"+index+"").value=availableTime;
+		}else{
+			  document.getElementById("availableTimeId_"+index+"").value="";
+		}
+	}
+
+	function changeAvailableTime3(index) {
+		if(document.getElementById("inTimeId_"+index+"").value!="" &&  document.getElementById("outTimeId_"+index+"").value!=""){
+			var breakMinutes = document.getElementById("breakTimeId_"+index+"").value;
+	    	var hours = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[0], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[0], 10);
+	    	var minutes = parseInt(document.getElementById("outTimeId_"+index+"").value.split(':')[1], 10) - parseInt(document.getElementById("inTimeId_"+index+"").value.split(':')[1], 10);
+	    	var totalMinutes = parseInt((hours * 60)) +  parseInt(minutes) - parseInt(breakMinutes);
+	    	if(parseInt(totalMinutes)<0){
+		    	availableTime="";
+	    	}else{
+	   	 		var totalhours = Math.floor(parseInt(totalMinutes)/60); 
+	    		if(totalhours=="0"){
+	    			availableTime = totalMinutes +" Minutes"
+		   		}else{
+	    			var missedMin = parseInt(totalMinutes) - parseInt((parseInt(totalhours) * 60))    
+	    			if(missedMin=="0"){
+	    				availableTime = totalhours +" Hrs";
+	    			}else{
+	    				availableTime = totalhours +" Hrs" + " " + missedMin+ " Minutes";
+	    			}
+	    		}
+	    	}
+	   		document.getElementById("availableTimeId_"+index+"").value=availableTime;
+		}else{
+			  document.getElementById("availableTimeId_"+index+"").value="";
+		}
+	}
+
+		function submitForm() {
+			var studCount = 0;
+			$('div[id^= "dvSession4time_"]').each(function() {
+				$(this).find('input').each(function() {
+					if($(this).val()==""){
+						studCount = studCount+1;
+					}
+				});
+			});
+			if(studCount>0){
+				alert("Plaser enter valid shfit timings")
+				return false;
+			}else if (confirm("Do you want to save?")) {
+				saveForm();
+			} else {
+				return false;
+			}
+		}
+		
+		function saveForm(){
+			 
+			 var data = $('#empShiftTimingsFormId').serializeArray();
+			$.ajax({
+				type : 'POST',
+				url :  $('#empShiftTimingsFormId').attr('action'),
+				data : data,
+				success : function(data) {
+					
+					if(data.indexOf("FEEDBACK-") != -1 && data.indexOf("SUCCESFULLY_SAVED") != -1){
+						alert("successfully done");
+						showPage('/scaits/showEmpShifts');
+						
+					}else if(data!="" && data.indexOf("FEEDBACK-") != -1 ){
+						msg = data.substring(data.indexOf("-", 9) + 1);
+						alert(msg);
+					}
+				}
+			});
+			return false;
+		}
+
+		
+		 
+		
+		function getBuildingEmps() {
+			
+			if (document.getElementById("campBuildingId").selectedIndex == 0) {
+				alert("Please Select Building");
+				document.getElementById("campBuildingId").focus();
+				return false;
+			}else{
+				$.ajax({
+					url : "/scaits/showEmpShifts?buildingId="+ document.getElementById("campBuildingId").value,
+					dataType : 'text',
+					success : function(data) {
+						$('#buildingEmployeesDivId').html(data);
+					},
+					error : function() {
+						alert('Unable to load details');
+					}
+				});
+		return false;
+			}
+			
+			
+
+		} 
+		
+		
+		
+	</script>
+<body>
+			<div class="portlet light portlet-fit bordered card-1">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class=" icon-layers "></i> <span class="caption-subject ">Employee
+							shift timing</span>
+					</div>
+				</div>
+
+					<div class="portlet-body">
+						<div class="row">
+						<form id="empShiftTimingsFormId" class="form-horizontal"
+					th:action="@{/scaits/saveShiftTimings}" method="post">
+							<div class="col-lg-3 col-md-4">
+								<label class="bold ">Select Building</label> <select
+									th:name="building" onchange="getBuildingEmps();"
+									class="form-control" id="campBuildingId">
+									<option value="0">Select Building</option>
+
+									<option th:each="building: ${buildingList}"
+										th:value="${building.id}"
+										th:selected="${building.id==buildingVal.id}"
+										th:text="${building.buildingName+'-'+building.orcBuildingCode}"></option>
+
+
+								</select>
+							</div>
+							
+							<div class="col-md-12">
+								<div id="buildingEmployeesDivId">
+									<div th:replace="myTheme1/Attendance/attendanceEmpShiftInner"></div>
+								</div>
+							</div>
+							</form>
+						</div>
+					</div>
+					<div class="portlet-footer">
+						<div class="row">
+							<div class="col-md-12">
+								<button type="button" class="btn-pri"
+									onclick="return submitForm('empShiftTimingsFormId');">Save</button>
+							</div>
+						</div>
+					</div>
+
+				<!-- </form> -->
+
+			</div>
+
+
+</body>
+
+</html>

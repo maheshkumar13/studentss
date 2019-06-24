@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+label {
+	display: inline-block;
+	margin-bottom: 2px;
+	 font-weight:bold;
+}
+/* tr {
+  text-transform: lowercase;
+}
+tr:first-letter {
+        text-transform: capitalize !important;
+    } */
+</style>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="table-container">
+				<table
+					class="table table-striped table-hover order-column nowrap leave-status-table"
+					id="noscroll_hd" style="width: 99.9%">
+					<thead>
+						<tr>
+							<th>Building Name</th>
+							<th>EroNo</th>
+							<th>EroName</th>
+							<th>Date</th>
+							<th>ScNo</th>
+							<th>ServiceHolder Name</th>
+							<th>Address</th>
+							<th>Category</th>
+							<th>Load Capacity</th>
+							<th>Load Unit</th>
+							<th>Edit</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="masterList: ${eleMasterDetailsList}">
+							<td
+								th:text="${masterList.buildingId!=null?masterList.buildingId.buildingName:''}"></td>
+							<td th:text="${masterList.erono!=null?masterList.erono:''}"></td>
+							<td th:text="${masterList.eroname!=null?masterList.eroname:''}"></td>
+							<td><span
+								th:text="${masterList.txtReadingDate!=null?#dates.format(new java.util.Date(masterList.txtReadingDate), 'dd-MM-yyyy'):''}"></span></td>
+							<td th:text="${masterList.scno!=null?masterList.scno:''}"></td>
+							<td
+								th:text="${masterList.scholderName!=null?masterList.scholderName:''}"></td>
+							<td th:text="${masterList.address!=null?masterList.address:''}"></td>
+							<td><span class="label txt-medium"
+								th:text="${masterList.category!=null?masterList.category:''}"></span></td>
+							<td><span class="label txt-low"
+								th:text="${masterList.loadCapacity!=null?masterList.loadCapacity:''}"></span></td>
+							<td><span th:if="${masterList.loadUnit} == 'KW'"
+								class="label txt-low"
+								th:text="${masterList.loadUnit!=null?masterList.loadUnit:''}"></span><span
+								th:if="${masterList.loadUnit} == 'HP'" class="label txt-high"
+								th:text="${masterList.loadUnit!=null?masterList.loadUnit:''}"></span></td>
+							<td style="white-space: nowrap;">
+								<button type="button" class="btn-pri-sm"
+									th:onclick="${'javascript:editEleMaster(' + masterList.rid +')'}">
+									<i class="fa fa-pencil"
+										style="margin-right: 10px; white-space: nowrap;"></i>Edit
+								</button>
+
+							</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script
+		src="assets/pages/scripts/table-datatables-scroller.min-ver2.js"
+		type="text/javascript"></script>
+</body>
+
+</html>

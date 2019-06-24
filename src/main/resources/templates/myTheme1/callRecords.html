@@ -1,0 +1,344 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{index}">
+
+<head>
+<!-- CSS INCLUDE -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	crossorigin="anonymous"></link>
+
+<!-- EOF CSS INCLUDE -->
+<style>
+.pagination-centered {
+	text-align: center;
+}
+
+.disabled {
+	pointer-events: none;
+	opacity: 0.5;
+}
+
+.pointer-disabled {
+	pointer-events: none;
+}
+</style>
+
+</head>
+<body>
+
+	<div layout:fragment="page_content">
+		<section id="file-export">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h4 class="card-title">Call Records</h4>
+						</div>
+						<div class="card-body collapse show">
+							<div class="card-block card-dashboard">
+								<table id="example" class="table table-striped table-bordered"
+									style="width: 100%">
+									<thead>
+										<tr>
+											<th>ROW_ID</th>
+											<th>CITY_NAME</th>
+											<th>CAMPUS_NAME</th>
+											<th>ADM_NO</th>
+											<th>NAME</th>
+											<th>PARENT_NAME</th>
+											<th>CLASS_GRP</th>
+											<th>SECTION_NAME</th>
+											<th>COURSE_TRACK</th>
+											<th>COURSE_FEE</th>
+											<th>CONCESSION</th>
+											<th>NET_FEE</th>
+											<th>FEE_PAID</th>
+											<th>TOTAL_DUE</th>
+											<th>MOBILENO</th>
+											<th>FILE PATH</th>
+											<th>DURATION</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="callRecord,rowStatus : ${callRecords}">
+											<span
+												th:if="${callRecord.duration!=null && callRecord.duration>0}">
+												<!-- <td th:text="${rowStatus.count}"></td> -->
+											<td th:text="${callRecord.rowId}"></td>
+											<td th:text="${callRecord.cityName}"></td>
+											<td th:text="${callRecord.campusName}"></td>
+											<td th:text="${callRecord.admNo}"></td>
+											<td th:text="${callRecord.name}"></td>
+											<td th:text="${callRecord.parentName}"></td>
+											<td th:text="${callRecord.classGrp}"></td>
+											<td th:text="${callRecord.sectionName}"></td>
+											<td th:text="${callRecord.courseTrack}"></td>
+											<td th:text="${callRecord.courseFee}"></td>
+											<td th:text="${callRecord.concession}"></td>
+											<td th:text="${callRecord.netFee}"></td>
+											<td th:text="${callRecord.feePaid}"></td>
+											<td th:text="${callRecord.totalDue}"></td>
+											<td th:text="${callRecord.mobileNo}"></td>
+											<td><audio controls>
+													<source
+														th:src="'http://mobileapps.scaits.info/audio/'+${callRecord.fileDate}+'/'+${callRecord.file}+'.mp3'"
+														type="audio/mpeg" preload="none">
+												</audio></td>
+											<td th:text="${callRecord.duration}"></td>
+											</span>
+										</tr>
+									</tbody>
+								</table>
+								<div class="row">
+									<div class="form-group col-md-1">
+										<select class="form-control pagination" id="pageSizeSelect">
+											<option th:each="pageSize : ${pageSizes}"
+												th:text="${pageSize}" th:value="${pageSize}"
+												th:selected="${pageSize} == ${selectedPageSize}"></option>
+										</select>
+									</div>
+									<div th:if="${callRecords.totalPages != 1}"
+										class="form-group col-md-11 pagination-centered">
+										<ul class="pagination">
+											<li th:class="${callRecords.number == 0} ? disabled"><a
+												class="pageLink"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=1)}">&laquo;</a>
+											</li>
+											<li th:class="${callRecords.number == 0} ? disabled"><a
+												class="pageLink"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.number})}">&larr;</a>
+											</li>
+											<li
+												th:class="${callRecords.number == (page - 1)} ? 'active pointer-disabled'"
+												th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+												<a class="pageLink"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${page})}"
+												th:text="${page}"></a>
+											</li>
+											<li
+												th:class="${callRecords.number + 1 == callRecords.totalPages} ? disabled">
+												<a class="pageLink"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.number + 2})}">&rarr;</a>
+											</li>
+											<li
+												th:class="${callRecords.number + 1 == callRecords.totalPages} ? disabled">
+												<a class="pageLink"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.totalPages})}">&raquo;</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<!-- END PAGE CONTENT -->
+							<!-- END PAGE CONTAINER -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+
+
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		$(document).ready(function() {
+			$('#example').DataTable({
+				"bPaginate" : false
+			});
+			changePageAndSize();
+		});
+	
+		function changePageAndSize() {
+			$('#pageSizeSelect').change(
+				function(evt) {
+					window.location.replace("/?pageSize=" + this.value
+						+ "&page=1");
+				});
+		}
+		/*]]>*/
+	</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{index}">
+<head>
+<title>Call Records</title>
+</head>
+<body>
+
+
+
+
+
+
+
+
+	<div layout:fragment="page_content">
+		<section id="file-export">
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h4 class="card-title">Call Records</h4>
+						</div>
+						<div class="card-body collapse show">
+							<div class="card-block card-dashboard">
+								<table
+									class="table table-striped table-bordered table-responsive  file-export">
+									<thead>
+										<tr>
+											<th>ROW_ID</th>
+											<th>CITY_NAME</th>
+											<th>CAMPUS_NAME</th>
+											<th>ADM_NO</th>
+											<th>NAME</th>
+											<th>PARENT_NAME</th>
+											<th>CLASS_GRP</th>
+											<th>SECTION_NAME</th>
+											<th>COURSE_TRACK</th>
+											<th>COURSE_FEE</th>
+											<th>CONCESSION</th>
+											<th>NET_FEE</th>
+											<th>FEE_PAID</th>
+											<th>TOTAL_DUE</th>
+											<th>MOBILENO</th>
+											<th>FILE PATH</th>
+											<th>duration</th>
+									</thead>
+									<tbody>
+										<tr th:each="callRecord,rowStatus : ${callRecords}">
+											<td th:text="${rowStatus.count}"></td>
+											<td th:text="${callRecord.rowId}"></td>
+											<td th:text="${callRecord.cityName}"></td>
+											<td th:text="${callRecord.campusName}"></td>
+											<td th:text="${callRecord.admNo}"></td>
+											<td th:text="${callRecord.name}"></td>
+											<td th:text="${callRecord.parentName}"></td>
+											<td th:text="${callRecord.classGrp}"></td>
+											<td th:text="${callRecord.sectionName}"></td>
+											<td th:text="${callRecord.courseTrack}"></td>
+											<td th:text="${callRecord.courseFee}"></td>
+											<td th:text="${callRecord.concession}"></td>
+											<td th:text="${callRecord.netFee}"></td>
+											<td th:text="${callRecord.feePaid}"></td>
+											<td th:text="${callRecord.totalDue}"></td>
+											<td th:text="${callRecord.mobileNo}"></td>
+											<td><audio controls>
+													<source
+														th:src="'http://mobileapps.scaits.info/audio/'+${callRecord.fileDate}+'/'+${callRecord.file}+'.mp3'"
+														type="audio/mpeg" preload="none">
+												</audio></td>
+											<td th:text="${callRecord.duration}"></td>
+										</tr>
+									</tbody>
+								</table>
+
+								start page  
+
+								<div class="row">
+
+									<div class="form-group col-md-1">
+
+										<select class="form-control pagination" id="pageSizeSelect">
+
+											<option th:each="pageSize : ${pageSizes}"
+												th:text="${pageSize}" th:value="${pageSize}"
+												th:selected="${pageSize} == ${selectedPageSize}"></option>
+
+										</select>
+
+									</div>
+
+									<div th:if="${callRecords.totalPages != 1}"
+										class="form-group col-md-11 pagination-centered">
+
+										<ul class="pagination">
+
+											<li th:class="${callRecords.number == 0} ? disabled"><a
+												class="page-link"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=1)}">First</a></li>
+
+											<li th:class="${callRecords.number == 0} ? disabled"><a
+												class="page-link"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.number})}">Previous</a>
+
+											</li>
+
+											<li
+												th:class="${callRecords.number == (page - 1)} ? 'active pointer-disabled'"
+												th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+
+												<a class="page-link"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${page})}"
+												th:text="${page}"></a>
+
+											</li>
+
+											<li
+												th:class="${callRecords.number + 1 == callRecords.totalPages} ? disabled">
+
+												<a class="page-link"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.number + 2})}">Next</a>
+
+											</li>
+
+											<li
+												th:class="${callRecords.number + 1 == callRecords.totalPages} ? disabled">
+												<a class="page-link"
+												th:href="@{/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.totalPages})}">Last</a>
+
+											</li>
+
+										</ul>
+
+									</div>
+
+								</div>
+
+							</div>
+							end page 
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<th:block layout:fragment="pagescripts">
+		<script type="text/javascript">
+		
+			$(document).ready(function() {
+				changePageAndSize();
+			});
+		
+			function changePageAndSize() {
+				$('#pageSizeSelect').change(function(evt) {
+					window.location.replace("showRecordings/?pageSize=" + this.value + "&page=1");
+				});
+			}
+		</script>
+	</th:block>
+</body>
+</html> -->

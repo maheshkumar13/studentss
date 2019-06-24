@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<body>
+	<div class="table-responsive pavan">
+		<table class="table table-bordered">
+			<tr>
+				<td><b>Statement-I</b></td>
+				<td><span
+					th:utext=${@currentUser.getQuestionText(question.assertionText)}></span>
+				</td>
+			</tr>
+			<tr>
+				<td><b>Statement-II</b></td>
+				<td><span
+					th:utext=${@currentUser.getQuestionText(question.reasoningText)}></span>
+				</td>
+			</tr>
+			<tr th:if="${question.queClass.id==19}">
+				<td><b>Choices</b></td>
+				<td><b>A)</b> Statement I is True, Statement II is True and
+					Statement II is correct explanation of Statement I<br> <b>B)</b>
+					Statement I is True, Statement II is True but Statement II is not
+					correct explanation of Statement I <br /> <b>C)</b> Statement I is
+					True, Statement II is False <br /> <b>D)</b> Statement I is False,
+					Statement II is True</td>
+			</tr>
+			<tr th:if="${question.queClass.id!=19}">
+				<td><b>Choices</b></td>
+				<td><b>A)</b> Statement I is True, Statement II is True <br>
+					<b>B)</b> Statement I is False, Statement II is False <br /> <b>C)</b>
+					Statement I is True, Statement II is False <br /> <b>D)</b>
+					Statement I is False, Statement II is True</td>
+			</tr>
+			<tr>
+				<td><b>Answer</b></td>
+				<td><span style="color: #8E44AD !important; font-weight: bold;"
+					th:utext="${@currentUser.getQuestionText(question.answer)}"></span></td>
+			</tr>
+			<tr>
+				<td><b>Solution</b></td>
+				<td><span
+					th:utext="${@currentUser.getQuestionText(question.solution)}"
+					style="color: #337ab7;"></span></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style type="text/css">
+#tab-list .close {
+	margin-left: 7px;
+}
+
+.questionClass {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+}
+
+.questionClassSelected {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 2px solid green;
+	letter-spacing: 2px;
+}
+
+.questionClass:hover {
+	border: 1px solid black;
+}
+</style>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="note note-info">
+			<div class="mt-comments">
+				<div class="mt-comment">
+					<div class="mt-comment-body">
+						<div class="mt-comment-info">
+							<span class="mt-comment-author"><span>Exam Analysis
+							</span><span th:text="${attempt.exam.schedule.examName}"
+								style="color: #32c5d2; font-weight: bold;"></span></span>
+							<div class="actions pull-right">
+								<div class="clearfix">
+									<div class="btn-group btn-group-solid"
+										style="margin-right: 40px;">
+										Summary [ <span th:text="${attempt.getQuestionCount()}"></span>
+										] : <span class=""> <i class="fa fa-check"
+											style="color: green;"></i> <span
+											th:text="${attempt.getCorrectAnswerCount()}"></span>
+										</span> <span class=""> <i class="fa fa-remove"
+											style="color: red;"></i> <span
+											th:text="${attempt.getWrongAnswerCount()}"></span>
+										</span> <span class=""> <i class="fa fa-circle"
+											style="color: #cecece;"></i> <span
+											th:text="${attempt.getQuestionUnAttemptCount()}"></span>
+										</span>
+									</div>
+									<button onclick="backToExamsList()" class="btn blue btn-sm">
+										<i class="fa fa-chevron-left"></i> Back
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="marksContentId">
+			<div class="portlet light bordered">
+				<div class="portlet-title tabbable-line">
+					<div class="caption ">
+						<span class="caption-subject font-dark bold uppercase"> </span> <span
+							class="caption-helper">test details...</span>
+					</div>
+					<div class="actions">
+						<div class="btn-group btn-group-devided" data-toggle="buttons">
+							<label class="btn default btn-outline btn-circle btn-sm active"
+								title="Marks" id="marksLabel1"><i class="fa fa-percent"></i>
+								<input onchange="javascript:showMarksData()" name="options"
+								class="toggle" id="marksRadioId1" type="radio"></label> <label
+								title="Concept"
+								class="btn default btn-outline btn-circle btn-sm"
+								id="conceptLabel1"><i class="icon-bulb"></i> <input
+								name="options" class="toggle" id="conceptRadioId1"
+								onchange="javascript:showConceptData()" type="radio"></label> <a
+								class="btn btn-circle btn-icon-only btn-default fullscreen"
+								href="javascript:void(0)" data-original-title="" title=""> </a>
+						</div>
+					</div>
+
+					<ul class="nav nav-tabs">
+						<th:block th:each="section:${attempt.exam.sections}">
+							<li th:each="subject,iterationStatus:${section.subjects}"
+								class="" th:classappend="${iterationStatus.index==0}?active:''"><a
+								th:onclick="${'javascript:getFirstQues(this.href)'}"
+								th:href="${'#'+subject.subject.name}" data-toggle="tab"> <th:block
+										th:text="${subject.subject.name}"></th:block>
+							</a></li>
+						</th:block>
+					</ul>
+
+				</div>
+				<div class="portlet-body">
+					<div class="tab-content">
+
+						<th:block th:each="section:${attempt.exam.sections}">
+							<div th:each="subject,iterationStatus:${section.subjects}"
+								class="tab-pane"
+								th:classappend="${iterationStatus.index==0}?active:''"
+								th:id="${subject.subject.name}">
+
+
+								<div th:each="question,status:${subject.examQuestions}"
+									class="btn-group btn-group-solid">
+
+									<th:block
+										th:if="${iterationStatus.index==0 && status.index==0}">
+										<input type="hidden" id="quesLoadId" th:value="${question.id}">
+									</th:block>
+									<form action="" method="post" id="getQuestionWiseId">
+
+
+
+										<a
+											th:href="${'javascript:getQuestionWise(' + question.id +',''' +  #ids.seq('QueVal') + ''')'}">
+
+											<div class="questionClass">
+
+												<th:block th:if="${question.questionAttempt!=null}">
+													<i class="fa fa-check pull-right"
+														th:if="${question.questionAttempt.isCorrect}"
+														style="color: green;"></i>
+
+													<i class="fa fa-remove pull-right"
+														th:if="${!question.questionAttempt.isCorrect}"
+														style="color: red;"></i>
+												</th:block>
+
+												<th:block th:if="${question.questionAttempt==null}">
+													<i class="fa fa-circle pull-right" style="color: #cecece;"></i>
+												</th:block>
+												<span th:text="${#ids.seq('')}" th:id="${question.id}"></span>
+
+											</div>
+										</a>
+									</form>
+								</div>
+								<br />
+								<div class="mt-comments">
+									<div class="mt-comment"></div>
+								</div>
+								<div class="note note-success">
+									<p class="block" style="font-size: 15px; margin-left: 20px;">
+
+										<span th:text="${subject.subject.name}"></span> [ <span
+											th:text="${subject.examSubjectResult.totalQuestions}"></span>
+										] : <span class=""> <i class="fa fa-check"
+											style="color: green;"></i> <span
+											th:text="${subject.examSubjectResult.correctAnswers}"></span>
+										</span> <span class=""> <i class="fa fa-remove"
+											style="color: red;"></i> <span
+											th:text="${subject.examSubjectResult.wrongAnswers}"></span>
+										</span> <span class=""> <i class="fa fa-circle"
+											style="color: #cecece;"></i> <span
+											th:text="${subject.examSubjectResult.getUnAttemptQuestionCount()}"></span>
+										</span>
+									</p>
+								</div>
+							</div>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="portlet light" id="queViewPortletId">
+			<div class="portlet-title">
+				<div class="caption font-green-sharp">
+					<span id="questionNoId" class="caption-subject"></span>
+				</div>
+				<div class="actions">
+					<div class="pull-right">
+						<span class="btn  btn-sm btn-primary"> Time Spent : <span
+							class="badge" id="timeSpentId" style="font-weight: bold;"></span>
+						</span> <a class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:;" data-original-title="" title=""> </a>
+					</div>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div th:id="QueViewId"></div>
+			</div>
+		</div>
+		<div id="conceptContentId" style="display: none;">
+			<div class="portlet light bordered">
+				<div class="portlet-title tabbable-line">
+					<div class="caption ">
+						<span class="caption-subject font-dark bold uppercase"> </span> <span
+							class="caption-helper">test details...</span>
+					</div>
+					<div class="actions">
+						<div class="btn-group btn-group-devided" data-toggle="buttons">
+							<label class="btn default btn-outline btn-circle btn-sm active"
+								title="Marks" id="marksLabel1"><i class="fa fa-percent"></i>
+								<input onchange="javascript:showMarksData()" name="options"
+								class="toggle" id="marksRadioId1" type="radio"></label> <label
+								title="Concept"
+								class="btn default btn-outline btn-circle btn-sm"
+								id="conceptLabel1"><i class="icon-bulb"></i> <input
+								name="options" class="toggle" id="conceptRadioId1"
+								onchange="javascript:showConceptData()" type="radio"></label> <a
+								class="btn btn-circle btn-icon-only btn-default fullscreen"
+								href="javascript:void(0)" data-original-title="" title=""> </a>
+						</div>
+					</div>
+
+					<ul class="nav nav-tabs">
+						<th:block th:each="section:${attempt.exam.sections}">
+							<li th:each="subject,iterationStatus:${section.subjects}"
+								class="" th:classappend="${iterationStatus.index==0}?active:''"><a
+								th:href="${'#'+subject.subject.name+'1'}" data-toggle="tab">
+									<th:block th:text="${subject.subject.name}"></th:block>
+							</a></li>
+						</th:block>
+					</ul>
+
+				</div>
+				<div class="portlet-body">
+					<div class="tab-content">
+						<th:block th:each="section:${attempt.exam.sections}">
+							<th:block th:each="subject,iterationStatus:${section.subjects}">
+								<div class="tab-pane "
+									th:classappend="${iterationStatus.index==0}?active:''"
+									th:id="${subject.subject.name+'1'}">
+
+									<div class="portlet box blue">
+										<div class="portlet-title">
+											<div class="caption">
+												<div th:text=${subject.subject.name}></div>
+											</div>
+											<div class="tools">
+												<a href="javascript:;" class="collapse"
+													data-original-title="" title=""> </a>
+											</div>
+										</div>
+										<div class="portlet-body">
+											<div class="row"></div>
+										</div>
+									</div>
+
+								</div>
+							</th:block>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block th:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				getQuestionWise($('#quesLoadId').val(), 'QueVal1');
+				$(".questionClass:first").css("border", "2px solid green");
+			});
+
+			function showConceptData() {
+				$("#conceptContentId").show();
+				$("#marksContentId").hide();
+				$("#queViewPortletId").hide();
+
+				$("#conceptLabel1,#conceptLabel2").addClass("active");
+
+				$("#marksLabel1,#marksLabel2").removeClass("active");
+			}
+			function showMarksData() {
+				$("#marksContentId").show();
+				$("#queViewPortletId").show();
+				$('#questionWiseDetailsId').html('');
+				$("#conceptContentId").hide();
+
+				$("#marksLabel1,#marksLabel2").addClass("active");
+
+				$("#conceptLabel1,#conceptLabel2").removeClass("active");
+			}
+
+			$(".questionClass").click(function() {
+				$(".questionClass").css("border", "");
+				$(this).css("border", "2px solid green");
+			});
+
+			function getFirstQues(val) {
+				$(".questionClass").css("border", "");
+				$("#" + val.split("#")[1] + " .questionClass:first").css(
+						"border", "2px solid green");
+
+				var qno = $("#" + val.split("#")[1] + " span:first").attr('id');
+
+				var qInd = $("#" + val.split("#")[1] + " span:first").html();
+				getQuestionWise(qno, 'QueVal' + qInd);
+			}
+		</script>
+	</th:block>
+</body>
+</html>

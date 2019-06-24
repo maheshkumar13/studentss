@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Student Wise Due Report</div>
+		</div>
+		<div class="portlet-body">
+			<div class="custom-div">
+				<form class="form-horizontal" action=" " method="post" id="formId">
+
+							<div class="row">
+						<div class="col-md-4">
+							<label class="control-label" for="join">Join into</label> <select
+								class="form-control" name="studyClass" id="joinIntoId"
+								onchange="return joinInto(this.value); ">
+								<option value="0">Select Join Into</option>
+								<th:block th:each="studyClass:${classList}">
+									<option th:value="${studyClass.id}"
+										th:text="${studyClass.displayName}"></option>
+								</th:block>
+							</select>
+
+						</div>
+
+
+						<div class="col-md-4 ">
+
+							<label class="control-label  " for="year">Join year:</label> <select
+								class="form-control" name="selectedAcademic" id="JoinYearId"
+								onchange="loadStream();">
+								<option value="0">Select join year</option>
+								<th:block th:each="academicYear:${academicList}">
+									<option th:value="${academicYear.id}"
+										th:text="${academicYear.joinYear}"></option>
+								</th:block>
+							</select>
+
+						</div>
+						
+							<div class="col-md-4">
+
+					<label class="control-label col-sm-4 col-xs-4" for="batch">Head
+							wise</label> <select class="form-control" name="headName" id="headWiseId">
+							<option value="0">Select Reason</option>
+							<th:block th:each="statusvalue:${statusList}">
+									<option th:value="${statusvalue.key}" th:text="${statusvalue.value}"></option>
+								</th:block>
+						</select>
+
+				</div>
+				
+			<!-- 	<div class="col-md-4 ">
+							<label class="control-label " for="batch">present/absent :</label> <select
+								class="form-control" name="statusvalue" id="statusvalueId">
+								<option value="0">Select status</option>
+								<th:block th:each="statusvalue:${statusList}">
+									<option th:value="${statusvalue.key}" th:text="${statusvalue.value}"></option>
+								</th:block>
+							</select>
+						</div> -->
+				
+					<div class="col-md-2">
+						<button type="button" class="btn btn-info" id="searchBtnId"
+							onclick="campusReport();">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;getReport
+						</button>
+					</div>
+</div>
+</form>
+</div>
+<div id="studentTransferGridId"></div>
+</div>
+</div>
+<script>
+function joinInto(joinInto) {
+		alert(joinInto);
+		$.ajax({
+			type : "GET",
+			url : "/scaits/loadJoinYear",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#JoinYearId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+				$("select#streamId").val('0');
+				$("select#programId").val('0');
+				$("select#courseId").val('0');
+				$("select#batchId").val('0');
+				$("select#sectionId").val('0');
+			}
+		});
+	}
+
+function campusReport() {
+	
+	/* if(document.getElementById("headnamechkId").checked){
+		document.getElementById("headnamechkValId").value=true;
+	}else if(!document.getElementById("headnamechkId").checked){
+		document.getElementById("headnamechkValId").value=false;
+	} */
+	
+	alert('hi');
+	$.ajax({
+		type : "GET",
+		url : "/scaits/headWiseRefundReportData",
+		data : $("#formId").serialize(),
+		success : function(data) {
+			$('#studentTransferGridId').html('');
+			$('#studentTransferGridId').html(data);
+		},
+		error : function() {
+			alert('Error occured');
+			pageOverlay(1);
+		}
+	});
+}
+</script>
+</body>
+</html>

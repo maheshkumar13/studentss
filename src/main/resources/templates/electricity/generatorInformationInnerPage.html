@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+label {
+	display: inline-block;
+	margin-bottom: 2px;
+}
+</style>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="table-container">
+				<table
+					class="table table-striped table-hover order-column nowrap leave-status-table"
+					id="noscroll_hd" style="width: 99.9%">
+					<thead>
+						<tr>
+							<th>BuildingName</th>
+							<th>Generator SNo</th>
+							<th>Company Name</th>
+							<th>Model No</th>
+							<th>Purchase Date</th>
+							<th>Capacity(KVA)</th>
+							<th>Fuel Capacity</th>
+							<th>Dealer Name</th>
+							<th>Contact Person</th>
+							<th>Mobile No</th>
+							<th>Remarks</th>
+							<th>AMC Company</th>
+							<th>AMC Contact Person</th>
+							<th>AAMC Mobile</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="generator: ${generatorList}">
+							<td th:text="${generator.building!=null?generator.building.buildingName:''}"></td>
+							<td th:text="${generator.genSno!=null?generator.genSno:''}"></td>
+							<td th:text="${generator.companyName!=null?generator.companyName:''}"></td>
+							<td th:text="${generator.modelNo!=null?generator.modelNo:''}"></td>
+							 <td th:text="${generator.purchaseDate!=null?#dates.format(new java.util.Date(generator.purchaseDate), 'DD-MM-YYYY'):''}"></td>
+							 <td align="center"><span class="label txt-yellow"  th:text="${generator.capcity!=null?generator.capcity:''}"></span></td>
+							 <td align="center"><span class="label txt-green"  th:text="${generator.fuelCapacity!=null?generator.fuelCapacity:''}"></span></td>
+							<td th:text="${generator.dealerName!=null?generator.dealerName:''}"></td> 
+							 <td th:text="${generator.contactPerson!=null?generator.contactPerson:''}"></td>
+							<td th:text="${generator.mobileNo!=null?generator.mobileNo:''}"></td>
+							<td th:text="${generator.remarks!=null?generator.remarks:''}"></td> 
+							 <td th:text="${generator.amcCompany!=null?generator.amcCompany:''}"></td>
+							<td th:text="${generator.amcContactPerson!=null?generator.amcContactPerson:''}"></td>
+							<td th:text="${generator.amcContactNumber!=null?generator.amcContactNumber:''}"></td> 
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script
+		src="assets/pages/scripts/table-datatables-scroller.min-ver2.js"
+		type="text/javascript"></script>
+		
+</html>

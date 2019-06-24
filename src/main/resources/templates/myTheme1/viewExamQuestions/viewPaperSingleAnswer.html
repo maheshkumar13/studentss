@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<body>
+
+	<div>
+		<div>
+			<b>Question : <span th:text="${questionStatus}"></span></b>
+			<div class=""
+				th:utext=${@currentUser.getQuestionText(question.questionText)}></div>
+		</div>
+
+
+		<div align="right" style="width: 60px;">&nbsp;</div>
+		<div class='' style="width: 100%;">
+
+			<div th:if="${question.choicesPerLine &lt; 2}">
+				<div th:each="choiceVal,choiceStat : ${question.choices}">
+					<span> <b th:if=${choiceStat.index==0}>A)&nbsp;</b> <b
+						th:if=${choiceStat.index==1}>B)&nbsp;</b> <b
+						th:if=${choiceStat.index==2}>C)&nbsp;</b> <b
+						th:if=${choiceStat.index==3}>D)&nbsp;</b> <b
+						th:if=${choiceStat.index==4}>E)&nbsp;</b> <span
+						th:utext="${@currentUser.getQuestionText(choiceVal.choiceText)}"></span>
+					</span>
+				</div>
+			</div>
+			<div th:if="${question.choicesPerLine &gt; 2}"
+				style="white-space: nowrap;">
+				<div th:each="choiceVal,choiceStat : ${question.choices}">
+					<span> <b th:if=${choiceStat.index==0}>A)&nbsp;</b> <b
+						th:if=${choiceStat.index==1}>B)&nbsp;</b> <b
+						th:if=${choiceStat.index==2}>C)&nbsp;</b> <b
+						th:if=${choiceStat.index==3}>D)&nbsp;</b> <b
+						th:if=${choiceStat.index==4}>E)&nbsp;</b> <span
+						th:utext="${@currentUser.getQuestionText(choiceVal.choiceText)}"></span>
+					</span>
+				</div>
+			</div>
+
+			<div th:if="${question.choicesPerLine==2}"
+				style="font-weight: bold; white-space: nowrap;">
+				<div th:each="choiceVal,choiceStat : ${question.choices}">
+					<span> <b th:if=${choiceStat.index==0}>A)&nbsp;</b> <b
+						th:if=${choiceStat.index==1}>B)&nbsp;</b> <b
+						th:if=${choiceStat.index==2}>C)&nbsp;</b> <b
+						th:if=${choiceStat.index==3}>D)&nbsp;</b> <span
+						th:utext="${@currentUser.getQuestionText(choiceVal.choiceText)}"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

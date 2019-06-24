@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="row">
+		<div class="col-xs-4" th:each="subjectKey:${subjectSubTopicWise}" >
+			<div class="portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<span class="caption-subject font-green-sharp bold uppercase"
+							th:text="${subjectKey.key.getName()+' Sub Sub Topic ('+subjectKey.value.get(0).size()+')'}"></span>
+											
+											<span th:text="'Total Questions '+${@currentUser.getMapSize(subjectKey.value.get(0))}"></span>
+					</div>
+					<div class="actions">
+						<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:void(0)"> </a>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div th:id="${'container2'+subjectKey.key.getName()}" style=""></div>
+				</div>
+			</div>
+		</div>
+		
+		
+	</div>
+
+</body>
+<th:block layout:fragment="scripts">
+
+
+	<script th:inline="javascript" th:each=subject:${subjectSubTopicWiseGraph}>
+/*<![CDATA[*/
+
+$(function() {
+	var subTopicName = [[${subject.key.getName()}]];
+	var subnameId = [[${subject.key.id}]];
+	var offlineExamSummaryId = [[${offlineExamSummary.id}]];
+	var subValueName = [[${subject.value}]];
+	var dataXLayer = [];
+	var dataYLayer = [];
+	    for (i = 0; i < subValueName.length; i++) {
+	    	if(i%2==0){
+	    		dataYLayer.push(subValueName[i]);
+	    	}else{
+	    		dataXLayer.push(parseInt(subValueName[i]));
+	    	}
+	    }
+	$("[id=container2"+subTopicName+"]").highcharts(
+			{
+				chart : {
+					type : 'bar'
+				},
+				title : {
+					text : ''
+				},
+				xAxis : {
+					categories : dataYLayer
+				},
+				yAxis : {
+					gridLineWidth : 0,
+					labels : {
+						overflow : 'justify',
+						enabled : true
+					}
+				},
+				tooltip : {
+					valueSuffix : ' Questions'
+				},
+				credits : {
+					enabled : false
+				},
+				
+				
+				 plotOptions: {
+				        series: {
+				            cursor: 'pointer',
+				            point: {
+				                events: {
+				                    click: function () {
+				                    	
+				                    	
+				                    }
+				                }
+				            },dataLabels: {
+				                enabled: true
+				            }
+				        }
+				    },
+				    
+				    
+				legend : {
+					enabled : false
+				},
+				series : [ {
+					name : subTopicName,
+					data : dataXLayer,
+					maxPointWidth: 20
+				} ]
+			});
+});
+/*]]>*/
+</script>
+
+</th:block>
+
+</html>

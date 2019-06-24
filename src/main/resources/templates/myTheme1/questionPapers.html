@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/assets/global/plugins/jquery-multiselect-search/jquery.dropdown.min.css}">
+<script
+	th:src="@{/assets/global/plugins/jquery-multiselect-search/jquery.dropdown.min.js}"></script>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="row">
+			<div class="col-md-12">
+				<form th:action="@{/qb/saveQuestionPaperVerification}" id="formId"
+					method="post">
+					<!-- BEGIN VALIDATION STATES-->
+					<div class="portlet light card-1 portlet-fit portlet-form bordered">
+						<div class="portlet-title">
+							<div class="caption">
+								<span class="caption-subject">Question
+									Papers</span>
+							</div>
+						</div>
+						<div class="portlet-body" style="padding: 0 20px">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="jquerySel">
+										<select class="form-control" id="examScheduleId"
+											name="examSchedule">
+											<option value="">Select Exam Schedule</option>
+											<th:block th:each="examSchedule:${examSchedules}">
+												<option th:value="${examSchedule.id}"
+													th:text="${examSchedule.examName}"></option>
+											</th:block>
+										</select>
+									</div>
+								</div>
+							</div>
+							<br>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$('.jquerySel')
+					.dropdown(
+							{
+								input : '<input type="text" maxLength="20" placeholder="Search">',
+								searchNoData : '<li style="color:#ddd">No Results</li>',
+								choice : function() {
+									viewQuestionPaper($("#examScheduleId")
+											.val());
+								}
+							});
+
+			function viewQuestionPaper(examSchedule) {
+				if (examSchedule == "") {
+					alert("Please Select Exam Schedule");
+					return false;
+				} else {
+					window.open("/qb/viewExamQuestionPaper?examSchedule="
+							+ examSchedule)
+				}
+			}
+		</script>
+	</th:block>
+</body>
+</html>

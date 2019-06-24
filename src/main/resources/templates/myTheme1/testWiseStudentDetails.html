@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="row">
+		<div class="portlet light tasks-widget bordered">
+			<div class="portlet-title">
+				<div class="caption">
+					<span class="caption-subject bold uppercase font-dark">Student
+						Details </span>
+				</div>
+				<div class="actions">
+					<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+						href="javascript:void(0)"> </a>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="task-content">
+					<div class="" style="height: 312px; overflow: scroll;"
+						data-always-visible="1" data-rail-visible1="1">
+						<div class="list-group">
+							<a class="list-group-item"
+							th:onclick="${'javascript:getStudentQnSummary(' + student.admNo.admNo + ')'}"
+								th:each="student:${wrongAnswerStudents}"> <strong><div
+										th:text="${student.admNo.admNo}"></div></strong>
+								<div class="caption-subject font-blue-sharp uppercase"
+									th:text="${student.admNo.name}"></div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block fragment="scripts">
+	</th:block>
+</body>
+</html>

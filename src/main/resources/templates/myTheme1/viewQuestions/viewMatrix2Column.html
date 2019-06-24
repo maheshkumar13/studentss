@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<body>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<tr>
+				<td width="6%" align="left" valign="top"><strong>Question</strong></td>
+				<td align="left" valign="top"><p
+						th:utext="${question.questionText}"></p>
+					<table>
+						<tr>
+							<td align="left" valign="top">
+								<table>
+									<tr>
+										<td align="left"><b>Column A</b></td>
+										<td align="left"><b>Column B</b></td>
+									</tr>
+									<tr th:each="matQue,matrixStat:${question.matrix}">
+										<td valign="middle" align="left"><th:block
+												th:if="${matQue.columnA!=null && matQue.columnA.trim().length()>0}">
+												<ol type="A" th:start="${matrixStat.index +1}">
+													<li th:utext="${matQue.columnA}"></li>
+												</ol>
+											</th:block></td>
+										<td valign="middle" align="left"><th:block
+												th:if="${matQue.columnB!=null && matQue.columnB.trim().length()>0}">
+												<ol type="A" th:start="${matrixStat.index +16}">
+													<li th:utext="${matQue.columnB}"></li>
+												</ol>
+											</th:block></td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">A)
+											<ol style="list-style-type: upper-alpha;">
+												<th:block th:each="matQue,matrixStat:${question.matrix}">
+													<th:block
+														th:if="${question.matrix[matrixStat.index].choices!=null && question.matrix[matrixStat.index].choices.size()>0 && question.matrix[matrixStat.index].choices[0].choiceText!=null}">
+														<li style="float: left; width: 120px; padding: 2px 0px;"><b>--></b>
+															<span
+															th:utext="${question.matrix[matrixStat.index].choices[0].choiceText}"></span>
+														</li>
+													</th:block>
+												</th:block>
+											</ol>
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">B)
+											<ol style="list-style-type: upper-alpha;">
+												<th:block th:each="matQue,matrixStat:${question.matrix}">
+													<th:block
+														th:if="${question.matrix[matrixStat.index].choices!=null && question.matrix[matrixStat.index].choices.size()>0 && question.matrix[matrixStat.index].choices[1].choiceText!=null}">
+														<li style="float: left; width: 120px; padding: 2px 0px;"><b>--></b>
+															<span
+															th:utext="${question.matrix[matrixStat.index].choices[1].choiceText}"></span>
+														</li>
+													</th:block>
+												</th:block>
+											</ol>
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">C)
+											<ol style="list-style-type: upper-alpha;">
+												<th:block th:each="matQue,matrixStat:${question.matrix}">
+													<th:block
+														th:if="${question.matrix[matrixStat.index].choices!=null && question.matrix[matrixStat.index].choices.size()>0 && question.matrix[matrixStat.index].choices[2].choiceText!=null}">
+														<li style="float: left; width: 120px; padding: 2px 0px;"><b>--></b>
+															<span
+															th:utext="${question.matrix[matrixStat.index].choices[2].choiceText}"></span>
+														</li>
+													</th:block>
+												</th:block>
+											</ol>
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">D)
+											<ol style="list-style-type: upper-alpha;">
+												<th:block th:each="matQue,matrixStat:${question.matrix}">
+													<th:block
+														th:if="${question.matrix[matrixStat.index].choices!=null && question.matrix[matrixStat.index].choices.size()>0 && question.matrix[matrixStat.index].choices[3].choiceText!=null}">
+														<li style="float: left; width: 120px; padding: 2px 0px;"><b>--></b>
+															<span
+															th:utext="${question.matrix[matrixStat.index].choices[3].choiceText}"></span>
+														</li>
+													</th:block>
+												</th:block>
+											</ol>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table></td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Answer</b></td>
+				<td>(<b> <span
+						th:if="${question.matrix[0].choices[0].correctAnswer}">A</span> <span
+						th:if="${question.matrix[0].choices[1].correctAnswer}">B</span> <span
+						th:if="${question.matrix[0].choices[2].correctAnswer}">C</span> <span
+						th:if="${question.matrix[0].choices[3].correctAnswer}">D</span>
+				</b>)
+				</td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Solution</b></td>
+				<td><span
+					th:utext="${@currentUser.getQuestionText(question.solution)}"
+					style="color: #337ab7;"></span></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

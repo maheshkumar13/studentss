@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+							<div class="table-container">
+							
+							
+							
+								<table
+									class="table table-striped table-hover order-column nowrap leave-status-table"
+									id="sample_3" style="width: 99.9%">
+
+									<thead>
+										<tr>
+											<th style="width: 20px">SL.</th>
+											<th>Payroll ID</th>
+											<th style="text-align: left !important">Employee name</th>
+											<th>Designation</th>
+											<th>Subject</th>
+											<th>In Time</th>
+											<th>Out Time</th>
+											<th>Break Time</th>
+											<th>Working Time</th>
+
+										</tr>
+									</thead>
+									<tbody>
+									
+									<tr>
+											<td class="text-center"></td>
+											<td class="text-center"></td>
+											<td></td>
+											<td class="text-center"></td>
+											<td></td>
+											<td class="bg-in">
+											
+											<select id="dtbox1"
+											onchange="return changeAttendanceStatusSession1Time(this);" class="form-control bg-in">
+											
+												<option value="0">Select Time</option>
+
+													<option th:each="attendanceTime: ${attendanceTimeData}"
+														th:value="${attendanceTime.key}"
+														th:text="${attendanceTime.value}"></option>
+										</select>
+											
+											</td>
+											<td class="bg-out">
+											
+											
+											<select id="dtbox2"
+											onchange="return changeAttendanceStatusSession2Time(this);" class="form-control bg-in">
+											
+											<option value="0">Select Time</option>
+
+													<option th:each="attendanceTime: ${attendanceTimeData}"
+														th:value="${attendanceTime.key}"
+														th:text="${attendanceTime.value}"></option>
+														
+										</select>
+											
+											
+											</td>
+											<td class="bg-brk">
+											
+													
+											<select
+											id="stBreakBox1"
+											onchange="return changeAttendanceStatusSession3Time(this);" class="form-control bg-in">
+											<option value="0">Select Time</option>
+
+													<option th:each="attendanceTime: ${attendancesTime}"
+														th:value="${attendanceTime.key}"
+														th:text="${attendanceTime.value}"></option>
+										</select>
+											
+											
+											</td>
+											<td class="bg-total"><label class="bold">
+											
+											<input
+											type="text" id="availableTimeId" readonly="readonly" style="border:none; background: transparent !important;"/>
+												
+										</label></td>
+
+										</tr>
+									
+									
+										<tr th:each="empShift,itrStatus : ${employeeShift}">
+										
+										<input type="hidden" th:name="${'users['+itrStatus.index+'].attendRowId'}" th:value="${empShift.id}"/>
+										<input type="hidden" th:name="${'users['+itrStatus.index+'].employeeId'}" th:value="${empShift.employee.employeeId}"/>
+										
+											<td class="text-center"><span
+												th:text="${itrStatus.index+1}"></span></td>
+											<td class="text-center"><span
+												th:text="${empShift.employee.payRollId}"></span></td>
+											<td><span th:text="${empShift.employee.userName}"></span></td>
+											<td class="text-center"><span
+												th:text="${empShift.employee.designation}"></span></td>
+											<td><span
+												th:text="${empShift.employee.subject!=null?empShift.employee.subject:'Not Applicable'}"></span></td>
+											<td class="bg-in">
+											<div th:id="${'dvSession1time_'+itrStatus.index}">
+											<select class="form-control bg-in"
+												th:id="${'inTimeId_'+itrStatus.index}"
+												th:name="${'users['+itrStatus.index+'].inTime'}"
+												th:onchange="${'javascript:changeAvailableTime('+itrStatus.index+')'}"
+												>
+													<option value="0">Select Time</option>
+
+													<option th:each="attendanceTime: ${attendanceTimeData}"
+													th:selected="${empShift.intime==attendanceTime.value}"
+														th:value="${attendanceTime.key}"
+														th:text="${attendanceTime.value}"></option>
+
+											</select></div></td>
+											<td class="bg-out">
+											
+											<div th:id="${'dvSession2time_'+itrStatus.index}">
+											<select class="form-control bg-in"
+												th:id="${'outTimeId_'+itrStatus.index}"
+												th:name="${'users['+itrStatus.index+'].outTime'}"
+												onchange="return changeAvailableTime('+itrStatus.index+');"
+												th:onchange="${'javascript:changeAvailableTime('+itrStatus.index+')'}"
+												>
+													<option value="0">Select Time</option>
+
+													<option th:each="attendanceTime: ${attendanceTimeData}"
+													th:selected="${empShift.outtime==attendanceTime.value}"
+														th:value="${attendanceTime.key}"
+														th:text="${attendanceTime.value}"></option>
+
+											</select>
+											</div>
+											
+											</td>
+											<td class="bg-brk">
+											<div th:id="${'dvSession3time_'+itrStatus.index}">
+											<select th:id="${'breakTimeId_'+itrStatus.index}" 
+											th:name="${'users['+itrStatus.index+'].breakTime'}"
+											th:onchange="${'javascript:changeAvailableTime('+itrStatus.index+')'}"
+												class="form-control bg-brk">
+													<option value="0">Select Time</option>
+
+													<option th:each="attendanceTime: ${attendancesTime}"
+													th:selected="${empShift.breakTime==attendanceTime.key}"
+														th:value="${attendanceTime.key}"
+														th:text="${attendanceTime.value}"></option>
+
+
+											</select>
+											</div>
+											
+											</td>
+											
+											
+											<td class="bg-total"><label class="bold">
+											
+											<div th:id="${'dvSession4time_'+itrStatus.index}">
+													<input type="text" readonly="readonly"
+														th:name="${'users['+itrStatus.index+'].availableTime'}"
+														th:value="${empShift.availableTime}"
+														th:id="${'availableTimeId_'+itrStatus.index}" style="border:none; background: transparent !important;" />
+												</div>
+												
+										</label></td>
+
+										</tr>
+
+
+									</tbody>
+								</table>
+
+							</div>
+						
+						<script src="assets/pages/scripts/table-datatables-scroller.min.js" type="text/javascript"></script>
+</body>
+</html>

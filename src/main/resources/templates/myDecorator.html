@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:insert="/pageHeader :: pageHeader"></head>
+
+<body
+	class="page-container-bg-solid page-header-fixed page-sidebar-closed-hide-logo"
+	id="displayContentId">
+	<div th:insert="/head :: header"></div>
+
+	<div th:insert="/pageContent :: pageContent"></div>
+
+	<!-- /.container -->
+
+	<div th:replace="/body_scripts :: scripts"></div>
+
+	<th:block layout:fragment="scripts">
+	</th:block>
+
+	<!-- BEGIN FOOTER -->
+
+	<div th:insert="/footer :: footer"></div>
+
+	<!-- END FOOTER -->
+</body>
+
+</html>

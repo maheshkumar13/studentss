@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+
+
+	<div layout:fragment="page_content">
+
+
+
+		<div class="portlet light bordered">
+			<div class="portlet-title">
+				<div class="caption">
+					<span>Exam Summary >> </span>
+					<span
+						class="caption-subject font-green bold uppercase"> <span
+						class="mt-comment-author"><span
+							th:text="${attempt.exam.schedule.examName}"
+							style="color: #32c5d2; font-weight: bold;"></span></span>
+					</span>
+				</div>
+				<div class="actions">
+					<div class="actions pull-right">
+						<div class="clearfix">
+							<div class="btn-group btn-group-solid"
+								style="margin-right: 40px;">
+								Summary [ <span th:text="${attempt.getQuestionCount()}"></span>
+								] : <span class=""> <i class="fa fa-check"
+									style="color: green;"></i> <span
+									th:text="${attempt.getCorrectAnswerCount()}"></span>
+								</span> <span class=""> <i class="fa fa-remove"
+									style="color: red;"></i> <span
+									th:text="${attempt.getWrongAnswerCount()}"></span>
+								</span> <span class=""> <i class="fa fa-circle"
+									style="color: #cecece;"></i> <span
+									th:text="${attempt.getQuestionUnAttemptCount()}"></span>
+								</span>
+							</div>
+							<button onclick="backToExamsList()" class="btn blue btn-sm">
+								<i class="fa fa-chevron-left"></i> Back
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<th:block th:each="section:${attempt.exam.sections}">
+					<div class="portlet-title">
+						<!-- <div class="caption">
+						<span th:text="${attempt.schedule.examName}"></span>--<span
+							th:if="${section.patternSection!=null}"
+							th:text="${section.patternSection.name}"></span><small
+							class="text-center"> ( Total Questions : <span
+							th:text="${section.questions.size()}"></span> )
+						</small>
+					</div> -->
+						<div class="tools">
+							<a href="javascript:;" class="collapse" data-original-title=""
+								title=""> </a>
+						</div>
+					</div>
+					<div class="portlet-body" style="display: block;">
+						<div class="panel-group accordion" id="accordion1">
+							<th:block th:each="subject:${section.subjects}">
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+											<a class="accordion-toggle collapsed" data-toggle="collapse"
+												data-parent="#accordion1"
+												th:href="${'#'+subject.subject.name}" aria-expanded="false"><span
+												th:text="${subject.subject.name}"></span> <span
+												class="pull-right"> [ <span
+													th:text="${subject.examSubjectResult.totalQuestions}"></span>
+													] : <span class=""> <i class="fa fa-check"
+														style="color: green;"></i> <span
+														th:text="${subject.examSubjectResult.correctAnswers}"></span>
+												</span> <span class=""> <i class="fa fa-remove"
+														style="color: red;"></i> <span
+														th:text="${subject.examSubjectResult.wrongAnswers}"></span>
+												</span> <span class=""> <i class="fa fa-circle"
+														style="color: #cecece;"></i> <span
+														th:text="${subject.examSubjectResult.getUnAttemptQuestionCount()}"></span>
+												</span></span> </a>
+										</h4>
+									</div>
+									<div th:id="${subject.subject.name}"
+										class="panel-collapse collapse" aria-expanded="false"
+										style="height: 0px;">
+										<div class="panel-body"
+											style="height: 200px; overflow-y: auto;">
+											<table
+												class="table table-bordered table-hover table-condensed table-compact">
+												<thead>
+													<tr>
+														<th><b>S.No.</b></th>
+														<th><b>Group</b></th>
+														<th><b>Correct Answer</b></th>
+														<th><b>Your Answer</b></th>
+														<th><b>Result</b></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="question,status:${subject.examQuestions}">
+														<td th:text="${status.index+1}"></td>
+														<td
+															th:text="${question.group!=null?question.group.name:'--'}"></td>
+														<td
+															th:text="${applicationUtil.getCorrectAnswer(question.question)}"></td>
+														<td><th:block
+																th:if="${question.questionAttempt!=null}">
+																<th:block th:if="${question.questionAttempt.answer>0}"
+																	th:text="${question.questionAttempt.answer}">
+																</th:block>
+																<th:block
+																	th:if="${question.questionAttempt.numericAnswer>0}"
+																	th:text="${question.questionAttempt.numericAnswer}">
+																</th:block>
+																<th:block
+																	th:if="${question.questionAttempt.answer.toString().length()==2}"
+																	th:text="${question.questionAttempt.answer.toString().replaceAll('', ',').substring(1,question.questionAttempt.answer.toString().length()+2)}">
+																</th:block>
+															</th:block> <th:block th:if="${question.questionAttempt==null}">NA</th:block></td>
+														<td><th:block
+																th:if="${question.questionAttempt!=null}">
+																<strong th:if="${question.questionAttempt.isCorrect()}"
+																	style="color: green;"> Correct </strong>
+																<strong th:if="${!question.questionAttempt.isCorrect()}"
+																	style="color: red;"> Wrong </strong>
+															</th:block> <th:block th:if="${question.questionAttempt==null}">NA</th:block>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</th:block>
+						</div>
+					</div>
+
+				</th:block>
+			</div>
+		</div>
+
+	</div>
+</body>
+</html>

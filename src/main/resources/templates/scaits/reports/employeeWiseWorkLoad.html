@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Employee Wise Work Load Report</div>
+		</div>
+
+		<div class="portlet-body">
+			<div class="custom-div">
+				<form class="form-horizontal" action=" " method="post" id="formId">
+				<div class="row">
+								<div class="col-md-4 ">
+							<label>City</label> <select class="form-control" name="city"
+								id="cityId" onchange="getCityCampuses(this.value);">
+								<option value="">Select City</option>
+								<th:block th:each="city:${cityList}">
+									<option th:value="${city.cityId}" th:text="${city.cityName}"></option>
+								</th:block>
+							</select>
+						</div>
+						<div class="col-md-4">
+							<label>Campus</label><select class="form-control" name="campus"
+								id="CityCampusId" onchange="return loadCampus();">
+								<option value="">Select Campus</option>
+								<th:block th:each="campus:${campusList}">
+									<option th:value="${campus.Id}" th:text="${campus.campusName}"></option>
+								</th:block>
+							</select>
+						</div>
+							</div>
+					<div class="col-md-2">
+						<button type="button" class="btn btn-info" id="searchBtnId"
+							onclick="campusReport();">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;getReport
+						</button>
+					</div>
+					</form>
+			</div>
+		</div>
+	</div>
+	<div id="studentDeatailsGridId"></div>
+
+	
+</body>
+<script type="text/javascript">
+	function getCityCampuses(city) {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getcitycampus",
+			data : {
+				city : city
+			},
+			dataType : 'text',
+			success : function(data) {
+				var prePopulate = JSON.parse(data);
+				var select = $('#CityCampusId');
+				select.find('option').remove();
+				$.each(prePopulate, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+
+			}
+		});
+	}
+
+	function campusReport() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/empWiseWorkLoadReport",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				$('#studentDeatailsGridId').html('');
+				$('#studentDeatailsGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+				pageOverlay(1);
+			}
+		});
+	}
+</script>

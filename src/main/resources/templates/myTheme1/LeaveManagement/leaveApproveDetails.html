@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<script type="text/javascript">
+	
+	$(document)
+	.ready(
+			function() {
+				var $remaining = $('#commentRemaining'), $messages = $remaining
+						.next();
+
+				$('#commentId')
+						.keyup(
+								function() {
+									var chars = this.value.length, messages = Math
+											.ceil(chars / 200), remaining = messages
+											* 200
+											- (chars % (messages * 200) || messages * 200);
+									if (document
+											.getElementById("commentId").value == "") {
+										$remaining
+												.text(200 + ' characters remaining');
+									} else {
+										$remaining
+												.text(remaining
+														+ ' characters remaining');
+									}
+									$messages.text(messages
+											+ ' message(s)');
+								});
+			});
+	
+	function verify(status){
+		var validSubmit=false;
+		 $("#leaveStatusId").val(status);
+		 if(status=="Reject" && $("#commentId").val()==""){
+				 validSubmit=false; 
+				 alert("Please Enter Comment for Rejection");
+					$("#commentId").focus();
+					return false;
+		 }else{
+			 validSubmit=true;
+		 }
+		if(validSubmit && confirm("Are you sure you want to "+status+" ?")){
+			saveForm('saveApproveFormId',status);
+		}else{
+			return false;
+		}
+	}
+	
+	function saveForm(formId,status){
+		$('#leaveApprovePopupId').modal('toggle');
+		
+		var data = $('#'+formId).serializeArray();
+		var serverurl=$("#"+formId).attr('action');
+		
+		$.ajax({
+			type : "GET",
+			url : "/leaveManagement/saveLeaveApprove",
+			data : {
+				leave : document.getElementById("leaveIdVal").value,
+				leaveStatus : status,
+				comment:document.getElementById("commentId").value
+			},
+				success : function(data) {
+					if (data.indexOf("Successfully") != -1) {
+						alert(data);
+						showPage('/leaveManagement/leaveApprove');
+					}else if(data.indexOf("FEEDBACK-")!=-1) {
+						msg = data.substring(data.indexOf("FEEDBACK-") + 9);
+						alert(msg);
+					}
+					
+				}
+			});
+			return false;
+	}
+	
+	function overlay(v) {
+		if (v == 0) {
+			$("#loading1").hide();
+			$('#DisplayContentId1').fadeTo('fast', 0.5);
+			$("#loading1").show();
+			document.getElementById("wrapper").style.display = "none";
+		} else {
+			document.getElementById("wrapper").style.display = "inline";
+			$("#loading1").hide();
+			$('#DisplayContentId1').fadeTo('slow', 1);
+
+		}
+	}
+</script>
+
+<body>
+
+<form id="saveApproveFormId" class="form-horizontal"
+		th:action="@{/leaveManagement/saveLeaveApprove}" >
+		
+		<input type="hidden" name="leave" th:value="${leave.leaveId}" id="leaveIdVal">
+		<input type="hidden" name="leaveStatus" id="leaveStatusId">
+
+	<div class="row">
+		<div class="col-md-4 col-sm-5">
+			<div class="portlet light portlet-fit"
+				style="background: #e9ecf3; height: 532px">
+				<div
+					style="width: 100%; height: 120px; background: linear-gradient(to right, #fecfef, #b7c9f7); border-radius: 4px 4px 0 0">
+					<div align="center" style="padding-top: 65px">
+						<img alt="image" class="img-circle" id="imageId"
+							th:src="'http://scaits.info/attachment/empImage/'+${leave.employee.employeeDetails[0].tempPayroll}+'_Photo.jpg'"
+							style="border: 4px solid #00000020; width: 98px; height: 98px">
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div
+						style="padding-top: 40px; font-size: 24px; text-align: center; display: block; width: 100%; text-transform: uppercase">
+						<span id="empnameId"> <span
+							th:text="${leave.employee.userName}"></span></span>
+					</div>
+					<div
+						style="font-size: 13px; text-align: center; display: block; width: 100%; color: #1f82c1" th:text="${leave.employee.employeeDetails[0].emailId}"></div>
+					<div style="margin-top: 30px;">
+						<table class="table table-bordered table-striped"
+							style="background: #ffffff">
+							<tr>
+								<td>Employee ID</td>
+								<td><span id="empPayrollId"><span
+										th:text="${leave.employee.payRollId}"></span></span></td>
+							</tr>
+							<tr>
+								<td>Designation</td>
+								<td><span id="empDesignationId"><span
+										th:text="${leave.employee.designation}"></span></span></td>
+							</tr>
+							<tr>
+								<td>Contact No</td>
+								<td><span
+										th:text="${leave.employee.mobileNo}"></span></td>
+							</tr>
+							<tr>
+								<td>Leave Balance</td>
+								<td><span
+										th:text="${'-'}"></span></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8 col-sm-7">
+			<div class="portlet light portlet-fit bordered">
+				<div class="portlet-body leave-type-li">
+					<div class="row">
+						<div class="col-md-6">
+							<label class="bold">Leave Type</label> <select name=""
+								class="form-control" disabled>
+								<option th:selected="${leave.leaveType.leaveType.toUpperCase()=='CASUAL'}">Casual</option>
+								<option th:selected="${leave.leaveType.leaveType.toUpperCase()=='SICK'}">Sick</option>
+								<option th:selected="${leave.leaveType.leaveType.toUpperCase()=='ON DUTY'}">On Duty</option>
+							</select>
+						</div>
+						<div class="clearfix"></div>
+						<div class="col-md-6">
+							<label class="bold">From Date</label>
+							<div class="input-group date mb15 " data-provide="datepicker">
+								<input type="text" class="form-control" th:value="${#dates.format(leave.fromDate, 'dd-MM-yyyy')}"
+									disabled>
+								<div class="input-group-addon">
+									<span class="fa fa-calendar"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<label class="bold">To Date</label>
+							<div class="input-group date mb15 " data-provide="datepicker">
+								<input type="text" class="form-control" th:value="${#dates.format(leave.toDate, 'dd-MM-yyyy')}"
+									disabled>
+								<div class="input-group-addon">
+									<span class="fa fa-calendar"></span>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+						<div class="clearfix"></div>
+						
+						
+						<div class="col-md-6">
+							<ul>
+								<li th:each="empLeaveDate,status:${empLeaveDates}" th:text="${#dates.format(empLeaveDate.leaveDate, 'dd-MM-yyyy')}"></li>
+							</ul>
+						</div>
+						<div class="col-md-6">
+							<ul>
+								<li th:each="empLeaveDate,status:${empLeaveDates}"><select name="" class="form-control" disabled>
+										<option th:selected="${empLeaveDate.session.toUpperCase()=='F'}">Full day</option>
+										<option th:selected="${empLeaveDate.session.toUpperCase()=='FH'}">1st half</option>
+										<option th:selected="${empLeaveDate.session.toUpperCase()=='SH'}">2nd half</option>
+								</select></li>
+								
+							</ul>
+						</div>
+						<div class="clearfix" style="margin-bottom: 15px"></div>
+						<div class="col-md-12">
+							<label class="bold">Leave Taken</label> <input name=""
+								type="text" class="form-control bold" disabled th:value="${leave.totalDuration}">
+						</div>
+						<div class="clearfix"></div>
+						<div class="col-md-12">
+							<label class="bold">Reason for leave</label>
+							<textarea name="" cols="2" rows="2" class="form-control" disabled th:text="${leave.reason}"></textarea>
+						</div>
+						<div class="clearfix"></div>
+						<div class="col-md-12">
+							<label class="bold">Your comments</label>
+							
+							
+							<textarea  id="commentId" maxlength="200" ondrop="return false" cols="2" rows="2" class="form-control"
+										onchange="this.value=this.value.toUpperCase();" 
+									ondrag="return false" name="comment"></textarea>
+									
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+</body>
+</html>

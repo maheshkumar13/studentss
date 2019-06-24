@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<link href='http://fonts.googleapis.com/css?family=Roboto'
+	rel='stylesheet' type='text/css'>
+<link
+	th:href="@{/assets/global/plugins/font-awesome/css/font-awesome.min.css}"
+	rel="stylesheet" type="text/css" />
+<link
+	th:href="@{/assets/global/plugins/bootstrap/css/bootstrap.min.css}"
+	rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div class="container">
+		<th:block
+			th:if="${examSchedule!=null && subjects!=null && subjects.size()>0}">
+			<th:block th:each="subject,subStatus:${subjects}">
+				<h4 th:text="${subject.getKey().name}" align="center"
+					style="text-decoration: underline;"></h4>
+				<th:block th:each="question,queStatus:${subject.getValue()}">
+					<span class="badge"
+						th:text="${queStatus.count+(subStatus.index*queStatus.size)}"></span>
+					<div th:if="${question.questionType.id==1}">
+						<th:block
+							th:replace="myTheme1/viewQuestions/viewSingleAnswer(question=${question})"></th:block>
+					</div>
+					<div th:if="${question.questionType.id==2}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewMoreThanOneAnswer(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==3}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewIntegerAnswer(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==4}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewAssertionReason(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==5}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewStatementIStatementII(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==6}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewAscendingDescending(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==7}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewIncreasingDecreasing(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==8}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewMatrix2Column(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==9}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewMatrix3Column(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==10}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewSubjective(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==11}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewComprehensive(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==12}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewReasoning(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==13}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewReasoningComprehensive(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==14}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewFigureFindingReason(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==15}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewSubjectiveVerb(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==16}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewReasoningNewChoicesComprehensive(question=${question})"></div>
+					</div>
+
+					<div th:if="${question.questionType.id==17}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewModifiedStatementIStatementII(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==18}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewIPESubjectiveVerb(question=${question})"></div>
+					</div>
+
+					<div th:if="${question.questionType.id==19}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewQuestionTextAssertionReason(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==20}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewModifiedStatementIStatementIIStatementIII(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==21}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewModifiedQuestionStatementIStatementIIStatementIII(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==22}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewTrueFalse(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==23}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewYesNo(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==24}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewFillInTheBlank(question=${question})"></div>
+					</div>
+					<div th:if="${question.questionType.id==25}">
+						<div
+							th:replace="myTheme1/viewQuestions/viewAssertionReasonfalse(question=${question})"></div>
+					</div>
+				</th:block>
+			</th:block>
+		</th:block>
+		<br>
+		<div class="alert alert-danger" th:if="${errors!=null}"
+			th:text="${errors}"></div>
+	</div>
+</body>
+</html>

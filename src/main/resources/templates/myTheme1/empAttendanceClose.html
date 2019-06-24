@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+	<script type="text/javascript" th:src="@{/assets/global/scripts/jquery.timepicker.js}"></script>
+	<link rel="stylesheet" type="text/css" media="all" th:href="@{/assets/global/css/jquery.timepicker.css}">
+	
+	<script th:inline="javascript">
+
+/*<![CDATA[*/
+  
+           var inputCount=0;
+var filledInputCount=0;
+var notRegEmp=0;
+var buildingLists=0;
+var empAtdListSize=0;
+var campusTypeVal=null;
+
+   campusTypeVal= /*[[${@currentUser.getCurrentUser().campus.biometric}]]*/;
+   
+   notRegEmp=/*[[${noOfNotRegistered}]]*/;
+   buildingLists=/*[[${buildingList.size()}]]*/;
+   empAtdListSize=/*[[${campusWiseAttendance.size()}]]*/;
+   
+
+ /*]]>*/
+</script>
+<script type="text/javascript">
+function isNumberKey(evt)
+{
+   var charCode = (evt.which) ? evt.which : evt.keyCode;
+	if ((charCode >= 48 && charCode <= 57)
+		|| charCode == 8 || charCode == 9
+		|| charCode == 46
+		|| (charCode >= 37 && charCode <= 40)){
+      return true;}else{
+
+   return false;
+}}
+
+
+
+
+
+
+$(document).ready(function() {
+	$('input[id^="time"]').timepicker({
+		'timeFormat': 'H:i:s',
+		'step':1
+		});
+	/* var config = {
+			'.chosen-select' : {
+				width : "100%"
+			},
+			'.chosen-select-deselect' : {
+				allow_single_deselect : true
+			},
+			'.chosen-select-no-single' : {
+				disable_search_threshold : 10
+			},
+			'.chosen-select-no-results' : {
+				no_results_text : 'Oops, nothing found!'
+			},
+			'.chosen-select-width' : {
+				width : "100%"
+			}
+		}
+		for ( var selector in config) {
+			$(selector).chosen(config[selector]);
+		}  */
+	
+		document.getElementById("saveDayAttendanceFormId").reset();
+		getCountsOnLoad();
+		
+	});
+	
+	function getCountsOnLoad(){
+		$('input[id^="descriptionId"]').each(function(){
+			inputCount++;
+			});
+		
+		$(":input[type=text]").each(function (){
+			if($(this).val()!=""){
+				//$(this).prop("readonly",true);
+			}
+			else if($(this).attr("id")!="descriptionId"){
+				$(this).css("border", "1px solid #e5e6e7");
+			}
+			else{
+				$(this).css("border", "1px solid red");				
+			}
+			});
+	}
+
+	function getUserAttendance(userId, date) {
+		$.ajax({
+			url : '/empManagementSystem-ajax/empWiseAttendance?empVal='
+					+ userId + "&fromDateStr=" + date,
+			success : function(data) {
+				document.getElementById("popUpData").innerHTML = data;
+			}
+		});
+	}
+	
+	var valid=true;
+	function saveAttendanceClose(){
+		
+		 $('#dayEmpAtdCloseId').DataTable().search('').draw(false);
+		
+			if(campusTypeVal=="false"){
+				 var validate1="valid";
+				 var validate2="valid";
+				 var des1Val=0;
+				 var des2Val=0;
+				if(validate1=="notvalid"){
+					 alert("Please fill All Description's For Attendance Modified Employees ");
+					 $(idVal1).focus();
+					  return false;	
+				}
+				
+				 if(validate2=="notvalid"){
+					 alert("Please fill All Description's For Attendance Modified Employees ");
+					 $(idVal2).focus();
+					  return false;	
+				}
+				 
+				 for(var i=0;i<empAtdListSize;i++){
+						
+						   if(document.getElementById('timeInId['+i+']')!=null && document.getElementById('timeInId['+i+']').value=="00:00:00" 
+								   && document.getElementById('timeOutId['+i+']')!=null && document.getElementById('timeOutId['+i+']').value!="00:00:00"){
+								
+								alert("Plase Enter Valid Intime And OutTime");
+								document.getElementById('timeInId['+i+']').focus();
+								return false;
+							}
+						   if(document.getElementById('timeInId['+i+']')!=null && document.getElementById('timeInId['+i+']').value!="00:00:00" 
+							   && document.getElementById('timeOutId['+i+']')!=null && document.getElementById('timeOutId['+i+']').value=="00:00:00"){
+							
+							alert("Plase Enter Valid Intime And OutTime");
+							document.getElementById('timeOutId['+i+']').focus();
+							return false;
+						} 
+				}
+				
+
+			}else{
+				for(var i=0;i<empAtdListSize;i++){
+						if(document.getElementById('timeInId['+i+']')!=null && document.getElementById('timeInId['+i+']').value!="" && document.getElementById('timeOutId['+i+']')!=null && document.getElementById('timeOutId['+i+']').value!="" && document.getElementById('timeInId['+i+']').value==document.getElementById('timeOutId['+i+']').value){
+							
+							alert("Plase Enter Valid Time,Intime And OutTime Are Equal");
+							document.getElementById('timeInId['+i+']').focus();
+							return false;
+						}
+						
+						   if(document.getElementById('timeInId['+i+']')!=null && document.getElementById('timeInId['+i+']').value!="" && document.getElementById('timeOutId['+i+']')!=null && document.getElementById('timeOutId['+i+']').value==""){
+								
+								alert("Plase Enter Valid Intime And OutTime");
+								document.getElementById('timeOutId['+i+']').focus();
+								return false;
+							}
+	                         
+	                         if(document.getElementById('timeOutId['+i+']')!=null && document.getElementById('timeOutId['+i+']').value!="" && document.getElementById('timeInId['+i+']')!=null && document.getElementById('timeInId['+i+']').value==""){
+	       							
+	       							alert("Plase Enter Valid Intime And OutTime");
+	       							document.getElementById('timeInId['+i+']').focus();
+	       							return false;
+	       						}
+						
+                      
+				}
+				checkAllFilled();
+			}
+			
+			
+		  if(parseInt(notRegEmp)){
+			alert("First Register Employees,Not Registered Employees Count : "+notRegEmp);
+             return false;
+		}  
+		//alert(inputCount);
+		//alert(filledInputCount);
+		  if((campusTypeVal=="false") || (inputCount==filledInputCount)){
+			  
+			  if(campusTypeVal=="false"){
+				  if(confirm("Are you sure you want to close attendance daysheet?(Both Session1 And Session2 are Closed)")){
+					  saveForm();
+				  }else{
+					  return false;
+				  }
+			  }else{
+				  if(confirm("Are you sure you want to close attendance daysheet?")){
+						saveForm();
+					}else{
+						return false;
+					}  
+			  }
+			 
+			  
+		  }
+			
+	}
+	
+	function checkAllFilled(){
+		filledInputCount=0;
+		 var table = $('#dayEmpAtdCloseId').DataTable();
+		 var data = table.$(':input[type=text]');
+		 
+			 
+		 data.each(function (){
+			  if($(this).val().trim()!="" && $(this).attr("id")=="descriptionId"){
+				  filledInputCount++;
+				  $(this).css("border", "1px solid #e5e6e7");
+				  return true;
+			  }
+			  else if($(this).attr("id")!="descriptionId"){
+				  $(this).css("border", "1px solid #e5e6e7");
+				  return true;
+			  }
+			  else{
+				  $(this).css("border", "1px solid red");
+				  alert("Please fill all the required fields");
+				  $(this).focus();
+				  return false;
+			  }
+		});
+		 
+		
+	} 
+	
+	
+	function checkInTimeOutTime(){
+		 var table = $('#dayEmpAtdCloseId').DataTable();
+		 var inTimesArray=[];
+		 var outTimesArray=[];
+		var inTimes = table.$('select[id^="timeInId"]');
+		inTimes.each(function (){
+			inTimesArray.push(this);
+		});
+		 
+		 var outTimes = table.$('select[id^="timeOutId"]');
+		 outTimes.each(function (){
+			 outTimesArray.push(this);
+		});
+		 
+		 for(var i=0;i<inTimesArray.length;i++){
+			 valid=true;
+			 if(checkTimes(inTimesArray[i],outTimesArray[i])){
+				 valid=true;
+			 }else{
+				 valid=false;
+				 alert("Please Enter Valid Time")
+				 break;
+			 }
+		 }
+	}
+	
+		
+		function saveForm(){
+			if(campusTypeVal=="false"){
+			$('input:disabled').each(function () {
+		        $(this).removeAttr('disabled');
+		     });
+			}
+			 var table = $('#dayEmpAtdCloseId').DataTable();
+			 
+			 var data = $('#saveDayAttendanceFormId').serializeArray();
+			 data.push({name: 'dayType', value: document.getElementById('dayTypeSelId').value});
+			 data.push({name: 'buildingVal', value: document.getElementById('selBuildingId').value});
+			 data.push({name: 'buiListSize', value:buildingLists});
+			 
+			$.ajax({
+				type : 'POST',
+				url :  $('#saveDayAttendanceFormId').attr('action'),
+				data : data,
+				dataType : 'json',
+				success : function(data) {
+					
+					if(data.indexOf("FEEDBACK-") != -1 && data.indexOf("SUCCESFULLY DONE") != -1){
+						alert("successfully done");
+						document.getElementById("saveDayAttendanceFormId").reset();
+						document.getElementById('selBuildingId').selectedIndex=0;
+						showPage('/scaits/employeeAttendanceClose');	
+					}else if(data.indexOf("FEEDBACK-") != -1 && data.length<=150){
+						msg = data.substring(9,data.length);
+						alert(msg);
+					}
+					 
+				}
+			});
+			return false;
+		}
+	
+	
+	function checkOutTime(outTime,intime,outtime,index){
+		var outTimeId=outTime.id;
+		var inTimeId=outTimeId.replace("Out","In");
+		if(document.getElementById(inTimeId).value!=""){
+			
+			if(intime=='' && outtime==''){
+				if(!checkTimes(document.getElementById(outTimeId).value,document.getElementById(inTimeId).value)){
+					document.getElementById(outTimeId).value=outtime;
+					alert("Out Time should be greater than In Time");
+				}
+				
+			}else if(checkTimes(document.getElementById(outTimeId).value,document.getElementById(inTimeId).value)){
+			//alert(document.getElementById(inTimeId).value);
+			//alert("intime"+intime);
+			//alert(document.getElementById(outTimeId).value);
+			//alert("outtime"+outtime);
+			if(campusTypeVal=="true" && document.getElementById(inTimeId).value!=intime && document.getElementById(outTimeId).value!=outtime){
+				alert("Select or Edit Only in time or out time ");
+				document.getElementById(inTimeId).value=intime;
+				
+				if(outtime==null || outtime==''){
+					document.getElementById(outTimeId).value=intime;
+				}else{
+					document.getElementById(outTimeId).value=outtime;
+				}
+				
+				document.getElementById(outTimeId).focus();
+				return false;
+			}
+			return true;
+		}else{
+			alert("Out Time should be greater than In Time");
+			if(outtime==null || outtime==''){
+				document.getElementById(outTimeId).value=intime;
+			}else{
+				document.getElementById(outTimeId).value=outtime;
+			}
+			
+			return false;
+		}
+		}
+		
+	}
+	
+	function checkInTime(inTime,intime,outtime,index){
+		var inTimeId=inTime.id;
+		var outTimeId=inTimeId.replace("In","Out");
+		if(document.getElementById(outTimeId).value!=""){
+			
+			if(intime=='' && outtime==''){
+				if(!checkTimes(document.getElementById(outTimeId).value,document.getElementById(inTimeId).value)){
+					alert("In Time should be less than Out Time");
+					document.getElementById(inTimeId).value=intime;
+				}
+				
+			}else if(checkTimes(document.getElementById(outTimeId).value,document.getElementById(inTimeId).value)){
+				//alert(document.getElementById(inTimeId).value);
+				//alert("intime"+intime);
+				//alert(document.getElementById(outTimeId).value);
+				//alert("outtime"+outtime);
+				
+				if(campusTypeVal=="true" && document.getElementById(inTimeId).value!=intime && document.getElementById(outTimeId).value!=outtime && intime!=document.getElementById(outTimeId).value){
+					alert("Select or Edit Only in time or out time ");
+					document.getElementById(inTimeId).value=intime;
+					
+					if(outtime==null || outtime==''){
+						document.getElementById(outTimeId).value=intime;
+					}else{
+						document.getElementById(outTimeId).value=outtime;
+					}
+					document.getElementById(inTimeId).focus();
+					return false;
+				}
+				return true;
+			}else{
+				alert("In Time should be less than Out Time");
+				document.getElementById(inTimeId).value=intime;
+				document.getElementById(inTimeId).focus();
+				return false;
+			}
+		}
+		
+		
+		
+		
+	}
+	
+	function checkTimes(outTime,inTime){
+		var od = new Date("2018/7/25 "+outTime);
+		var id = new Date("2018/7/25 "+inTime);
+		if(od<id){
+			return false;
+		}else if(od==id){
+			return true;
+		}else{
+			return true;
+		}
+	}
+	
+	function showPanel(){
+		document.getElementById("contentId").style.display ="block";
+		$("#contentId").load();
+	}
+	
+	function getBuildingAtd(urlVal){
+		$.ajax({
+			url : '/scaits/employeeAttendanceClose?buildingVal='
+					+ urlVal ,
+			success : function(data) {
+				document.getElementById("dySheetCloseDivId").style.display ="block";
+				document.getElementById("allRemarksDivId").style.display ="block";
+				document.getElementById("fillDescriptionId").value="";
+				$("#dySheetCloseDivId").html(data);
+				inputCount=0;
+				filledInputCount=0;
+				getCountsOnLoad();
+			}
+		});
+	}
+	
+	function changeDesr(statusObj) {
+		 $("input[id='descriptionId']:not([readonly])").each(function (i, el) {
+			 if($(this).val()!="LEAVE"){
+				 $(this).val(statusObj);
+			 }
+					
+	     });
+	}
+	
+	
+	
+</script>
+<style>
+th {
+	white-space: nowrap;
+}
+
+.myclass {
+	text-transform: lowercase;
+}
+
+.myclass:first-letter {
+	text-transform: capitalize;
+}
+</style>
+</head>
+<body>
+<input type="hidden" id="dayTypeSelId" name="dayType" />
+<div class="modal inmodal fade" id="myModal5" tabindex="-1"
+	role="dialog" aria-hidden="true">
+
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">Employee Attendance</h4>
+			</div>
+			<div class="modal-body" id="popUpData"></div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="panel panel-success">
+	<div class="panel-heading">
+
+		<strong>DAY WISE ATTENDANCE CLOSE</strong> - Last Attendance Day Sheet
+		Closed For : <strong>
+		<p th:text="${#dates.format(@currentUser.getCurrentUser().campus.values.attendanceDate, 'dd-MM-yyyy')}"></p>
+		</strong>
+		
+		<div th:if="${message==null}"> 
+		| Attendance Day Sheet Close Can be Done For : <strong>
+		<p th:text="${#dates.format(daySheetToBeClosedOn, 'dd-MM-yyyy')}"></p>
+		</strong>
+		</div>
+		<div th:if="${message!=null}"> ||<span style="color: yellow;">
+		<p th:text="${message}"></p>
+		 </span>
+		</div>
+		&nbsp;&nbsp;
+		<div th:if="${message==null}">
+			<button type="button" class="btn btn-primary btn-xs"
+				onclick="showPanel()">Proceed</button>
+		</div>
+
+	</div>
+
+	<div class="panel-body">
+		<div id="contentId" style="display: none;">
+			<div class="row" style="margin: 5px;">
+				<div class="col-xs-4">
+				
+				<select class="form-control"
+										name="buildingSample" id="selBuildingId"
+										onchange="getBuildingAtd(this.value);">
+										<option value="0">Select Building</option>
+										<option th:each="buildingVal: ${buildingList}" th:value="${buildingVal.id}"
+											th:text="${buildingVal.buildingName}"></option>
+									</select>
+				
+						
+				</div>
+				<div class="col-xs-4">&nbsp;</div>
+				<div class="col-xs-4" id="allRemarksDivId" style="display: none;">
+					<input class="form-control" name="description"
+						placeholder="Enter All Remarks at Once" id="fillDescriptionId"
+						maxlength="150" onkeyup="changeDesr(this.value);" />
+				</div>
+			</div>
+			<div id="dySheetCloseDivId" style="display: none;">
+			
+			<div th:replace="myTheme1/employeeAtdCloseInner"></div>
+			
+			</div>
+		</div>
+
+	</div>
+</div>
+</body>
+</html>

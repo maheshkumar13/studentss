@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+
+
+	<script>
+	
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+			   $($.fn.dataTable.tables(true)).DataTable()
+			      .columns.adjust();
+			});
+		$(document).ready(function() {
+			$('#sample_5').DataTable( {
+			 
+				pageLength: 10,
+			
+		        dom: 'Bfrtip',
+		        buttons: ['copy', 'csv', 'excel', 'pdf', 'print' ]
+		    } );
+		});
+		
+		
+		
+		
+		
+		function getStatusWiseTestAnalysis(analysisId,selStatus) {
+			pageOverlay(0);
+			$.ajax({
+				type : "GET",
+				url : "/qb/getStatusWiseTestAnalysis",
+				data : {
+					analysisId : analysisId,
+					selStatus: selStatus
+				},
+				success : function(data) {
+					$('#selTestAnlysisStatusId').html(data);
+					pageOverlay(1);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+		
+		</script>
+</head>
+<body>
+	<!-- BEGIN PAGE BASE CONTENT -->
+		<div class="row">
+			<div class="col-md-12">
+
+
+						<div class="row">
+							<div class="col-md-12">
+								<!-- BEGIN EXAMPLE TABLE PORTLET-->
+								<div class="portlet">
+									
+									<div class="portlet-title">
+									<div class="caption">
+										Campus Test Details
+									</div>
+									<div class="tools"></div>
+								</div>
+									<div class="portlet-body" style="padding: 0 20px">
+										<table class="table table-striped table-bordered table-hover"
+											id="sample_5" style="overflow-x: auto;overflow-y: hidden;">
+
+											<thead>
+												<tr align="center">
+												<th  nowrap="nowrap">City Name</th>
+												<th  nowrap="nowrap">Campus Name</th>
+													<th  nowrap="nowrap">Test Code</th>
+													
+													
+													<th  nowrap="nowrap">Actual Count</th>
+														<th  nowrap="nowrap">Uploaded Count</th>
+														<th  nowrap="nowrap">InvalidCnt</th>
+												</tr>
+											</thead>
+
+
+
+											<tbody>
+
+
+												 
+												 
+														<tr align="center" th:each="selTestAnalysis : ${testAnalysisCampusWise}" >
+														
+														<td th:text="${selTestAnalysis.campus.campusName}">
+													</td>
+													<td th:text="${selTestAnalysis.campus.campusName}">
+													</td>
+													
+													<td th:text="${selTestAnalysis.testAnalysis.exam.testCode}">
+													</td>
+													<td th:text="${selTestAnalysis.actualCnt}">
+													</td>
+													<td>
+													
+													<a  th:text="${selTestAnalysis.uploadedCnt}"
+							th:onclick="${'javascript:getStatusWiseTestAnalysis(' + selTestAnalysis.id  +',' +'''VALID COUNT''' +')'}" data-toggle="modal" data-target="#getSelTestCampusWiseView"></a>
+													</td>
+													<!-- <td th:text="${selTestAnalysis.invalidCnt}">
+													</td> -->
+												    <td>
+													<a  th:text="${selTestAnalysis.invalidCnt}"
+							th:onclick="${'javascript:getStatusWiseTestAnalysis(' + selTestAnalysis.id  +',' +'''INVALID COUNT''' +')'}" data-toggle="modal" data-target="#getSelTestCampusWiseView"></a>
+													</td>
+															
+															</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- END EXAMPLE TABLE PORTLET-->
+
+							</div>
+						</div>
+
+			</div>
+		</div>
+
+
+<div class="modal fade" id="getSelTestCampusWiseView" tabindex="-1"
+		role="basic" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true"></button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+
+
+					<div id="quePopupDivId">
+						<div id="selTestAnlysisStatusId"></div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn dark btn-outline"
+						data-dismiss="modal">Close</button>
+					<!-- <button type="button" class="btn green">Save changes</button> -->
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+
+</body>
+</html>

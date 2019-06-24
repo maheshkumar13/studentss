@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body th:with="totalPrice=${0}">
+
+
+	<div class="col-md-12">
+		<div class="portlet light bordered">
+			<div class="portlet-title">
+				<div class="caption ">
+					<span class="caption-subject font-dark bold uppercase"> 
+					<div
+						th:text="${offlineExamSummary.offlineExam.testCode}"></div>
+					</span> <span class="caption-helper">test details...</span>
+					<button type="button" class="btn blue-hoki" id="graphBackButtonId"
+						style="display: none;"
+						th:onclick='${"javascript:getAllSubGraphs()"}'>Back</button>
+				</div>
+
+			</div>
+			<div class="portlet-body">
+
+				<div class="row">
+					<div class="col-xs-6" th:each="subjectKey:${subjectWise}"
+						th:id="${'subGraphId'+subjectKey.key.getName()}"
+						style="display: block;">
+						<div class="portlet light bordered">
+							<div class="portlet-title">
+								<div class="caption">
+									<span class="caption-subject font-green-sharp bold uppercase"
+										th:text="${subjectKey.key.getName()+' Topics ('+subjectKey.value.get(0).size()+')'}"></span>
+
+									<span
+										th:text="'Total Questions '+${@currentUser.getMapSize(subjectKey.value.get(0))}"></span>
+
+								</div>
+								<div class="actions">
+									<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+										href="javascript:void(0)"> </a>
+								</div>
+							</div>
+							<div class="portlet-body">
+								<div th:id="${'container'+subjectKey.key.getName()}" style=""></div>
+							</div>
+						</div>
+					</div>
+
+
+					<div id="subTopicGraphId" style="display: none;"></div>
+
+					<form action="" method="post" id="getTestSubTopicGraphDataId">
+
+						<input type="hidden" id="subnameId" name="subnameId"> <input
+							type="hidden" id="offlineExamSummaryId"
+							name="offlineExamSummaryId"> <input type="hidden"
+							id="topicId" name="topicId">
+
+					</form>
+
+
+				</div>
+
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+</body>
+<th:block layout:fragment="scripts">
+	<script th:inline="javascript">
+
+
+var catStrName=[];
+var parentCatStrName=[];
+var catStrId=[];
+
+</script>
+
+	<script th:inline="javascript" th:each=subject:${subjectGraphWise}>
+/*<![CDATA[*/
+           
+
+
+$(function() {
+	var subname = [[${subject.key.getName()}]];
+	var subnameId = [[${subject.key.id}]];
+	var offlineExamSummaryId = [[${offlineExamSummary.id}]];
+	var subValueName = [[${subject.value}]];
+	var dataXLayer = [];
+	var dataYLayer = [];
+	
+	    for (i = 0; i < subValueName.length; i++) {
+	    	
+	    	if(i%2==0){
+	    		var ext= subValueName[i].substring(0,subValueName[i].lastIndexOf('-'));
+		    	var ext1 = subValueName[i].substring(subValueName[i].lastIndexOf('-') + 1);
+	    		catStrName.push(ext);
+	    		parentCatStrName.push(subname);
+	    		catStrId.push(ext1);
+	    		
+	    		dataYLayer.push(ext);
+	    	}else{
+	    		dataXLayer.push(parseInt(subValueName[i]));
+	    	}
+	    }
+	$("[id=container"+subname+"]").highcharts(
+			{
+				chart : {
+					type : 'bar'
+				},
+				title : {
+					text : ''
+				},
+				xAxis : {
+					 type: 'category',
+					min: 0,
+			        max: 4,
+				scrollbar:{
+					enabled:true
+				},
+				categories : dataYLayer
+				},
+				yAxis : {
+					gridLineWidth : 0,
+					labels : {
+						overflow : 'justify',
+						enabled : false
+					},
+					title: {
+			            text: '',
+			            align: ''
+			        }
+				},
+				tooltip : {
+					valueSuffix : ' Questions'
+				},
+				credits : {
+					enabled : false
+				},
+				
+				
+				 plotOptions: {
+				        series: {
+				            cursor: 'pointer',
+				            point: {
+				                events: {
+				                    click: function () {
+				                    	
+				                        $("#subnameId").val(subnameId);
+				        				$("#offlineExamSummaryId").val(offlineExamSummaryId);
+				        				
+				        				var a = catStrName.indexOf(this.category);
+				        				$("#topicId").val(catStrId[a]);
+				        				
+				                        
+				                        $.ajax({
+				        					url : '/qb/getTestSubTopicGraphData',
+				        					type : 'GET',
+				        					data : $("#getTestSubTopicGraphDataId").serialize(),
+				        					success : function(data) {
+				        						$("[id^='subGraphId']").hide();
+				        						$("#subGraphId"+parentCatStrName[a]).show();
+				        						$("#graphBackButtonId").show();
+				        						$('#subTopicGraphId').show();
+				        						$('#subTopicGraphId').html('');
+				        						$('#subTopicGraphId').html(data);
+				        						
+				        						pageOverlay(1);
+				        					},
+				        					error : function() {
+				        						alert("Unable to load details.");
+				        						pageOverlay(1);
+				        					}
+				        				});
+				                    }
+				                }
+				            },dataLabels: {
+				                enabled: true
+				            }
+				        }
+				    },
+				    
+				    
+				legend : {
+					enabled : false
+				},
+				series : [ {
+					name : subname,
+					data : dataXLayer,
+					maxPointWidth: 20
+				} ]
+			});
+});
+
+function getAllSubGraphs(){
+	$("[id^='subGraphId']").show();
+	$('#subTopicGraphId').hide();
+	$("#graphBackButtonId").hide();
+}
+
+/*]]>*/
+</script>
+</th:block>
+
+</html>

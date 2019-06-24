@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+<style>
+.dataTables_wrapper {
+	padding-bottom: 0px;
+}
+
+.dataTables_wrapper {
+	padding-bottom: 0px;
+}
+.panel-body {
+	margin-bottom: 30px;
+}
+</style>
+<script type="text/javascript">
+var notValid=0;
+function showPanel(){
+	document.getElementById("buiWiseDisplayId").style.display ="block";
+	document.getElementById("selBuiWisePriCloseId").style.display ="block";
+	$("#selBuiWisePriCloseId").load();
+}
+function isNumberKey(evt)
+{
+   var charCode = (evt.which) ? evt.which : evt.keyCode;
+	if ((charCode >= 48 && charCode <= 57)
+		|| charCode == 8 || charCode == 9
+		|| charCode == 46
+		|| (charCode >= 37 && charCode <= 40)){
+      return true;}else{
+
+   return false;
+}}
+
+var inputCount=0;
+var filledInputCount=0;
+
+	function getUserAttendance(userId, month,status,year) {
+		$.ajax({
+			url : '/empManagementSystem-ajax/empMonthWiseEmpAtd?empVal='
+					+ userId + "&yearVal=" + year+ "&monthVal=" + month+ "&atdType=" + status,
+			success : function(data) {
+				document.getElementById("popUpData").innerHTML = data;
+			}
+		});
+	}
+	
+	
+	var valid=true;
+	
+	
+	function checkLopDays(selVal,valueSelected){
+		if(checklopSel(parseInt(document.getElementById("lopSelId"+selVal).value),parseInt(document.getElementById("lopId"+selVal).value))){
+			notValid=0;
+			return true;
+		}else{
+			alert("LOP Should Not Greater Than Leaves");
+			notValid=selVal;
+			document.getElementById("lopSelId"+selVal).value=valueSelected;
+			document.getElementById("lopSelId"+selVal).focus();
+			return false;
+		}
+	}
+	
+	
+	function checklopSel(lopSelId,lopId){
+		if(lopId<lopSelId){
+			return false;
+		}else if(lopId==lopSelId){
+			return true;
+		}else{
+			return true;
+		}
+	}
+	
+	function getPriBuiWise() {
+		
+		$.ajax({
+			url : "/scaits/getPrincipalSelBuiWiseAtdClose?buildingVal="
+					+ document.getElementById("empSelBuildingListId").value+"&status="+1+"&monthVal="+ document.getElementById("principalMonSelValId").value
+					+"&yearVal="+2017,
+			dataType : 'text',
+			success : function(data) {
+				$('#selBuiWisePriCloseId').html(data);
+			}
+		});
+
+	}
+	
+	
+	 /* function getExcel() {
+			document.getElementById("reportTypeId").value="1"; 
+			<s:url action="loadSelCampusAtdExcel" var="excelGenerate"
+				namespace="/empManagementSystem-ajax" />
+			 serverurl = "<s:property value="%{#excelGenerate}"/>"+"?buildingVal="+document.getElementById("empSelBuildingListId").value;
+			 document.getElementById("savePrincipalMonthAttendanceFormId").action=serverurl;
+			document.getElementById("savePrincipalMonthAttendanceFormId").submit();
+			document.getElementById("reportTypeId").value="";
+			 serverurl = "/empManagementSystem/savePrincipalMonthDayAttendanceClose";
+			 document.getElementById("savePrincipalMonthAttendanceFormId").action=serverurl;
+			return false;
+			 
+		}  */
+</script>
+<style type="text/css">
+td, th {
+	white-space: normal;
+	height: 15px;
+}
+</style>
+</head>
+<body>
+	<div class="panel panel-success">
+		<div class="panel-heading">
+			<strong>Monthly Attendance Close By Principal</strong> - Last Monthly
+			Attendance Day Sheet Closed For : <strong><p th:text="${#dates.format(monthLatDaySheetClosedOn, 'dd-MM-yyyy')}"></p></strong>
+			<div th:if="${message==null}">
+		|Monthly Attendance Day Sheet Close Can be Done For :
+		<strong>
+		<p th:text="${#dates.format(monthDaySheetToBeClosedOn, 'dd-MM-yyyy')}"></p>
+		</strong>
+			</div>
+			<div th:if="${message!=null}">
+			|<span style="color: yellow;">
+			<p th:text="${message}"></p>
+			</span>
+			</div>
+			<br>
+			<div th:if="${message==null}">
+				<div class="form-group">
+					<button type="button" class="btn btn-primary btn-sm"
+						style="margin-left: 45%;" onclick="showPanel()">Proceed</button>
+				</div>
+               </div>
+		</div>
+		<div class="panel-body">
+			<div class="row" id="buiWiseDisplayId" style="display: none;">
+				<div class="col-xs-4" style="margin: 15px;">
+						
+						<select class="form-control"
+										name="buildingVal" id="empSelBuildingListId"
+										onchange="getPriBuiWise()">
+										<option value="0">Select Building</option>
+										<option th:each="buildingVal: ${currentUser.campus.buildings}" th:value="${buildingVal.id}"
+											th:text="${buildingVal.buildingName}"></option>
+									</select>
+									
+				</div>
+				
+								<div class="col-xs-4" style="margin: 15px;">
+					<select id="principalMonSelValId" class="chosen-select"
+						name="monthVal" onchange="getPriBuiWise();">
+						<option value="0">Select Month</option>
+						<option value="1" th:selected="${monthVal==1}">JANUARY</option>
+						<option value="2" th:selected="${monthVal==2}">FEBRUARY</option>
+						<option value="3" th:selected="${monthVal==3}">MARCH</option>
+						<option value="4" th:selected="${monthVal==4}">APRIL</option>
+						<option value="5" th:selected="${monthVal==5}">MAY</option>
+						<option value="6" th:selected="${monthVal==6}">JUNE</option>
+						<option value="7" th:selected="${monthVal==7}">JULY</option>
+						<option value="8" th:selected="${monthVal==8}">AUGUST</option>
+						<option value="9" th:selected="${monthVal==9}">SEPTEMBER</option>
+						<option value="10" th:selected="${monthVal==10}">OCTOBER</option>
+						<option value="11" th:selected="${monthVal==11}">NOVEMBER</option>
+						<option value="12" th:selected="${monthVal==12}">DECEMBER</option>
+					</select>
+				</div>
+			</div>
+
+			<div id="selBuiWisePriCloseId" style="display: none;">
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="modal inmodal fade" id="monthAtdModal" tabindex="-1"
+		role="dialog" aria-hidden="true">
+
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title">Monthly Employee Attendance</h4>
+				</div>
+				<div class="modal-body" id="popUpData"></div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body></html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="col-lg-9 col-xs-12 col-sm-12" id="marksContentId">
+		<div class="portlet light bordered">
+			<div class="portlet-title tabbable-line">
+				<div class="caption ">
+					<span class="caption-subject font-dark bold uppercase"> <div
+						th:text="${offlineExamSummary!=null?offlineExamSummary.offlineExam.testCode:''}"></div>
+					</span> <span class="caption-helper">test details...</span>
+				</div>
+				<div class="actions">
+					<div class="btn-group btn-group-devided" data-toggle="buttons">
+						<label class="btn default btn-outline btn-circle btn-sm active"
+							title="Marks" id="marksLabel1"><i class="fa fa-percent"></i>
+							<input onchange="javascript:showMarksData()" name="options"
+							class="toggle" id="marksRadioId1" type="radio"></label> <label
+							title="Concept" class="btn default btn-outline btn-circle btn-sm"
+							id="conceptLabel1"><i class="icon-bulb"></i> <input
+							name="options" class="toggle" id="conceptRadioId1" type="radio"
+							onchange="javascript:showConceptData()"></label> <a
+							class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:void(0)"> </a>
+					</div>
+				</div>
+
+				<ul class="nav nav-tabs">
+
+					<li th:each="subjectQuestionsVal,iterationStatus : ${subQuestions}"
+						class="" th:classappend="${iterationStatus.index==0}?active:''">
+						<a th:href="${'#'+subjectQuestionsVal.key.name}" data-toggle="tab">
+							<div th:text="${subjectQuestionsVal.key.name}"></div>
+					</a>
+					</li>
+				</ul>
+			</div>
+			<div class="portlet-body">
+				<div class="tab-content">
+					<div
+						th:each="subjectQuestionsVal,iterationStatus : ${subQuestions}"
+						class="tab-pane"
+						th:classappend="${iterationStatus.index==0}?active:''"
+						th:id="${subjectQuestionsVal.key.name}">
+						<div
+							th:each="subQuestionVal,iterationStatus1 : ${subjectQuestionsVal.value}"
+							class="btn-group btn-group-solid">
+
+							<form action="" method="post" id="getQuestionWiseId">
+
+								<input type="hidden" id="qNoId" name="qNo"> <input
+									type="hidden" id="offlineExamId" name="offlineExamId">
+								<input type="hidden" id="summaryId" name="testSummaryId">
+								<a
+									th:href="${'javascript:getQuestionWise(' + subQuestionVal.qno +',' + subQuestionVal.offlineExam.id + ',' + subQuestionVal.id + ')'}">
+									<div class="questionClass">
+										<i class="fa fa-check pull-right"
+											th:if="${subQuestionVal.correct==1}" style="color: green;"></i>
+										<i class="fa fa-remove pull-right"
+											th:if="${subQuestionVal.wrong==1}" style="color: red;"></i> <i
+											class="fa fa-circle pull-right" style="color: #cecece;"
+											th:if="${subQuestionVal.unattempt==1}"></i> <span
+											th:text="${subQuestionVal.qno}"></span>
+									</div>
+								</a>
+							</form>
+						</div>
+						<br />
+						<div class="mt-comments">
+							<div class="mt-comment">
+								<div th:text="${subjectQuestionsVal.key.name}"></div>
+							</div>
+						</div>
+						<div class="note note-success">
+							<div class="btn-group btn-group-solid"
+								th:each="subjectKey:${subQuestions}"
+								th:if=${subjectKey.key.name==subjectQuestionsVal.key.name}
+								th:with="index=${0}">
+								Summary :<span class=""> <i class="fa fa-check"
+									style="color: green;"></i> <span
+									th:text="${@currentUser.getQueAnsSize(subjectKey.value,'CORRECT')}"></span>
+
+								</span> <span class=""> <i class="fa fa-remove"
+									style="color: red;"></i> <span
+									th:text="${@currentUser.getQueAnsSize(subjectKey.value,'WRONG')}"></span>
+								</span> <span class=""> <i class="fa fa-circle"
+									style="color: #cecece;"></i> <span
+									th:text="${@currentUser.getQueAnsSize(subjectKey.value,'UNATTEMPT')}"></span>
+								</span>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div id="questionWiseDetailsId"></div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-9 col-xs-12 col-sm-12" id="conceptContentId"
+		style="display: none;">
+		<div class="portlet light bordered">
+			<div class="portlet-title tabbable-line">
+				<div class="caption ">
+					<span class="caption-subject font-dark bold uppercase"> <div
+						th:text="${offlineExamSummary!=null?offlineExamSummary.offlineExam.testCode:''}"></div>
+					</span> <span class="caption-helper">test details...</span>
+				</div>
+				<div class="actions">
+					<div class="btn-group btn-group-devided" data-toggle="buttons">
+						<label class="btn default btn-outline btn-circle btn-sm"
+							title="Marks" id="marksLabel2"><i class="fa fa-percent"></i>
+							<input onchange="javascript:showMarksData()" name="options"
+							class="toggle" id="marksRadioId2" type="radio"></label><label
+							id="conceptLabel2" title="Concept"
+							class="btn default btn-outline btn-circle btn-sm active"><i
+							class="icon-bulb"></i> <input name="options" class="toggle"
+							id="conceptRadioId2" type="radio"
+							onchange="javascript:showConceptData()"></label> <a
+							class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:void(0)"> </a>
+					</div>
+				</div>
+
+				<ul class="nav nav-tabs">
+
+					<li th:each="subjectQuestionsVal,iterationStatus : ${subQuestions}"
+						class="" th:classappend="${iterationStatus.index==0}?active:''">
+						<a th:href="${'#'+subjectQuestionsVal.key.name+'1'}"
+						data-toggle="tab"> <div
+							th:text="${subjectQuestionsVal.key.name}"></div>
+					</a>
+					</li>
+				</ul>
+			</div>
+			<div class="portlet-body">
+				<div class="tab-content">
+					<div th:each="subMap,subStatus : ${subjectWise}" class="tab-pane "
+						th:classappend="${subStatus.index==0}?active:''"
+						th:id="${subMap.key.name+'1'}">
+						<div th:each="subMapVal,iterationStatus : ${subMap.key}"
+							th:if=${subMapVal.name==subMap.key.name}>
+
+
+
+
+							<div class="portlet box blue">
+								<div class="portlet-title">
+									<div class="caption">
+										<div th:text=${subMap.key.name}></div>
+									</div>
+									<div class="tools">
+										<a href="javascript:;" class="collapse" data-original-title=""
+											title=""> </a>
+									</div>
+								</div>
+
+
+								<div class="portlet-body">
+									<div class="row">
+										<div class="col-md-2 col-sm-2 col-xs-2">
+											<ul class="nav nav-tabs tabs-left">
+												<li class="active"><a
+													th:href="${'#tab_1'+subMap.key.name}" data-toggle="tab"
+													aria-expanded="true"> Topic </a></li>
+												<li class=""><a th:href="${'#tab_2'+subMap.key.name}"
+													data-toggle="tab" aria-expanded="false"> Paper </a></li>
+
+											</ul>
+										</div>
+										<div class="col-md-10 col-sm-10 col-xs-10">
+											<div class="tab-content">
+												<div class="tab-pane active in"
+													th:id="${'tab_1'+subMap.key.name}">
+													<div class="clearfix">
+														<div class="dropdown inline clearfix">
+															<!-- Link or button to toggle dropdown -->
+															<ul class="dropdown-menu" role="menu">
+																<span
+																	th:each="subWiseMap,subWiseMapStatus : ${subMap.value}">
+																	<span
+																	th:each="subWiseMapTopic,subWiseMapTopicStatus : ${subWiseMap}">
+																		<span
+																		th:each="subWiseMapTopicVal,subWiseMapTopicValStatus : ${subWiseMapTopic.key}"
+																		th:if="${#strings.arraySplit(subWiseMapTopicVal.path, '/').length==3}">
+																			<form action="" method="post"
+																				id="getTestSubTopicDataId">
+																				<input type="hidden" id="subTopicId"
+																					name="subTopicId"> <input type="hidden"
+																					id="topicId" name="topicId"> <input
+																					type="hidden" id="offExamId" name="offExamId">
+																				<input type="hidden" id="admNo" name="admNo">
+																				<a role="menuitem"
+																					th:onclick='${"javascript:getTestSubTopicData(" + subWiseMapTopicVal.id +","+ subMap.key.id +","+ offlineExamSummary.id +","+ offlineExamSummary.admNo.admNo + ")"}'
+																					data-toggle="modal" data-target="#subTopicPopupId">
+																					<li role="presentation"><span
+																						th:text="${subWiseMapTopicVal.path}"></span> <span
+																						class="badge badge-success pull-right"
+																						th:text=${subWiseMapTopic.value.size()}> </span></li>
+																					<li class="divider" role="presentation"></li>
+																				</a>
+																			</form>
+																	</span>
+																</span>
+																</span>
+															</ul>
+														</div>
+													</div>
+
+													<!-- <div class="dropdown inline clearfix">
+														<ul class="dropdown-menu" role="menu">
+
+															<li
+																th:each="subWiseMap,subWiseMapStatus : ${subMap.value}">
+
+																<div
+																	th:each="subWiseMapTopic,subWiseMapTopicStatus : ${subWiseMap}">
+																	<div
+																		th:each="subWiseMapTopicVal,subWiseMapTopicValStatus : ${subWiseMapTopic.key}"
+																		th:if="${#strings.arraySplit(subWiseMapTopicVal.path, '/').length==3}">
+
+
+
+
+																		<form action="" method="post"
+																			id="getTestSubTopicDataId">
+
+																			<input type="hidden" id="subTopicId"
+																				name="subTopicId"> <input type="hidden"
+																				id="topicId" name="topicId"> <input
+																				type="hidden" id="offExamId" name="offExamId">
+																			<input type="hidden" id="admNo" name="admNo">
+
+
+																			<a tabindex="-1" role="menuitem"
+																				th:onclick='${"javascript:getTestSubTopicData(" + subWiseMapTopicVal.id +","+ subMap.key.id +","+ offlineExamSummary.id +","+ offlineExamSummary.admNo.admNo + ")"}'
+																				data-toggle="modal" data-target="#subTopicPopupId">
+
+																				<small th:text="${subWiseMapTopicVal.path}"></small><span
+																				class="badge badge-info"><small
+																					th:text=${subWiseMapTopic.value.size()}></small> </span>
+																			</a>
+																		</form>
+																	</div>
+																</div>
+															</li>
+														</ul>
+													</div> -->
+												</div>
+
+												<div class="tab-pane fade"
+													th:id="${'tab_2'+subMap.key.name}">
+
+
+													<div th:each="subjectKey:${subQuestions}"
+														th:if=${subjectKey.key.name==subMap.key.name}>
+														<div th:each="subjectQueVal:${subjectKey.value}">
+															<div
+																th:replace="myTheme1/viewQuestions(question=${subjectQueVal.question})"></div>
+															<hr />
+														</div>
+													</div>
+
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<!-- <div class="dropdown inline clearfix">
+									<ul class="dropdown-menu" role="menu">
+										<div th:each="subWiseMap,subWiseMapStatus : ${subMap.value}">
+
+											<div
+												th:each="subWiseMapTopic,subWiseMapTopicStatus : ${subWiseMap}">
+												<div
+													th:each="subWiseMapTopicVal,subWiseMapTopicValStatus : ${subWiseMapTopic.key}">
+
+
+													<li role="presentation"><a tabindex="-1"
+														role="menuitem" th:href='${"javascript:getTestSubTopicData(" + subWiseMapTopicVal.id + "," + subMap.key.id + ")"}'> <small
+															th:text="${subWiseMapTopicVal.path}"></small><span
+															class="badge badge-info"><small
+																th:text=${subWiseMapTopic.value.size()}></small> </span>
+													</a></li>
+
+
+
+												</div>
+											</div>
+										</div>
+									</ul>
+								</div> -->
+
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="getTestSubTopicPopUpDataId">
+
+		<div class="modal fade" id="subTopicPopupId" tabindex="-1"
+			role="basic" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true"></button>
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body">
+
+
+						<div id="popupDivId">
+							<div th:replace="myTheme1/testSubTopicPopUpData"></div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn dark btn-outline"
+							data-dismiss="modal">Close</button>
+						<!-- <button type="button" class="btn green">Save changes</button> -->
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+
+	</div>
+
+
+	</th:block>
+</body>
+</html>

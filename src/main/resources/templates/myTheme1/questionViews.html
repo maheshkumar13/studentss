@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+.error {
+	color: red;
+	font-weight: bold;
+}
+</style>
+</head>
+<body>
+	<div class="portlet light bordered">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject font-green sbold uppercase">
+					View Questions</span>
+			</div>
+		</div>
+		<div class="portlet-body">
+			<div class="alert alert-danger" th:if="${errorMsg!=null}">
+				<strong>Error!</strong> <span th:text="${errorMsg}"></span>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label>View Question</label>
+						<div class="input-group input-group-sm">
+							<input type="text" class="form-control number" id="singleQueId"
+								placeholder="Enter Question ID"> <span
+								class="input-group-btn">
+								<button class="btn btn-info" type="button"
+									onclick="viewSingleQuestion()">View</button>
+							</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label>Export Question</label>
+						<div class="input-group input-group-sm">
+							<input type="text" class="form-control number"
+								placeholder="Enter Question ID" id="exportQueId"> <span
+								class="input-group-btn">
+								<button class="btn btn-info" type="button"
+									onclick="exportQuestion()">Export</button>
+							</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label>View Multiple Questions</label>
+						<form th:action="@{/qb/viewMulQuesHTML}" method="post"
+							target="_blank" id="mulQueFormId">
+							<textarea class="form-control" placeholder="Enter Question Id(s)"
+								rows="3" id="multipleQueId" name="qidsStr"></textarea>
+							<br>
+							<button class="btn btn-link" type="button"
+								onclick="viewMulQuestions()">
+								View <span class="badge" id="countId">0</span> Question(s) In
+								HTML
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$("input,textarea").on('blur', function() {
+				$(this).val($(this).val().trim());
+			});
+
+			$('.number').keyup(function(event) {
+				if (isNaN($(this).val())) {
+					showToastr("Please Enter Numericals", "error");
+					$(this).val('');
+				}
+			});
+
+			$("#multipleQueId")
+					.on(
+							"keypress keyup keydown onchange",
+							function() {
+								var cnt = 0;
+								if ($(this).val().trim() != "") {
+
+									var valArray = $(this).val().trim().split(
+											/,| |\n/);
+									cnt = valArray.length == 1 ? 1
+											: valArray.length;
+
+								} else {
+									cnt = 0;
+								}
+								$("#countId").html(cnt);
+							});
+
+			function viewSingleQuestion() {
+				if ($("#singleQueId").val().trim() == "") {
+					showToastr("Please Enter Question ID", "error");
+					$("#singleQueId").focus();
+					return false;
+				} else if (isNaN($("#singleQueId").val().trim())) {
+					showToastr("Please Enter Numericals For Question ID",
+							"error");
+					$("#singleQueId").focus();
+					return false;
+				} else {
+					showPage("/qb/viewQuestion?q="
+							+ $("#singleQueId").val().trim()+"&url=/qb/viewQuestions",false);
+				}
+			}
+
+			function exportQuestion() {
+				if ($("#exportQueId").val().trim() == "") {
+					showToastr("Please Enter Question ID", "error");
+					$("#exportQueId").focus();
+					return false;
+				} else if (isNaN($("#exportQueId").val().trim())) {
+					showToastr("Please Enter Numericals For Question ID",
+							"error");
+					$("#exportQueId").focus();
+					return false;
+				} else {
+					showToastr("export question...", "success");
+				}
+			}
+
+			function viewMulQuestions() {
+				if ($("#multipleQueId").val().trim() == "") {
+					showToastr("Please Enter Question ID(s)", "error");
+					$("#multipleQueId").focus();
+					return false;
+				} else if (!checkAllQuestions()) {
+					return false;
+				} else {
+					$("#mulQueFormId")[0].submit();
+				}
+			}
+
+			function checkAllQuestions() {
+				var qids = [];
+				var qidArray = $("#multipleQueId").val().trim().split(/,| |\n/);
+				for (var k = 0; k < qidArray.length; k++) {
+					if (isNaN(qidArray[k].trim())
+							|| qidArray[k].toString().trim().indexOf(".") != -1) {
+						showToastr("Please Enter Numericals For Question Id "
+								+ qidArray[k], "error");
+						return false;
+					} else if (qids.indexOf(qidArray[k].trim()) != -1) {
+						showToastr("Duplicate Question Id "
+								+ qidArray[k].trim(), "error");
+						return false;
+					} else {
+						qids.push(qidArray[k].trim());
+					}
+				}
+				return true;
+			}
+		</script>
+	</th:block>
+</body>
+</html>

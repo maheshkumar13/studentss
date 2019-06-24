@@ -1,0 +1,212 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{index}">
+<head>
+<style>
+.circle {
+	display: inline-block;
+	border-radius: 50%;
+	min-width: 20px;
+	min-height: 20px;
+	padding: 7px;
+	color: #b3b3b4;                                                        
+	text-align: center;
+	line-height: 1;
+	box-sizing: content-box;
+	text-decoration: none;
+}
+
+.circle:hover {
+	background-color: #5d5dd5;
+	 color:white;
+	 text-decoration: none;
+}
+.active1{
+       border-radius: 80%;
+  background-color: #5d5dd5;
+  color:white;
+  text-decoration: none;
+}
+.drop{
+	text-decoration: none;
+}
+.drop:hover {
+	 text-decoration: none;
+}
+</style>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="m-content">
+			<div class="m-portlet m-portlet--mobile">
+				<div class="m-portlet__head">
+					<div class="m-portlet__head-caption">
+						<div class="m-portlet__head-title">
+							<h3 class="m-portlet__head-text">Call Recordings</h3>
+						</div>
+					</div>
+				</div>
+				<div class="m-portlet__body">
+					<!--begin: Search Form -->
+						<div
+						class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
+						<div class="row align-items-center">
+							<div class="col-xl-8 order-2 order-xl-1">
+								<div class="form-group m-form__group row align-items-center">
+									<div class="col-md-4">
+										<div class="m-input-icon m-input-icon--left">
+											<input type="text" class="form-control m-input"
+												placeholder="Search..." id="generalSearch"> <span
+												class="m-input-icon__icon m-input-icon__icon--left">
+												<span><i class="la la-search"></i></span>
+											</span>
+										</div>
+									</div>
+												<form action="#" id="reportFormId">
+								<input type="hidden" name="fileType" id="fileType"></input>
+								<button type="submit" id="excelBtnId" class="btn btn-default"
+									th:onclick="${'javascript:downloadReport(' +'''excel'''+')'}">Excel</button>
+							</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--end: Search Form -->
+
+					<!--begin: Datatable -->
+					<table class="m-datatable" id="html_table" width="100%">
+						<thead>
+							<tr>
+								<th>ROW_ID</th>
+								<th>CITY_NAME</th>
+								<th>CAMPUS_NAME</th>
+								<th>ADM_NO</th>
+								<th>NAME</th>
+								<th>PARENT_NAME</th>
+								<th>CLASS_GRP</th>
+								<th>SECTION_NAME</th>
+								<th>COURSE_TRACK</th>
+								<th>COURSE_FEE</th>
+								<th>CONCESSION</th>
+								<th>NET_FEE</th>
+								<th>FEE_PAID</th>
+								<th>TOTAL_DUE</th>
+								<th>MOBILENO</th>
+								<th>FILE PATH</th>
+								<th>DURATION</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr th:each="callRecord,rowStatus : ${callRecords}">
+								<span
+									th:if="${callRecord.duration!=null && callRecord.duration>0}">
+									<!-- <td th:text="${rowStatus.count}"></td> -->
+									<td th:text="${callRecord.rowId}"></td>
+									<td th:text="${callRecord.cityName}"></td>
+									<td th:text="${callRecord.campusName}"></td>
+									<td th:text="${callRecord.admNo}"></td>
+									<td th:text="${callRecord.name}"></td>
+									<td th:text="${callRecord.parentName}"></td>
+									<td th:text="${callRecord.classGrp}"></td>
+									<td th:text="${callRecord.sectionName}"></td>
+									<td th:text="${callRecord.courseTrack}"></td>
+									<td th:text="${callRecord.courseFee}"></td>
+									<td th:text="${callRecord.concession}"></td>
+									<td th:text="${callRecord.netFee}"></td>
+									<td th:text="${callRecord.feePaid}"></td>
+									<td th:text="${callRecord.totalDue}"></td>
+									<td th:text="${callRecord.mobileNo}"></td>
+									<td><audio controls>
+											<source
+												th:src="'http://mobileapps.scaits.info/audio/'+${callRecord.fileDate}+'/'+${callRecord.file}+'.mp3'"
+												type="audio/mpeg" preload="none">
+										</audio></td>
+									<td th:text="${callRecord.duration}"></td>
+								</span>
+							</tr>
+						</tbody>
+					</table>
+					<!--end: Datatable -->
+
+					<div class="row m--margin-top-20 ">
+						<div class="form-group col-md-10" align="right">
+							<div th:if="${callRecords.totalPages != 1}">
+								<ul class="pagination">
+									<li th:if="${callRecords.number != 0}">
+									<a
+										class="circle"
+										th:href="@{/call/showRecordings(pageSize=${selectedPageSize}, page=1)}">&laquo;</a>
+									</li>
+									<li th:if="${callRecords.number != 0}"><a
+										class="circle"
+										th:href="@{/call/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.number})}">&#8249;</a>
+									</li>
+									<li th:class="${callRecords.number==(page - 1)?'active1':' '}"
+										th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+										<a class="circle"
+										th:href="@{/call/showRecordings(pageSize=${selectedPageSize}, page=${page})}"
+										th:text="${page}"></a>
+									</li>
+									<li
+										th:if="${callRecords.number + 1 != callRecords.totalPages} ? disabled">
+										<a class="circle"
+										th:href="@{/call/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.number + 2})}">&#8250;</a>
+									</li>
+									<li
+										th:if="${callRecords.number + 1 != callRecords.totalPages} ? disabled">
+										<a class="circle"
+										th:href="@{/call/showRecordings(pageSize=${selectedPageSize}, page=${callRecords.totalPages})}">&raquo;</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div  class="drop">
+							<select class="form-control pagination"  name="pageSize"
+								id="pageSizeId" onchange="window.location.href=this.value;" >
+								<option th:value="${'/call/showRecordings?pageSize='+page}"
+									th:each="page : ${pageSizes}" th:text="${page}"
+									th:selected="${page} == ${selectedPageSize}"></option>
+							</select>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script
+			th:src="@{/callRecords/demo/default/custom/components/datatables/child/html-table.js}"
+			type="text/javascript"></script>
+		<script>
+			function downloadReport(fileType) {
+				var serverurl = "/records/download";
+				$('#fileType').val(fileType);
+				document.getElementById("reportFormId").action = serverurl
+				document.getElementById("reportFormId").submit();
+			}
+		</script>
+	</th:block>
+
+
+</body>
+<script type="text/javascript">
+			function pageOverlay(i) {
+				if (i == 0) {
+					App.startPageLoading({
+						animate : !0
+					});
+					$("#bodyId").fadeTo('slow', 0.5);
+					$("#bodyId").hide();
+					$("#loading").show();
+				} else {
+					App.stopPageLoading();
+					$("#bodyId").fadeTo('slow', 1);
+					$("#bodyId").show();
+					$("#loading").hide();
+				}
+			}
+			</script>
+</html>

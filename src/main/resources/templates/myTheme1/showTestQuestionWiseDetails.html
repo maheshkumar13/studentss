@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<head>
+</head>
+<body>
+	<div class="portlet light tasks-widget bordered">
+		<div class="portlet-title">
+			<div class="caption">
+				<div class="questionClassSelected">
+					<i class="fa fa-check pull-right"
+						th:if="${offlineExamSummary.correct==1}" style="color: green;"></i>
+
+					<i class="fa fa-remove pull-right"
+						th:if="${offlineExamSummary.wrong==1}" style="color: red;"></i> <i
+						class="fa fa-circle pull-right" style="color: #cecece;"
+						th:if="${offlineExamSummary.unattempt==1}"></i> <span
+						th:text="${offlineExamSummary.qno}"></span>
+				</div>
+			</div>
+			
+							<div class="btn-group btn-group-solid"
+								>
+								Summary :<span class=""> <i class="fa fa-check"
+									style="color: green;"></i> <span
+									th:text="${'25'}"></span>
+
+								</span> <span class=""> <i class="fa fa-remove"
+									style="color: red;"></i> <span
+									th:text="${'30'}"></span>
+								</span> <span class=""> <i class="fa fa-circle"
+									style="color: #cecece;"></i> <span
+									th:text="${'35'}"></span>
+								</span>
+							</div>
+			<div class="actions">
+				<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+					href="javascript:void(0)"> </a>
+			</div>
+		</div>
+		<div class="portlet-body">
+			<div
+				th:replace="myTheme1/viewQuestions(question=${offlineExamSummary.question})"></div>
+		</div>
+	</div>
+</body>
+</html>

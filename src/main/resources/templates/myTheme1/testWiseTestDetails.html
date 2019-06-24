@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="row">
+		<div class="col-lg-3 col-xs-12 col-sm-6">
+			<form action="" method="post" id="getSelTestSummaryId">
+				<input type="hidden" id="selTestSummaryId" name="testSummaryId" />
+				<div class="portlet light bordered">
+					<div class="portlet-title">
+						<div class="caption">
+							<span class="caption-subject bold uppercase font-dark">Test
+								Names</span>
+						</div>
+						<div class="actions">
+							<a class="btn btn-circle btn-icon-only btn-default fullscreen"
+								href="javascript:void(0)"> </a>
+						</div>
+					</div>
+					<div class="portlet-body">
+						<!-- <div class="scroller" style="height: 339px;"
+							data-always-visible="1" data-rail-visible="0"> -->
+						<div class="scroller" style="height: 339px; overflow: scroll;">
+							<div class="list-group"
+								th:each="offlineQuestionStudentSummaray : ${offlineQuestionStudentSummarayList}">
+								<a href="javascript:;" class="list-group-item"
+									th:onclick="${'javascript:getStudentTest(' + offlineQuestionStudentSummaray.id + ')'}">
+									<div th:text="${offlineQuestionStudentSummaray.testCode}"></div>
+									<div>
+										<i class="fa fa-check" style="color: green;"
+											th:text="${offlineQuestionStudentSummaray.correct}"></i> <i
+											class="fa fa-remove" style="color: red;"
+											th:text="${offlineQuestionStudentSummaray.wrong}"></i> <i
+											class="fa fa-circle" style="color: #cecece;"
+											th:text="${offlineQuestionStudentSummaray.unattempt}"> </i>&nbsp;&nbsp;<span
+											th:text="${#calendars.format(offlineQuestionStudentSummaray.offlineExam.testDate,'dd-MM-yyyy')}">
+										</span>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div id="testDetailsSummaryId">
+			<div th:replace="myTheme1/testDetailsSummary"></div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<style>
+table.dataTable tbody td {
+	padding: 5px;
+	text-align: left;
+}
+
+table.dataTable thead tr {
+	background-color: #659be0;
+	color: #fff;
+}
+</style>
+<head>
+</head>
+<body>
+	<div layout:fragment="page_content">
+			<div class="row">
+				<!-- BEGIN EXAMPLE TABLE PORTLET-->
+				<div class="portlet light ">
+					<div class="portlet-title">
+						<div class="caption font-dark">
+							<span class="caption-subject bold uppercase"
+								th:text="${reportSubMenu.menuId.menuName}+' / '+${reportSubMenu.reportId.reportName}"></span>
+						</div>
+					</div>
+					<div class="portlet-body">
+						<div th:if="${!results.isEmpty()}">
+							<div class="row">
+								<div class="col-md-2 col-xs-6">
+									<select class="form-control" name="pageSize"
+										th:onchange="${'javascript:showReport(0,'+reportSubMenu.subMenuId+')'}"
+										id="pageSizeId">
+										<option value=10 th:selected="${pageSize==10}">10</option>
+										<option value=25 th:selected="${pageSize==25}">25</option>
+										<option value=50 th:selected="${pageSize==50}">50</option>
+										<option value=100 th:selected="${pageSize==100}">100</option>
+									</select>
+								</div>
+
+								<div class="col-md-2 col-xs-6">
+									<div class="form-group-inline">
+
+										
+
+										<button type="submit" id="excelBtnId" class="btn btn-default"
+											th:onclick="${'javascript:downloadReport(' +'''excel'''+','+reportSubMenu.subMenuId+')'}">Excel</button>
+										<button type="submit" id="excelBtnId" class="btn btn-default"
+											th:onclick="${'javascript:downloadReport(' +'''pdf'''+','+reportSubMenu.subMenuId+')'}">Pdf</button>
+
+									</div>
+
+								</div>
+								<div class="col-md-3 col-xs-12 pull-right">
+									<input type="text" class="form-control" id="searchboxId"
+										placeholder="Search...">
+								</div>
+							</div>
+							<br>
+							<div class="table-responsive">
+								<table id="example" class="table table-bordered display nowrap"
+									style="width: 100%">
+									<thead>
+										<tr>
+											<th>S.No</th>
+											<th th:each="colName:${colNames}"><span
+												th:text="${colName.toUpperCase()}"></span></th>
+										</tr>
+									</thead>
+									<tbody id="reportTableId">
+										<tr th:each="result,status:${results}">
+											<td th:text="${(pageNumber*pageSize)+(status.index+1)}"></td>
+											<td th:each="colVal:${result}"><span th:text="${colVal}"></span></td>
+										</tr>
+									</tbody>
+
+								</table>
+							</div>
+							<div class="row">
+								<strong>Total Results:</strong><span th:text="${totalResults}"></span>
+								<ul class="pagination pull-right">
+									<li th:class="${pageNumber== 0} ? disabled"><a
+										th:onclick="@{'javascript:showReport(0,'+${reportSubMenu.subMenuId}+')'}">First</a></li>
+									<li th:class="${pageNumber== 0} ? disabled"><a
+										th:onclick="@{${pageNumber==0}?'':'javascript:showReport('+${pageNumber-1}+','+${reportSubMenu.subMenuId}+')'}">Previous</a></li>
+									<li th:each="number,status:${pageNos}"
+										th:class="${(pageNumber==number)?'active':''}"><a
+										th:onclick="@{'javascript:showReport('+${number}+','+${reportSubMenu.subMenuId}+')'}"
+										th:text="${number+1}"></a></li>
+										<li 	th:class="${((pageNumber==(lastPageNumber) ||pageNumber==(lastPageNumber-1) ) &&pageNumber>=10) || (pageNumber==(lastPageNumber) &&pageNumber<10 )} ? disabled"><a
+										th:onclick="@{${pageNumber<(lastPageNumber)}?'javascript:showReport('+${pageNumber+1}+','+${reportSubMenu.subMenuId}+')':''}">Next</a></li>
+																	<li 	th:class="${((pageNumber==(lastPageNumber) ||pageNumber==(lastPageNumber-1) ) &&pageNumber>=10) || (pageNumber==(lastPageNumber) &&pageNumber<10 )} ? disabled"><a
+										th:onclick="@{'javascript:showReport('+${lastPageNumber}+','+${reportSubMenu.subMenuId}+')'}">Last</a></li>
+								</ul>
+							</div>
+						</div>
+						<div th:if="${results.isEmpty()}">
+							<p style="color: red; text-align: center; font-weight: bold;">No
+								Records Found</p>
+						</div>
+					</div>
+				</div>
+				<!-- END EXAMPLE TABLE PORTLET-->
+			</div>
+		</form>
+		<th:block layout:fragment="scripts">
+			<script>
+				$(document).ready(function() {
+					$('#example').DataTable({
+						dom : 'frt',
+						"paging" : false,
+						"scrollY" : 300,
+						"scrollX" : true,
+						"searching" : false
+					});
+				});
+			</script>
+			<script type="text/javascript">
+				function showReport(pageNumber, reportSubMenu) {
+				 var academicYear=$('#academicYearId').val();
+					var pageSize = $("#pageSizeId").val();
+					if (pageNumber == undefined) {
+						pageNumber = 0;
+					}
+					pageOverlay(0);
+					$.ajax({
+						type : "GET",
+						url : "/reports/appSalesReport",
+						data : {
+							reportSubMenu : reportSubMenu,
+							pageSize : pageSize,
+							pageNumber : pageNumber,
+							academicYear :academicYear
+						},
+						success : function(data) {
+							$('#displayContentId').html(data);
+							pageOverlay(1);
+						},
+						error : function() {
+							alert('Error occured');
+							pageOverlay(1);
+						}
+					});
+
+				}
+
+				function downloadReport(fileType, reportSubMenu) {
+					pageOverlay(0);
+					var serverurl = "/reports/download";
+					$('#fileTypeId').val(fileType);
+					$('#reportSubMenu').val(reportSubMenu);
+					document.getElementById("reportFormId").action = serverurl
+					document.getElementById("reportFormId").submit();
+					pageOverlay(1);
+
+				}
+
+				$(document)
+						.ready(
+								function() {
+									$("#searchboxId")
+											.on(
+													"keyup",
+													function() {
+														var value = $(this)
+																.val()
+																.toLowerCase();
+														$("#reportTableId tr")
+																.filter(
+																		function() {
+																			$(
+																					this)
+																					.toggle(
+																							$(
+																									this)
+																									.text()
+																									.toLowerCase()
+																									.indexOf(
+																											value) > -1)
+																		});
+													});
+								});
+			</script>
+		</th:block>
+	</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Student In</div>
+		</div>
+		<div th:replace="group/groupOperations"></div>
+		<div id="studentInGridId"></div>
+	</div>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$('#studentIn').css('display', 'block');
+		});
+		function loadBulkStudentList() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getStudentInGrid",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentInGridId').html('');
+					$('#studentInGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+	</script>
+</body>
+
+</html>
+

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+</style>
+<body>
+	<form th:action="@{/scaits/bulkTransferConfirmationSave}" id="formId"
+		method="post" enctype="multipart/form-data">
+		<div class="portlet light portlet-fit bordered card-1">
+			<div class="portlet-title">
+				<div class="caption">
+					<span class="caption-subject ">Transfer Confirmation</span>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="row">
+					<div class="col-md-3">
+						<input type="hidden" id="studentsList" name="studentsList">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline "><input
+							type="checkbox" id="bulkStudents" name="bulkStudents"
+							class="checkSelection" value="1" /><span></span> </label><label
+							class="bold">Bulk Confirmation</label>
+					</div>
+					<div class="col-md-3">
+						<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline "><input
+							type="checkbox" id="campusWiseStudents" name="campusWiseStudents"
+							class="checkSelection" value="1" checked /><span></span> </label> <label
+							class="bold">Campus Wise Confirmation</label>
+					</div>
+					<div class="clearfix" style="margin-bottom: 20px"></div>
+					<div class="col-md-3">&nbsp;</div>
+					<div class="col-md-3" id="campusWise">
+						<label class="bold">Campus Wise</label> <select name="campus"
+							class="form-control" id="campus" onchange="getCampusBulkData()">
+							<option value="">Select Campus</option>
+							<th:block th:each="campus:${campusList}">
+								<option th:value="${campus.id}"
+									th:selected="${campus!=null && campus.id!=null && campus.id==@currentUser.getCurrentUser().getCampus().getId()}"
+									th:text="${campus.campusName}"></option>
+							</th:block>
+						</select>
+					</div>
+
+					<div id="student">
+						<div th:replace="confirmation/bulkTransferConfirmationInner"></div>
+					</div>
+				</div>
+			</div>
+			<div class="portlet-footer">
+				<div class="row" id="button">
+					<div class="col-md-12">
+						<button type="button" class="btn-pri" onclick="studentTransfer()">Confirmation</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.checkSelection').click(function() {
+        $('.checkSelection').not(this).prop('checked', false);
+    });
+    $('#button').hide();
+});
+
+function getCampusBulkData() {
+	  pageOverlay(0);
+    $.ajax({
+        type : "GET",
+        url : "/scaits/bulkTransferConfirmation",
+        data : $("#formId").serialize(),
+        success : function(data) {
+        	  pageOverlay(1);
+               $("#student").show();
+            $('#student').html(data);
+        },
+        error : function() {
+            alert('Error occured');
+            pageOverlay(1);
+        }
+    });
+	
+}
+
+function getIds() {
+    var list = [];
+    $.each($("input[name='sport']:checked"), function(){            
+        if($(this).val()){
+        list.push($(this).val());
+        }
+    });
+    $("#studentsList").val(list);
+}
+
+
+function studentTransfer() {
+    getIds();
+    if ($("#studentsList").val() == "") {
+        showToastr("Please Select studentsList", "error");
+        $("#studentsList").focus();
+        return false;
+     } else if (confirm("Are you sure you want to submit ?")) {
+  var form = $('#formId')[0];
+  var data = new FormData(form);
+  pageOverlay(0);
+  $.ajax({
+      type : 'post',
+      enctype : 'multipart/form-data',
+      url : $("#formId").attr("action"),
+      data : data,
+      processData : false,
+      contentType : false,
+      success : function(data) {
+            if (data.indexOf("ERROR-") != -1) {
+                 showToastr(data, "error");
+            } else if (data.indexOf("FEEDBACK-1") != -1) {
+                alert("Successfully Done!!!");
+          $('#student').html('');
+            $('#bulkStudents').not(this).prop('checked', false);
+            $('#campusWiseStudents').not(this).prop('checked', false);
+            }
+              pageOverlay(1);
+      },
+      error : function() {
+          alert('Error occured');
+        pageOverlay(1);
+      }
+  });
+}
+}
+
+$('input[name="campusWiseStudents"]').click(function() {
+    if ($(this).is(':checked')) {
+  $('#campusWise').show();
+   $("#student").hide();
+    }else{
+        $('#campusWise').hide();
+         $("#student").hide();
+    }
+});
+
+
+	$('input[name="bulkStudents"]').click(function() {
+		if ($(this).is(':checked')) {
+			  $('#campus').val("");
+			  $('#campusWise').hide();
+			  $('#student').hide();
+			  pageOverlay(0);
+			$.ajax({
+			type : "GET",
+			url : "/scaits/bulkTransferConfirmation",
+			 data : $("#formId").serialize(),
+			success : function(data) {
+				  pageOverlay(1);
+				   $("#student").show();
+				$('#student').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+				  pageOverlay(1);
+			}
+		});
+		}
+	});
+</script>
+
+</html>

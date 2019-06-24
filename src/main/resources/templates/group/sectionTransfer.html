@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+    margin-bottom: 15px;
+}
+
+</style>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Section Transfer</div>
+		</div>
+		<div th:replace="group/groupOperations"></div>
+
+		<div id="sectionTransferGrid"></div>
+	</div>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$('#loader').css('display', 'block');
+		});
+		function loadBulkStudentList() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getSectionTransferGrid",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					loadToProgram();
+					$('#sectionTransferGrid').html('');
+					$('#sectionTransferGrid').html(data);
+					loadToProgram();
+				},
+				error : function() {
+					alert('Error occured');
+				}
+			});
+		}
+	</script>
+</body>
+</html>
+

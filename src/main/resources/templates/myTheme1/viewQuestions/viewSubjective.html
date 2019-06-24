@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<body>
+	<div class="table-responsive">
+		<table class="table table-bordered">
+			<tr>
+				<td width="6%"><b>Question</b></td>
+				<td><span
+					th:utext=${@currentUser.getQuestionText(question.questionText)}></span>
+				</td>
+			</tr>
+			<tr>
+				<td width="6%"><b>Solution</b></td>
+				<td><span
+					th:utext="${@currentUser.getQuestionText(question.solutionText)}"
+					style="color: #337ab7;"></span></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

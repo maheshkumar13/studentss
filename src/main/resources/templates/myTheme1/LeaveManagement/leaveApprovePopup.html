@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<script type="text/javascript">
+	
+	$(document)
+	.ready(
+			function() {
+				var $remaining = $('#commentRemaining'), $messages = $remaining
+						.next();
+
+				$('#commentId')
+						.keyup(
+								function() {
+									var chars = this.value.length, messages = Math
+											.ceil(chars / 200), remaining = messages
+											* 200
+											- (chars % (messages * 200) || messages * 200);
+									if (document
+											.getElementById("commentId").value == "") {
+										$remaining
+												.text(200 + ' characters remaining');
+									} else {
+										$remaining
+												.text(remaining
+														+ ' characters remaining');
+									}
+									$messages.text(messages
+											+ ' message(s)');
+								});
+			});
+	
+	function verify(status){
+		var validSubmit=false;
+		 $("#leaveStatusId").val(status);
+		 if(status=="Reject" && $("#commentId").val()==""){
+				 validSubmit=false; 
+				 alert("Please Enter Comment for Rejection");
+					$("#commentId").focus();
+					return false;
+		 }else{
+			 validSubmit=true;
+		 }
+		if(validSubmit && confirm("Are you sure you want to "+status+" ?")){
+			saveForm('saveApproveFormId',status);
+		}else{
+			return false;
+		}
+	}
+	
+	function saveForm(formId,status){
+		$('#leaveApprovePopupId').modal('toggle');
+		
+		var data = $('#'+formId).serializeArray();
+		var serverurl=$("#"+formId).attr('action');
+		
+		$.ajax({
+			type : "GET",
+			url : "/leaveManagement/saveLeaveApprove",
+			data : {
+				leave : document.getElementById("leaveIdVal").value,
+				leaveStatus : status,
+				comment:document.getElementById("commentId").value
+			},
+				success : function(data) {
+					if (data.indexOf("SUCCESFULLY") != -1) {
+						msg = data.substring(data.indexOf("SUCCESS-") + 8);
+						alert(msg);
+						showPage('/leaveManagement/leaveApprove');
+					}else if(data.indexOf("FEEDBACK-")!=-1) {
+						msg = data.substring(data.indexOf("FEEDBACK-") + 9);
+						alert(msg);
+					}
+					
+				}
+			});
+			return false;
+	}
+	
+	function overlay(v) {
+		if (v == 0) {
+			$("#loading1").hide();
+			$('#DisplayContentId1').fadeTo('fast', 0.5);
+			$("#loading1").show();
+			document.getElementById("wrapper").style.display = "none";
+		} else {
+			document.getElementById("wrapper").style.display = "inline";
+			$("#loading1").hide();
+			$('#DisplayContentId1').fadeTo('slow', 1);
+
+		}
+	}
+</script>
+<div th:if="${empLeaveDates!=null && empLeaveDates.size()>0}">
+	<div class="col-xs-12">
+		<div class="contact-box center-version">
+
+			<a href="javascript:void(0)"> <img alt="image" class="img-circle"
+			th:src="'http://scaits.info/attachment/empImage/'+${leave.employee.employeeDetails[0].tempPayroll}+'_Photo.jpg'">
+				<div class="h3 m-b-xs">
+					<strong>
+					<span th:text="${leave.employee.userName}"></span><br>
+					<span th:text="${leave.employee.payRollId}"></span>
+				  </strong>
+						
+				</div><span th:text="${leave.employee.designation}"></span>
+				<hr style="border: 1px solid #cecece; margin-top: 10px; height: 0px;">
+				<strong style="color: orange;">Total Leaves</strong><br> <strong
+				style="color: #1c84c6; font-size: 18px;">-</strong>
+				<hr style="border: 1px solid #cecece; margin-top: 10px; height: 0px;">
+				<div class="m-t-md">
+
+					<strong style="color: orange;">
+					<span th:text="${leave.leaveType.leaveType}"></span>
+					</strong><br> <strong
+						style="color: #1c84c6; font-size: 18px;">
+						<span th:text="${leave.totalDuration}"></span>
+						</strong>&nbsp;Day(s)<br> <strong
+						style="color: #1ab394;">
+						<span th:text="${#dates.format(leave.fromDate, 'dd-MM-yyyy')}"></span>
+						 </strong>(
+						 <div th:if='${empLeaveDates.get(0).session.equals("FH")}'>
+						 First Half
+						 </div>
+						 <div th:if='${empLeaveDates.get(0).session.equals("SH")}'>
+						 Second Half
+						 </div>
+						 <div th:if='${empLeaveDates.get(0).session.equals("F")}'>
+						 Full Day
+						 </div>
+					)
+					<div th:if="${empLeaveDates.size()>1}">- <strong
+							style="color: #1ab394;"> 
+							<span th:text="${#dates.format(leave.toDate, 'dd-MM-yyyy')}"></span>
+							</strong> (
+							
+							 <div th:if='${empLeaveDates.get(empLeaveDates.size()-1).session.equals("FH")}'>
+						 First Half
+						 </div>
+						 <div th:if='${empLeaveDates.get(empLeaveDates.size()-1).session.equals("SH")}'>
+						 Second Half
+						 </div>
+						 <div th:if='${empLeaveDates.get(empLeaveDates.size()-1).session.equals("F")}'>
+						 Full Day
+						 </div>
+						)</div>
+					<hr
+						style="border: 1px solid #cecece; margin-top: 10px; height: 0px;">
+					<br>
+					<p align="left">
+					<span th:text="${leave.reason}"></span>
+					</p>
+				</div>
+
+			</a>
+		</div>
+	</div>
+		<form id="saveApproveFormId" class="form-horizontal"
+		th:action="@{/leaveManagement/saveLeaveApprove}" >
+		
+		<input type="hidden" name="leave" th:value="${empLeaveDates.get(0).leaveId.leaveId}" id="leaveIdVal">
+		<input type="hidden" name="leaveStatus" id="leaveStatusId">
+		
+		<div class="col-xs-12">
+			<label for="comment">Comment</label>
+			
+			<textarea  id="commentId" maxlength="200" ondrop="return false" cols="33" rows="2"
+										onchange="this.value=this.value.toUpperCase();" 
+									ondrag="return false" name="comment"></textarea>
+			
+			<span id="commentRemaining">200 characters only</span>
+		</div>
+		
+	</form>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-11">
+			<div class="form-group" align="center">
+				<div class="col-lg-offset-2 col-lg-10">
+					<button
+						class="ladda-button ladda-button-demo btn btn-w-m btn-primary btn-sm"
+						type="submit" onclick="return verify('Approve')">Approve</button>
+					<button class="btn btn-w-m btn-danger btn-sm" type="submit"
+						onclick="return verify('Reject')">Reject</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:if="${!(empLeaveDates!=null && empLeaveDates.size()>0)}">
+	<p align="center">
+		<strong>No Records Found.</strong>
+	</p>
+</div>

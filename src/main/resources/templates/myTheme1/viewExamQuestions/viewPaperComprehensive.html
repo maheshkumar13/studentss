@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<meta charset="utf-8" />
+<style>
+.questionClass {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+}
+</style>
+<body>
+<tr>
+	<td width="60px" valign = "top" align="right"><b>Paragraph Text:</b></td>
+	<td colspan="8" style= "word-wrap: break-word" valign = "top">
+		<s:property value="question.paragraphText" escape="false"/>
+	</td>
+</tr>
+
+
+<s:iterator value="question.choiceQuestions" var="cquestion">
+<tr>
+	<td width="60px" valign = "top" align="right"><b>Question:</b></td>
+	<td colspan="8" style= "word-wrap: break-word" valign = "top">
+		<s:property value="#cquestion.questionText" escape="false"/>
+	</td>
+</tr>
+
+<tr><td width="60px" align="right">&nbsp;</td><td colspan="8">
+<table width="100%">
+<s:if test="#cquestion.choicesPerLine lt 2">
+<s:iterator value="#cquestion.choices" status="choiceStat">
+<tr>
+	<td align="left" width="20px" nowrap="nowrap" ><b><s:property value="%{getChar(#choiceStat.index+1)}"/>)</b> </td>
+	<td><s:property value="choiceText" escape="false"/></td>
+</tr>
+</s:iterator>
+</s:if>
+<s:if test="#cquestion.choicesPerLine gt 2">
+<tr>
+<s:iterator value="#cquestion.choices" status="choiceStat">
+	<td align="left" nowrap="nowrap"><b><s:property value="%{getChar(#choiceStat.index+1)}"/>)</b></td>
+	<td><s:property value="choiceText" escape="false"/></td>
+</s:iterator>
+</tr>
+</s:if>
+<s:if test="#cquestion.choicesPerLine == 2">
+<tr>
+<td align="left" width="20px" nowrap="nowrap"><b>A)</b></td>
+<td><s:property value="#cquestion.choices.get(0).choiceText" escape="false"/></td>
+<td align="left" width="20px" nowrap="nowrap"><b>B)</b></td>
+<td><s:property value="#cquestion.choices.get(1).choiceText" escape="false"/></td>
+</tr>
+<tr>
+<td align="left" nowrap="nowrap" width="20px"><b>C)</b></td>
+<td><s:property value="#cquestion.choices.get(2).choiceText" escape="false"/></td>
+<td align="left" nowrap="nowrap" width="20px"><b>D)</b></td>
+<td><s:property value="#cquestion.choices.get(3).choiceText" escape="false"/></td>
+</tr>
+</s:if>
+</table>
+</td></tr>
+
+</s:iterator>
+</body>
+

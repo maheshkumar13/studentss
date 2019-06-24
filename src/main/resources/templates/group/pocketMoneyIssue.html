@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Pocket Money Issue</div>
+		</div>
+		<div th:replace="group/groupOperations"></div>
+		<div id="pocketMoneyIssueGridId"></div>
+	</div>
+	<script th:inline="javascript">
+		$(document).ready(function() {
+			$('#pocket').css('display', 'block');
+			$('#pocket1').css('display', 'block');
+		});
+
+		function loadsubreasonId(reason) {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getSubReason",
+				data : $("#formId").serialize(),
+				dataType : 'text',
+				success : function(data) {
+					var prePopulate = JSON.parse(data);
+					var select = $('#subReasonId');
+					select.find('option').remove();
+					$.each(prePopulate, function(key, value) {
+						$('<option>').val(key).text(value).appendTo(select);
+						if (reason == 0) {
+							$('#subReason').css('display', 'none');
+						} else {
+							$('#subReason').css('display', 'block');
+						}
+					});
+				}
+			});
+		}
+		function loadSubHead(reason) {
+			var reasonValues = [ 1, 12, 15, 22, 88, 114, 115 ];
+			for (var i = 0; i < reasonValues.length; i++) {
+				if (reasonValues[i] == reason) {
+					$.ajax({
+						type : "GET",
+						url : "/scaits/getSubHead",
+						data : $("#formId").serialize(),
+						success : function(data) {
+							var prePopulate = JSON.parse(data);
+							var select = $('#subHeadId');
+							select.find('option').remove();
+							$.each(prePopulate, function(key, value) {
+								$('<option>').val(key).text(value).appendTo(
+										select);
+								if (reason == 0) {
+									$('#subHead').css('display', 'none');
+								} else {
+									$('#subHead').css('display', 'block');
+								}
+							});
+							$("select#subReasonId").val('0');
+						}
+					});
+				} else {
+					if (reason == 0) {
+						$('#subHead').css('display', 'none');
+					} else {
+						$('#subHead').css('display', 'none');
+					}
+				}
+				$("select#subHeadId").val('0');
+			}
+		}
+		function loadBulkStudentList() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getPocketMoneyIssue",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#pocketMoneyIssueGridId').html('');
+					$('#pocketMoneyIssueGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+				}
+			});
+		}
+	</script>
+</body>
+
+</html>
+

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light card-1 portlet-fit portlet-form bordered">
+		<div class="portlet-title">
+			<div class="caption">
+			
+				<span class="caption-subject">Create
+					Exam Pattern </span>
+			</div>
+		</div>
+		<div class="portlet-body">
+			<!-- BEGIN FORM-->
+
+			<form th:action="@{/qb/saveExamPattern}" method="post" class="form-horizontal" enctype="multipart/form-data" id="saveExamPatternFormId">
+				<div class="form-body">
+					<div class="form-group">
+						
+						<div class="col-md-4">
+						<label class="control-label">Test Name <span
+							class="required"> * </span>
+						</label>
+							<input type="text" name="testName" id="testNameId"
+								class="form-control" required="required">
+						</div>
+					</div>
+					<div class="form-group">
+						
+						<div class="col-md-4">
+						<label class="control-label">Duration <span
+							class="required"> * </span>
+						</label>
+							<input type="text" name="duration" id="durationId"
+								class="form-control number" required="required">
+						</div>
+					</div>
+					<div class="form-group">
+						
+						<div class="col-md-4">
+						<label class="control-label ">Negative Marks <span
+							class="required"> * </span>
+						</label>
+							<input type="text" name="negativeMarks" id="negativeMarksId"
+								class="form-control number" required="required">
+						</div>
+					</div>
+					<div class="form-group">
+						
+						<div class="col-md-4">
+						  <label class="control-label ">Test Type<span
+							class="required"> * </span>
+						</label>
+							<select class="form-control" name="examType" id="examTypeId">
+								<option value="">Select Exam Type</option>
+								<th:block th:each="examType:${examTypes}">
+									<option th:value="${examType.id}"
+										th:text="${examType.examTypeName}"></option>
+								</th:block>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						
+						<div class="col-md-4">
+						<label class="control-label ">Upload Excel File<span
+							class="required"> * </span>d
+						</label>
+							<input name="fileName" id="fileId" type="file" 
+								accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+						</div>
+					</div>
+			  <!--  <div class="form-actions">
+						<div class="row">
+							<div class="col-md-12">
+								<button type="button" class="btn btn-pri" onclick="verify()">Submit</button>
+							</div>
+						</div> 
+						-->
+					</div>
+				
+			</form>
+			<!-- END FORM-->
+		</div>
+		
+		 <div class="portlet-footer">                                  
+              <button type="button" class="btn btn-pri" onclick="verify()">Submit</button>              
+        </div>
+		
+		
+		
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#testNameId").focus();
+			});
+
+			$('.number').keyup(function(event) {
+				if (isNaN($(this).val())) {
+					showToastr("Please Enter Numericals", "error");
+					$(this).val('');
+				}
+			});
+
+			function verify() {
+				if ($("#testNameId").val() == "") {
+					alert("Please Enter Test Name");
+					$("#testNameId").focus();
+					return false;
+				} else if ($("#durationId").val() == "") {
+					alert("Please Enter Duration");
+					$("#durationId").focus();
+					return false;
+				} else if ($("#negativeMarksId").val() == "") {
+					alert("Please Enter Negative Marks");
+					$("#negativeMarksId").focus();
+					return false;
+				} else if ($("#examTypeId").val() == "") {
+					alert("Please Select Exam Type");
+					$("#examTypeId").focus();
+					return false;
+				} else if ($("#fileId").val().trim() == "") {
+					alert("Please Select File");
+					$("#fileId").focus();
+					return false;
+				} else {
+
+					// Get form
+					var form = $('#saveExamPatternFormId')[0];
+
+					// Create an FormData object 
+					var data = new FormData(form);
+					pageOverlay(0);
+					$.ajax({
+						type : "POST",
+						enctype : 'multipart/form-data',
+						url : $("#saveExamPatternFormId").attr("action"),
+						data : data,
+						processData : false,
+						contentType : false,
+						cache : false,
+						timeout : 600000,
+						success : function(data) {
+							if (data.split("-")[0] == "SUCCESS") {
+								alert(data.substring(8));
+								showPage('/qb/createExamPattern', false);
+							} else {
+								alert(data.substring(6));
+							}
+							pageOverlay(1);
+						},
+						error : function() {
+							alert("Unable to load details.");
+							pageOverlay(1);
+						}
+					});
+					return true;
+				}
+			}
+		</script>
+	</th:block>
+</body>
+</html>

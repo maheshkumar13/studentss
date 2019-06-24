@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet box green">
+		<div class="portlet-title">
+			<div class="caption">SECTION WISE DUE REPORT</div>
+		</div>
+		<div th:replace="reports/sectionwiseReportFilter"></div>
+		<div id="studentDeatailsGridId"></div>
+	</div>
+</body>
+<script th:inline="javascript">
+
+	function getReport() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/sectionWiseShowReport",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				$('#studentDeatailsGridId').html('');
+				$('#studentDeatailsGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+				pageOverlay(1);
+			}
+		});
+	}
+
+	function loadBulkStudentList() {
+		$.ajax({
+			type : "GET",
+			url : "/scaits/getStudentDetailsGrid",
+			data : $("#formId").serialize(),
+			success : function(data) {
+				loadToProgram();
+				$('#studentDeatailsGridId').html('');
+				$('#studentDeatailsGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+				pageOverlay(1);
+			}
+		});
+
+	}
+</script>
+
+</html>
+

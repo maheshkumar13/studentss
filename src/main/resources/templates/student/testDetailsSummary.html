@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style type="text/css">
+#tab-list .close {
+	margin-left: 7px;
+}
+
+.questionClass {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+}
+
+.questionClassSelected {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	width: 38px;
+	height: 36px;
+	text-align: center;
+	margin: 6px;
+	background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ffffff 100%);
+	/* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff',
+		endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px##cecece;
+	box-shadow: 1px 1px 1px 1px##cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr= '#ffffff',
+		endColorstr= '#ffffff', GradientType= 0); /* IE6-9 */
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-box-shadow: 1px 1px 1px 1px# #cecece;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	box-shadow: 1px 1px 1px 1px# #cecece;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #cecece;
+	letter-spacing: 2px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+	border: 2px solid green;
+	letter-spacing: 2px;
+}
+
+.questionClass:hover {
+	border: 1px solid black;
+}
+</style>
+</head>
+<body>
+	<div class="row" id="marksContentId">
+	
+	<div class="note note-info">
+			<div class="mt-comments">
+				<div class="mt-comment">
+					<div class="mt-comment-body">
+						<div class="mt-comment-info">
+							<span class="mt-comment-author">Student Exam Results - <span
+								style="color: #32c5d2; font-weight: bold;"
+								th:text="${offlineExamSummary.offlineExam.testCode}"></span></span>
+							<div class="actions pull-right">
+								<div class="clearfix">
+								<div class="btn-group btn-group-solid"
+										style="margin-right: 40px;">
+										Summary [ <span th:text="${offlineExamSummary.offlineExam.maxMarks}"></span>
+										] : <span class=""> <i class="fa fa-check"
+											style="color: green;"></i> <span
+											th:text="${offlineExamSummary.correct}"></span>
+										</span> <span class=""> <i class="fa fa-remove"
+											style="color: red;"></i> <span
+											th:text="${offlineExamSummary.wrong}"></span>
+										</span> <span class=""> <i class="fa fa-circle"
+											style="color: #cecece;"></i> <span
+											th:text="${offlineExamSummary.unattempt}"></span>
+										</span>
+									</div>
+									<button onclick="backToExamsList()" class="btn blue btn-sm">
+										<i class="fa fa-chevron-left"></i> Back
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		<div id="conceptContentId">
+		<div class="portlet light bordered">
+			<div class="portlet-title tabbable-line">
+				<div class="caption ">
+					<span class="caption-subject font-dark bold uppercase"> <div
+						th:text="${offlineExamSummary.offlineExam.testCode}"></div>
+					</span> <span class="caption-helper">test details...</span>
+				</div>
+				<div class="actions">
+					<div class="btn-group btn-group-devided" data-toggle="buttons">
+						<label class="btn default btn-outline btn-circle btn-sm active"
+							title="Marks" id="marksLabel1"><i class="fa fa-percent"></i>
+							<input onchange="javascript:showMarksData()" name="options"
+							class="toggle" id="marksRadioId1" type="radio"></label> <label
+							title="Concept" class="btn default btn-outline btn-circle btn-sm"
+							id="conceptLabel1"><i class="icon-bulb"></i> <input
+							name="options" class="toggle" id="conceptRadioId1" type="radio"
+							onchange="javascript:showConceptData()"></label> <a
+							class="btn btn-circle btn-icon-only btn-default fullscreen"
+							href="javascript:void(0)"> </a>
+					</div>
+				</div>
+
+				<ul class="nav nav-tabs">
+
+					<li th:each="subjectQuestionsVal,iterationStatus : ${subQuestions}"
+						class="" th:classappend="${iterationStatus.index==0}?active:''">
+						<a th:onclick="${'javascript:getFirstQues(this.href,' + subjectQuestionsVal.value[0].id +')'}" th:href="${'#'+subjectQuestionsVal.key.name}" data-toggle="tab">
+							<div th:text="${subjectQuestionsVal.key.name}"></div>
+					</a>
+					
+					<th:block
+										th:if="${iterationStatus.index==0}">
+										<input type="hidden" id="quesLoadId" th:value="${subjectQuestionsVal.value[0].id}">
+									</th:block>
+									
+									
+					</li>
+				</ul>
+			</div>
+			<div class="portlet-body">
+			
+				<div class="tab-content">
+					<div
+						th:each="subjectQuestionsVal,iterationStatus : ${subQuestions}"
+						class="tab-pane"
+						th:classappend="${iterationStatus.index==0}?active:''"
+						th:id="${subjectQuestionsVal.key.name}">
+						<div
+							th:each="subQuestionVal,iterationStatus1 : ${subjectQuestionsVal.value}"
+							class="btn-group btn-group-solid">
+
+							<form action="" method="post" id="getQuestionWiseId">
+
+								<input type="hidden" id="qNoId" name="qNo"> <input
+									type="hidden" id="offlineExamId" name="offlineExamId">
+								<input type="hidden" id="summaryId" name="testSummaryId">
+								<a
+									th:href="${'javascript:getTestQuestionWise(' + subQuestionVal.qno +',' + subQuestionVal.offlineExam.id + ',' + subQuestionVal.id + ')'}">
+									<div class="questionClass">
+									
+									<input type="hidden" th:id="${subQuestionVal.id}">
+									
+										<i class="fa fa-check pull-right"
+											th:if="${subQuestionVal.correct==1}" style="color: green;"></i>
+										<i class="fa fa-remove pull-right"
+											th:if="${subQuestionVal.wrong==1}" style="color: red;"></i> <i
+											class="fa fa-circle pull-right" style="color: #cecece;"
+											th:if="${subQuestionVal.unattempt==1}"></i> <span
+											th:text="${subQuestionVal.qno}"></span>
+									</div>
+								</a>
+							</form>
+						</div>
+						<br />
+						<div class="mt-comments">
+							<div class="mt-comment">
+								<div th:text="${subjectQuestionsVal.key.name}"></div>
+							</div>
+						</div>
+						<div class="note note-success">
+							<div class="btn-group btn-group-solid"
+								th:each="subjectKey:${subQuestions}"
+								th:if=${subjectKey.key.name==subjectQuestionsVal.key.name}
+								th:with="index=${0}">
+								Summary :<span class=""> <i class="fa fa-check"
+									style="color: green;"></i> <span
+									th:text="${@currentUser.getQueAnsSize(subjectKey.value,'CORRECT')}"></span>
+
+								</span> <span class=""> <i class="fa fa-remove"
+									style="color: red;"></i> <span
+									th:text="${@currentUser.getQueAnsSize(subjectKey.value,'WRONG')}"></span>
+								</span> <span class=""> <i class="fa fa-circle"
+									style="color: #cecece;"></i> <span
+									th:text="${@currentUser.getQueAnsSize(subjectKey.value,'UNATTEMPT')}"></span>
+								</span>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="portlet light" id="queViewPortletId">
+			<div class="portlet-title">
+				<div class="caption font-green-sharp">
+					<span id="questionNoId" class="caption-subject"></span>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div th:id="QueViewId"></div>
+			</div>
+		</div>
+		</div>
+	</div>
+	
+		<script th:inline="javascript">
+
+      /*<![CDATA[*/
+	    
+         var offlineExamId = /*[[${offlineExamSummary.offlineExam.id}]]*/;
+      
+         var testSummaryId = /*[[${offlineExamSummary.id}]]*/;
+      
+       /*]]>*/
+</script>
+	
+	
+	<script type="text/javascript">
+	
+	
+	
+	
+			$(document).ready(function() {
+				getTestQuestionWise(1, offlineExamId,$('#quesLoadId').val());
+				$(".questionClass:first").css("border", "2px solid green");
+			});
+			function showConceptData() {
+				$("#conceptContentId").show();
+				$("#marksContentId").hide();
+				$("#queViewPortletId").hide();
+
+				$("#conceptLabel1,#conceptLabel2").addClass("active");
+
+				$("#marksLabel1,#marksLabel2").removeClass("active");
+			}
+			function showMarksData() {
+				$("#marksContentId").show();
+				$("#queViewPortletId").show();
+				$('#questionWiseDetailsId').html('');
+				$("#conceptContentId").hide();
+
+				$("#marksLabel1,#marksLabel2").addClass("active");
+
+				$("#conceptLabel1,#conceptLabel2").removeClass("active");
+			}
+			
+			function getTestQuestionWise(qNo, offlineExamId, testSummaryId) {
+				$.ajax({
+					type : "GET",
+					url : '/student/getQuestionWise',
+					data : {
+						qNo : qNo,
+						offlineExamId : offlineExamId,
+						testSummaryId:testSummaryId
+					},
+					success : function(data) {
+						$("#QueViewId").html('');
+						$("#QueViewId").html(data);
+					},
+					error : function() {
+						alert("Unable to load details.");
+					}
+				});
+			}
+			
+			$(".questionClass").click(function() {
+				$(".questionClass").css("border", "");
+				$(this).css("border", "2px solid green");
+			});
+	
+	function getFirstQues(val,val1) {
+				$(".questionClass").css("border", "");
+				$("#" + val.split("#")[1] + " .questionClass:first").css(
+						"border", "2px solid green");
+
+				var qInd = $("#" + val.split("#")[1] + " span:first").html();
+				
+				
+				getTestQuestionWise(qInd, offlineExamId,val1);
+			}
+	
+	</script>
+	</th:block>
+</body>
+</html>

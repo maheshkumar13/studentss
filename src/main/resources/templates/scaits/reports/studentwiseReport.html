@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Student Wise Due Report</div>
+		</div>
+		<div th:replace="scaits/reports/commonReport"></div>
+
+		<div id="studentDeatailsGridId"></div>
+	</div>
+
+
+	<script th:inline="javascript">
+		$('#amountId').bind('input propertychange', function() {
+			$(this).val($(this).val().replace(/[^0-9]/g, ''));
+		});
+
+		function campusReport() {
+			alert('hi');
+			$.ajax({
+				type : "GET",
+				url : "/scaits/studentdueshowReport",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+		}
+
+		function loadBulkStudentList() {
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getStudentDetailsGrid",
+				data : $("#formId").serialize(),
+				success : function(data) {
+					loadToProgram();
+					$('#studentDeatailsGridId').html('');
+					$('#studentDeatailsGridId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					pageOverlay(1);
+				}
+			});
+
+		}
+
+		$(document).ready(function() {
+		$('#statusId').css('display', 'none');
+			$('#valueId').css('display', 'none');
+			$('#vijId').css('display', 'none');
+			$('#checkID').css('display', 'none');
+			$('#headId').css('display', 'none');
+			$('#paydateId').css('display', 'none');
+			});
+	</script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+
+.bg-grey-custom:hover {
+	background: #000000;
+	color: #ffffff
+}
+
+.bg-grey-custom:focus {
+	background: #000000;
+	color: #ffffff
+}
+
+.bg-grey-custom {
+	background: #333333;
+	color: #ffffff
+}
+
+.bg-active {
+	background: #b2e1ff80 !important;
+	color: #000 !important;
+}
+
+.txt-wrap {
+	white-space: nowrap;
+	overflow: hidden;
+	width: 200px;
+	text-overflow: ellipsis;
+}
+
+.dataTables_wrapper .dataTables_filter {
+	position: absolute;
+	margin-top: -30px;
+	right: 10px;
+}
+
+.ticket thead tr {
+	background-image: linear-gradient(to right, #e20031, #4901bf);
+	color: #ffffff;
+	white-space: nowrap;
+}
+
+.ticket tbody tr {
+	background-image: linear-gradient(to bottom, #e6e6e6, #ffffff);
+	border-top: hidden;
+}
+
+.ticket td {
+	white-space: pre-line;
+	padding: 8px 15px;
+	border-bottom: none !important;
+	border-top: none !important;
+	border-right: none !important;
+	border-left: 1px solid #e20031 !important;
+	box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.2);
+	padding: 8px 15px;
+}
+</style>
+</head>
+<body>
+	<form action="" method="post" id="formId">
+		<div class="portlet light portlet-fit bordered card-1">
+			<div class="portlet-title">
+				<div class="caption">
+					<span class="caption-subject ">Ticket Resolution Status
+						Report</span>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<div class="row">
+					<div class="col-md-2">
+						<input name="fromDate" id="fromDate" class="form-control number"
+							type="text" placeholder="From Date" />
+					</div>
+					<div class="col-md-2">
+						<input name="toDate" id="toDate" class="form-control number"
+							type="text" placeholder="To Date" />
+					</div>
+					<div class="col-md-3">
+						<select id=category class="form-control" th:name="category">
+							<option th:value="0" th:text="${'Select Category'}"></option>
+							<th:block th:each="category:${categoryList}">
+								<option th:value="${(category!=null)?category.id:''}"
+									th:selected="${categoryId!=null && category.id==categoryId.id}"
+									th:text="${category.categoryName}"></option>
+							</th:block>
+						</select>
+					</div>
+					<div class="col-md-3">
+						<select name=status id="statusId" class="form-control">
+							<option th:value="0" th:text="${'Select statusList'}"></option>
+							<th:block th:each="statusListType:${statusList}">
+								<option th:text="${statusListType}"
+									th:selected="${status!=null && statusListType==status}"></option>
+							</th:block>
+						</select>
+					</div>
+					<div class="col-md-2 col-lg-2">
+						<div style="margin-top: 0px">
+							<button type="button"
+								class="btn btn-outline sbold blue bg-grey-custom"
+								id="btn-s-details" onClick="getTicketDetails()">Search
+								students</button>
+						</div>
+					</div>
+
+					<div class="clearfix" style="margin-bottom: 40px"></div>
+					<div class="col-md-12">
+						<div class="table-container">
+							<table
+								class="ticket table table-striped table-hover order-column nowrap my-custom-scrollbar my-custom-scrollbar-primary custom_scrollbar scroller"
+								border="1" th:cellpadding="0" th:cellspacing="0" id="sample_3"
+								style="width: 99.9%; border-collapse: collapse;">
+								<thead>
+									<tr>
+										<th>TICKET ID</th>
+										<th>CAMPUSNAME</th>
+										<th>ASSETNAME</th>
+										<th>CATEGORY</th>
+										<th>SUMMARY</th>
+										<th>ISSUE RAISED BY</th>
+										<th>CREATED BY</th>
+										<th>CREATED ON</th>
+										<th>STATUS</th>
+										<th>PRIORITY</th>
+										<th>ATTACHMENT</th>
+										<th>EDIT</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="createdTickets: ${ticketReportList}">
+										<td
+											th:text="${createdTickets.campus!=null?createdTickets.id:''}"></td>
+										<td
+											th:text="${createdTickets.campus!=null?createdTickets.campus.campusName:''}"></td>
+										<td
+											th:text="${createdTickets.asset!=null?createdTickets.asset.assetName:''}"></td>
+										<td
+											th:text="${createdTickets.category!=null?createdTickets.category.categoryName:''}"></td>
+										<td><label
+											th:text="${createdTickets.summary!=null?createdTickets.summary:''}"
+											class="txt-wrap"></label></td>
+										<td
+											th:text="${createdTickets.empTicket!=null?createdTickets.empTicket.userName:''}"></td>
+										<td
+											th:text="${createdTickets.createdBy!=null?createdTickets.createdBy.userName:''}"></td>
+										<td
+											th:text="${#dates.format(new java.util.Date(createdTickets.createdOn), 'dd-MMM-yyyy')}"></td>
+										<td><span th:if="${createdTickets.status} == 'New'"
+											class="label txt-new"
+											th:text="${createdTickets.status!=null?createdTickets.status:''}"></span>
+											<span th:if="${createdTickets.status} == 'Open'"
+											class="label txt-open"
+											th:text="${createdTickets.status!=null?createdTickets.status:''}"></span>
+											<span th:if="${createdTickets.status} == 'Resolved'"
+											class="label txt-resolved"
+											th:text="${createdTickets.status!=null?createdTickets.status:''}"></span>
+											<span th:if="${createdTickets.status} == 'Close'"
+											class="label txt-close"
+											th:text="${createdTickets.status!=null?createdTickets.status:''}"></span>
+										</td>
+										<td><span th:if="${createdTickets.priority} == 'High'"
+											class="label txt-high"
+											th:text="${createdTickets.priority!=null?'. '+createdTickets.priority:''}"></span>
+											<span th:if="${createdTickets.priority} == 'Medium'"
+											class="label txt-medium"
+											th:text="${createdTickets.priority!=null?'. '+createdTickets.priority:''}"></span>
+											<span th:if="${createdTickets.priority} == 'Low'"
+											class="label txt-low"
+											th:text="${createdTickets.priority!=null?'. '+createdTickets.priority:''}"></span>
+										</td>
+										<td><span
+											th:if="${createdTickets.ticketImagePath} == 'NO IMAGE'"
+											class="label txt-noimage"> No IMage</span> <span
+											th:if="${createdTickets.ticketImagePath} != 'NO IMAGE'"
+											class="label txt-image"><a target="_blank"
+												th:href="${'/scaits/loadImage?fileName='+createdTickets.ticketImagePath.replace('\','/')}">Image</a></span></td>
+										<td style="white-space: nowrap;">
+											<button type="button" class="btn-pri-sm"
+												th:onclick="${'javascript:editAssignTicket(' + createdTickets.id +')'}">
+												<i class="fa fa-pencil"
+													style="margin-right: 10px; white-space: nowrap;"></i>Edit
+											</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div id="ticketPopUp" class="modal fade" role="dialog">
+						<div class="modal-dialog modal-lg">
+							Modal content
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">TicketDetails</h4>
+								</div>
+								<div class="modal-body">
+									<div class="portlet-body">
+										<div class="modal-body" id="ticketDivId"></div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-pri" data-dismiss="modal"
+										onclick="updatePopupDetails(true)">OK</button>
+									<button type="button" class="btn btn-sec" data-dismiss="modal">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+	<script src="assets/pages/scripts/table-datatables-scroller.min.js"
+		type="text/javascript"></script>
+	<script
+		src="../assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"
+		type="text/javascript"></script>
+	<script
+		src="../assets/pages/scripts/components-date-time-pickers.min.js"
+		type="text/javascript"></script>
+	<script>
+        $("#fromDate,#toDate").datepicker({
+            format : 'dd-mm-yyyy',
+            autoclose : true
+        });
+        function checkDates() {
+            var startDateVal = $("#fromDateId").val().trim().split(" ")[0];
+            var endDateVal = $("#toDateId").val().trim().split(" ")[0];
+            if (startDateVal != "" && startDateVal != "") {
+                var startDate = new Date(startDateVal.split("-")[2], startDateVal
+                        .split("-")[1], startDateVal.split("-")[0]);
+                var endDate = new Date(endDateVal.split("-")[2], endDateVal
+                        .split("-")[1], endDateVal.split("-")[0]);
+                if (startDate.getTime() > endDate.getTime()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }
+        function getTicketDetails() {
+        	if ($("#fromDate").val() == "") {
+                showToastr("Please Select From Date", "error");
+                fromDate.focus();
+                return false;
+            } else if ($("#toDate").val() == "") {
+                showToastr("Please Select To Date", "error");
+                toDate.focus();
+                return false;
+            } else if (!checkDates()) {
+                showToastr("From Date should be less than To Date", "error");
+                return false;
+            } else if ($("#category").val() == "0") {
+                showToastr("Please Select Category", "error");
+                $("#category").focus();
+                return false;
+            } else if ($("#statusId").val() == "0") {
+                showToastr("Please Select Status", "error");
+                $("#statusId").focus();
+                return false;
+            } else if (confirm("Are you sure you want to submit ?")) {
+                pageOverlay(0);
+                $.ajax({
+                    type : "GET",
+                    url : "/scaits/creationReportSearch",
+                    data : $("#formId").serialize(),
+                    success : function(data) {
+                        $("#reportPopupId").html(" ");
+                        $("#ticketPopUp").hide();
+                        $("#TicketsId").load(data);
+                        $("#TicketsId").html(data);
+                        pageOverlay(1);
+                    },
+                    error : function() {
+                        alert('Error occured');
+                        pageOverlay(1);
+                    }
+                });
+            }
+        }
+        function editAssignTicket(id) {
+            pageOverlay(0);
+            $.ajax({
+                type : "GET",
+                url : "/scaits/ticketCreationReportPopup",
+                data : {
+                    id : id
+                },
+                success : function(data) {
+                    $("#ticketDivId").html(data);
+                    $("#ticketPopUp").modal();
+                    pageOverlay(1);
+                },
+                error : function() {
+                    alert('Error occured');
+                    pageOverlay(1);
+                }
+            });
+        }
+
+        function validateEmail($email) {
+            var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+            return emailReg.test($email);
+        }
+
+        function updatePopupDetails(val) {
+            if ($("#status").val() == "0" || $("#status").val() == "") {
+                showToastr("Please Select Status", "error");
+                $("#status").focus();
+                return false;
+            } else if ($("#solution").val() == "0" || $("#solution").val() == "") {
+                showToastr("Please Select Solution", "error");
+                $("#solution").focus();
+                return false;
+            } else if (confirm("Are you sure you want to submit ?")) {
+                pageOverlay(0);
+                $('#ticketPopUp').modal('hide');
+                $.ajax({
+                    url : $("#reportPopupId").attr("action"),
+                    type : 'post',
+                    data : $("#reportPopupId").serialize(),
+                    success : function(data) {
+                        $("#reportPopupId").html(" ");
+                        $('#ticketPopUp').modal('hide');
+                        $("#TicketsId").html("");
+                        $("#TicketsId").html(data);
+
+                        showToastr("Ticket Successfully Updated.", "success");
+                        pageOverlay(1);
+                    },
+                    error : function() {
+                        showToastr("Unable to load details.", "error");
+                        pageOverlay(1);
+                    }
+                });
+            }
+        }
+        
+     
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

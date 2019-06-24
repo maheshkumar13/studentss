@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<style>
+input, select, textarea {
+	margin-bottom: 15px;
+}
+
+label {
+	font-weight: bold;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover
+	{
+	background: #228be6 !important;
+	color: #ffffff;
+	display: block;
+	border-bottom: 3px solid #228be6 !important;
+}
+
+.nav-tabs>li.active>a:after {
+	top: 100%;
+	left: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(34, 139, 230, 0);
+	border-top-color: #228be6;
+	border-width: 10px;
+	margin-left: -10px;
+}
+</style>
+<body>
+	<form action="" id="formId" method="post" enctype="multipart/form-data">
+		<div class="portlet light portlet-fit bordered card-1">
+			<div class="portlet-title">
+				<div class="caption">
+					<span class="caption-subject ">Create new SMS</span>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<ul class="nav nav-tabs custom-tab-active">
+					<li class="active"><a href="#tab_1_1" data-toggle="tab">
+							New SMS</a></li>
+					<li><a href="#tab_1_2" data-toggle="tab"
+						onclick="getTableData()"> View Status </a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="tab-pane fade active in" id="tab_1_1">
+						<div class="custom-div">
+							<DIV class="row">
+								<input name="id" id="id" type="hidden">
+								<div class="col-md-4">
+									<label>Message To</label> <select name="msgTo"
+										class="form-control" id="msgTo" onchange="toMsg(this.value)">
+										<option value="Select">Select</option>
+										<option value="STUDENT">Student</option>
+										<option value="OUTSTUDENT">OutStudent</option>
+										<option value="PARENT">Parent</option>
+										<option value="STAFF">Staff</option>
+										<option value="OTHERS">Others</option>
+									</select>
+								</div>
+								<div class="col-md-4">
+									<label>Message Type</label> <select name="msgType" id="msgType"
+										class="form-control">
+										<option value="0">Select Message</option>
+									</select>
+								</div>
+								<div class="col-md-8">
+									<label>Message details</label>
+									<textarea name="msgText" id="msgText" cols="3" rows="4"
+										maxlength="150" class="form-control"></textarea>
+								</div>
+								<div class="clearfix"></div>
+								<div class="col-md-8">
+									<th:h5 class="pull-right" id="count_message"></th:h5>
+								</div>
+								<div class="clearfix" style="margin-bottom: 30px"></div>
+								<div class="col-md-12 portlet-footer">
+									<button type="button" class="btn-pri" onclick="saveSmsText()">Save</button>
+								</div>
+							</DIV>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="tab_1_2"></div>
+				</div>
+			</div>
+
+		</div>
+	</form>
+
+	<script type="text/javascript">
+	$('#count_message').html('0/150');
+	$('#msgText').keyup(function() {
+	  var text_length = $('#msgText').val().length;
+           if(text_length<=150){
+     var   text_remaining =  text_length;
+        	      $('#count_message').html(text_remaining + ' /150');
+                    }
+  	});
+	
+		var mealsByCategory = {
+			STUDENT : [ "Select Message", "General", "Payments", "Marketing" ],
+			OUTSTUDENT : [ "Select Message", "General", "Marketing" ],
+			PARENT : [ "Select Message", "General" ],
+			STAFF : [ "Select Message", "General" ],
+			OTHERS : [ "Select Message", "General", "Marketing" ],
+			SELECT : [ "Select Message" ]
+		}
+
+		function toMsg(value) {
+			var select = $('#msgType');
+			select.find('option').remove();
+			$.each(mealsByCategory[value.toUpperCase()], function(key, value) {
+				$('<option>').val(value.toUpperCase()).text(value).appendTo(
+						select);
+			});
+		}
+
+		function saveSmsText() {
+	         pageOverlay(0);
+			if ($("#msgTo").val() == "Select") {
+			     showToastr("Please Select msgTo", "error");
+                 $("#msgTo").focus();
+                 return false;
+			} else if ($("#msgType").val() == "Select Message") {
+			    showToastr("Please Select msgType", "error");
+                $("#msgType").focus();
+                return false;
+			} else if ($("#msgText").val() == "") {
+			    showToastr("Please Select msgText", "error");
+                $("#msgText").focus();
+                return false;
+			} else if (confirm("Are you sure you want to submit ?")) {
+				alert("hi");
+			    pageOverlay(0);
+				$.ajax({
+					type : "get",
+					url : "/scaits/saveSms",
+					data : $("#formId").serialize(),
+					success : function(data) {
+						   showToastr(data, "success");
+						   $("#msgTo").val('Select');
+						   $("#msgType").val('SELECT MESSAGE');
+						       $("#msgText").val("");
+						       pageOverlay(1);
+					},
+					error : function() {
+						alert('Error occured');
+						pageOverlay(1);
+					}
+				});
+			}
+		}
+		function getTableData() {
+			  pageOverlay(0);
+			$.ajax({
+				type : "GET",
+				url : "/scaits/getSmsList",
+				success : function(data) {
+					pageOverlay(1);
+					$('#tab_1_2').html(data);
+					  
+				},
+				error : function() {
+					alert('Error occured');
+					  pageOverlay(1);
+				}
+			});
+		}
+
+		function editSMS(id) {
+			  pageOverlay(0);
+			$.ajax({
+				type : "get",
+				url : "/scaits/editSMS",
+				data : {
+					id : id
+				},
+				success : function(data) {
+					$('a[href="#tab_1_1"]').click();
+					var prePopulate = JSON.parse(data);
+					   $('#id').val(prePopulate[0]);
+					$('#msgTo').val(prePopulate[1]);
+					toMsg(prePopulate[1]);
+					$('#msgType').val(prePopulate[2]);
+					$('#msgText').val(prePopulate[3]);
+			         $('#count_message').html(prePopulate[3].length + ' /150');
+					       pageOverlay(1);
+				},
+				error : function() {
+					alert('Error occured');
+				  pageOverlay(1);
+				}
+			});
+		}
+		
+		
+	</script>
+</body>
+</html>

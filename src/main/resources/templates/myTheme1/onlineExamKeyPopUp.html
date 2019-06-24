@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="portlet box green">
+				<div class="portlet-title">
+					<div class="caption">
+						<span th:text="${examSchedule.examName}"></span> Exam Keys
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="panel-group accordion" id="accordion1">
+						<th:block th:each="subject:${subjectStrList}">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a class="accordion-toggle collapsed" data-toggle="collapse"
+											data-parent="#accordion1" th:href="${'#'+subject.trim()}"
+											aria-expanded="false"><span th:text="${subject}"></span>
+										</a>
+									</h4>
+								</div>
+								<div th:id="${subject.trim()}" class="panel-collapse collapse"
+									aria-expanded="false" style="height: 0px;">
+									<div class="panel-body"
+										style="height: 200px; overflow-y: auto;">
+										<table
+											class="table table-bordered table-striped table-hover table-condensed table-compact">
+											<thead>
+												<tr>
+													<th>Q.NO</th>
+													<th>Question Type</th>
+													<th>Delete Question</th>
+													<th>Review Question</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr
+													th:each="examScheduleMark,status:${examSchedule.examScheduleMarks}"
+													th:if="${examScheduleMark.category.name==subject}">
+													<td th:text="${examScheduleMark.qno}"></td>
+													<td th:text="${examScheduleMark.category.name}"></td>
+													<td align="center"><input type="checkbox" value=""
+														th:checked="${examScheduleMark.deleteQno}"
+														th:id="${'dele_'+examScheduleMark.id}"
+														th:onclick="${'javascript:displayDeleteText('+examScheduleMark.id+')'}"
+														></td>
+
+													<td><div class="col-xs-1">
+															<input type="checkbox" th:id="${examScheduleMark.id}"
+																th:checked="${examScheduleMark.review}" value="true"
+																onclick="displayText(this.id);">
+														</div>
+														<div class="col-xs-4">
+															<th:block th:if="${examScheduleMark.review}">
+																<input type="text" class="form-control input-sm-2"
+																	th:value="${examScheduleMark.reviewKey}"
+																	th:id="${'reviewKey_'+examScheduleMark.id}">
+															</th:block>
+															<th:block th:if="${!examScheduleMark.review}">
+																<input type="text" value=""
+																	class="form-control input-sm-2" style="display: none;"
+																	th:id="${'reviewKey_'+examScheduleMark.id}">
+															</th:block>
+														</div></td>
+													<td>
+														<button class="btn btn-primary btn-xs"
+															th:onclick="${'javascript:saveExamScheduleMarks(' + examScheduleMark.id  +',' + examSchedule.id  +')'}">Submit
+														</button>
+													</td>
+
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</th:block>
+					</div>
+				</div>
+			</div>
+			<!-- END EXAMPLE TABLE PORTLET-->
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			function displayText(id) {
+				if ($("#" + id).prop("checked")) {
+					$("#reviewKey_" + id).show();
+					$("#dele_" + id).prop("checked",false);
+				} else {
+					$("#reviewKey_" + id).hide();
+				}
+			}
+			
+			function displayDeleteText(id) {
+				if ($("#dele_" + id).prop("checked")) {
+					$("#" + id).prop("checked",false);
+					$("#reviewKey_" + id).hide();
+				} 
+			}
+
+			function saveExamScheduleMarks(scheduleMarksVal,examScheduleId) {
+				if (!($("#dele_" + scheduleMarksVal).prop("checked") || $(
+						"#" + scheduleMarksVal).prop("checked"))) {
+					alert("Please Check Either Delete Question Or Review Question");
+					return false;
+				}else if (($("#dele_" + scheduleMarksVal).prop("checked") && $(
+						"#" + scheduleMarksVal).prop("checked"))) {
+					alert("Both Delete Question and Review Question not Valid");
+					return false;
+				} else if ($("#" + scheduleMarksVal).prop("checked")
+						&& $("#reviewKey_" + scheduleMarksVal).val() == "") {
+					alert("Please Enter Review Question");
+					$("#reviewKey_" + scheduleMarksVal).focus();
+					return false;
+				} else {
+					var reviewQuestionVal = "";
+					if ($("#" + scheduleMarksVal).prop("checked")) {
+						reviewQuestionVal = $("#reviewKey_" + scheduleMarksVal)
+								.val();
+					}
+					$.ajax({
+						type : "GET",
+						url : "/reports/saveExamScheduleMarks",
+						data : {
+							scheduleMarksVal : scheduleMarksVal,
+							deleteQuestion : $("#dele_" + scheduleMarksVal)
+									.prop("checked"),
+							reviewQuestionVal : reviewQuestionVal
+						},
+						success : function(data) {
+							alert(data);
+							document.getElementById("genId"+examScheduleId).disabled=false;
+							//document.getElementById("keyClearId"+examScheduleId).disabled=false;
+						},
+						error : function() {
+							alert('Error occured');
+						}
+					});
+				}
+			}
+		</script>
+	</th:block>
+</body>
+</html>

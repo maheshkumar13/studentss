@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<link
+	th:href="@{/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css}"
+	rel="stylesheet" type="text/css" />
+<script
+	th:src="@{/assets/pages/scripts/components-date-time-pickers.min.js}"
+	type="text/javascript"></script>
+<script th:inline="javascript">
+	function onExamTypeChange() {
+		$("#groupId").val("0");
+		$('#testTypeId').empty(); //remove all child nodes
+		var newOption = $('<option value="0">Select Test Type</option>');
+		$('#testTypeId').append(newOption);
+		if ($("#examTypeId option:selected").text().trim() == "IPE") {
+			document.getElementById("noOfQuestionsId").value = "0";
+			document.getElementById("noOfQuestionsId").readOnly = true;
+		} else {
+			document.getElementById("noOfQuestionsId").readOnly = false;
+		}
+	}
+
+	function isNumberKey(event) {
+		var charCode = (event.which) ? event.which : event.keyCode;
+		if ((charCode >= 48 && charCode <= 57) || charCode == 8
+				|| charCode == 9 || (charCode >= 37 && charCode <= 40)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function onGroupChange() {
+		if ($('#groupId').val() != "0") {
+			$.ajax({
+				type : "GET",
+				url : "/qb/getTestTypeData",
+				data : {
+					examTypeId : $('#examTypeId').val(),
+					groupId : $('#groupId').val()
+				},
+				success : function(data) {
+					$('#testTypeId').html(data);
+				},
+				error : function() {
+					alert('Error occured');
+					document.getElementById("groupId").focus();
+					return false;
+				}
+			});
+		} else {
+			alert("Please Select Group");
+			document.getElementById("groupId").focus();
+			return false;
+		}
+	}
+</script>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="row">
+			<div class="col-md-12">
+				<!-- BEGIN VALIDATION STATES-->
+				<div class="portlet light card-1 portlet-fit portlet-form bordered">
+					<div class="portlet-title">
+						<div class="caption">
+							<span
+								class="caption-subject">Test Creation</span>
+						</div>
+					</div>
+					<div class="portlet-body">
+						<!-- BEGIN FORM-->
+						<form th:action="@{/qb/saveTest}" id="saveTestFormId"
+							class="form-horizontal" method="post">
+							
+							
+							<div class="form-body">
+								<div class="alert alert-danger display-hide">
+									<button class="close" data-close="alert"></button>
+									You have some form errors. Please check below.
+								</div>
+								<div class="alert alert-success display-hide">
+									<button class="close" data-close="alert"></button>
+									Your form validation is successful!
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label">Exam Type<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="examTypeId"
+											required="required" data-required="1"
+											onchange="onExamTypeChange();">
+											<option value="0">Select Exam Type</option>
+											<option th:each="examType : ${examTypeList}"
+												th:value="${examType.id}" th:text="${examType.examTypeName}"></option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">									
+									<div class="col-md-4">
+									<label class="control-label">Group<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="groupId"
+											required="required" data-required="1"
+											onchange="onGroupChange();">
+											<option value="0">Select Group</option>
+											<option th:each="group : ${groupList}" th:value="${group.id}"
+												th:text="${group.groupName}"></option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label">Test Type<span
+										class="required"> * </span>
+									</label>
+										<select class="form-control p-0" id="testTypeId"
+											name="testType.id" required="required" data-required="1">
+											<option value="0">Select Test Type</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label">Test Code <span
+										class="required"> * </span>
+									</label>
+										<input type="text" name="testCode" id="testCodeId"
+											onchange="javascript:this.value=this.value.toUpperCase();"
+											data-required="1" class="form-control" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label">Test Start Date <span
+										class="required"> * </span>
+									</label>
+										<input name="testDate" id="testDateId"
+											class="form-control form-control-inline date-picker"
+											size="16" type="text" value="" required="required" />
+									</div>
+								</div>
+
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label">Test End Date <span
+										class="required"> * </span>
+									</label>
+										<input name="testEndDate" id="testEndDateId"
+											class="form-control form-control-inline date-picker"
+											size="16" type="text" value="" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">Model Paper Year<span
+										class="required"> * </span>
+									</label>
+										<input name="testModelYear" type="number"
+											onkeypress="return isNumberKey(event);" id="testModelYearId"
+											class="form-control" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">No Of Questions<span
+										class="required"> * </span>
+									</label>
+										<input name="noOfQuestions" type="number"
+											onkeypress="return isNumberKey(event);" id="noOfQuestionsId"
+											class="form-control" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									
+									<div class="col-md-4">
+									<label class="control-label ">Duration<span
+										class="required"> * </span>
+									</label>
+										<input name="time" type="number" class="form-control"
+											onkeypress="return isNumberKey(event);" id="durationId"
+											required="required" />
+									</div>
+								</div>
+								<!-- 
+								<div class="form-actions">
+									<div class="row">
+										<div class="col-md-offset-3 col-md-9">
+											<button type="button" class="btn green"
+												id="testCreationSubmitId">Submit</button>
+										</div>
+									</div>
+								</div>
+								
+								 -->
+							</div>
+						
+					
+						
+						</form>
+						<!-- END FORM-->
+					</div>
+				<div class="portlet-footer">                                  
+                                      <button type="button" class="btn btn-pri"id="testCreationSubmitId">Submit</button>
+                                      
+                                </div>
+				     
+				</div>
+				<!-- END VALIDATION STATES-->
+			</div>
+		</div>
+	</div>
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$("#testCreationSubmitId")
+					.on(
+							"click",
+							function() {
+								if ($("#examTypeId").val() == "0") {
+									showToastr("Please Select Exam Type",
+											"error");
+									$("#examTypeId").focus();
+									return false;
+								} else if ($("#groupId").val() == "0") {
+									showToastr("Please Select Group", "error");
+									$("#groupId").focus();
+									return false;
+								} else if ($("#testTypeId").val() == "0") {
+									showToastr("Please Select Test Type",
+											"error");
+									$("#testTypeId").focus();
+									return false;
+								} else if ($("#testCodeId").val() == "") {
+									showToastr("Please Enter Test Code",
+											"error");
+									$("#testCodeId").focus();
+									return false;
+								} else if ($("#testDateId").val() == "") {
+									showToastr("Please Select Test Start Date",
+											"error");
+									$("#testDateId").focus();
+									return false;
+								} else if ($("#testEndDateId").val() == "") {
+									showToastr("Please Select Test End Date",
+											"error");
+									$("#testEndDateId").focus();
+									return false;
+								} else if ($("#testModelYearId").val() == "") {
+									showToastr("Please Enter Test Model Year",
+											"error");
+									$("#testModelYearId").focus();
+									return false;
+								}
+								if ($("#examTypeId option:selected").text()
+										.trim() != "IPE") {
+									if ($("#noOfQuestionsId").val() == "") {
+										showToastr(
+												"Please Enter No Of Questions",
+												"error");
+										$("#noOfQuestionsId").focus();
+										return false;
+									}
+								}
+								if ($("#durationId").val() == "") {
+									showToastr("Please Enter Duration", "error");
+									$("#durationId").focus();
+									return false;
+								} else {
+									if (confirm("Are You Sure You Want To Insert ? ")) {
+										pageOverlay(0);
+										$
+												.ajax({
+													url : '/qb/saveTest',
+													type : 'post',
+													data : $("#saveTestFormId")
+															.serialize(),
+													success : function(data) {
+														if (data
+																.indexOf("FEEDBACK-") != -1) {
+															pageOverlay(1);
+															msg = data
+																	.substring(data
+																			.indexOf(
+																					"-",
+																					9) + 1);
+															showToastr(msg,
+																	"error");
+															$("#testCodeId")
+																	.focus();
+														} else {
+															$("#saveTestFormId")[0]
+																	.reset();
+															pageOverlay(1);
+															showToastr(data,
+																	"success");
+															$("#examTypeId")
+																	.focus();
+														}
+													},
+													error : function() {
+														pageOverlay(1);
+														showToastr(
+																"Unable to load details.",
+																"error");
+													}
+												});
+									}
+								}
+							});
+
+			$(document).ready(function() {
+				$("#examTypeId").focus();
+			});
+		</script>
+	</th:block>
+</body>
+</html>

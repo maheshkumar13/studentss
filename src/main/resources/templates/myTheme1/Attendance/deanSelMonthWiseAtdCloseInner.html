@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<br>
+<div class="container" style="width: 99%;">
+<div
+				th:if="${monthAtdCloseDtoList!=null && monthAtdCloseDtoList.size()>0}">
+	<table id="deanAtdCloseMonthReportWiseId"
+		class="table table-striped table-bordered table-hover">
+		<thead>
+			<tr>
+				<th>S.NO</th>
+				<th>CityName</th>
+				<th>CampusName</th>
+				<th>Close Date(Dean/AGM)</th>
+				<th></th>
+				
+			</tr>
+		</thead>
+		<tbody>
+				<tr th:each="monthAtdCloseVar,monthStatus : ${monthAtdCloseDtoList}" >
+					<td><p th:text="${monthStatus.index+1}"></p></td>
+					<td><p th:text="${monthAtdCloseVar.cityName}"></p></td>
+					<td><p th:text="${monthAtdCloseVar.campusName}"></p></td>
+					<td>
+					<p th:text="${#dates.format(monthAtdCloseVar.lastAtdClose, 'dd-MM-yyyy')}"></p>
+					<!-- <p th:text="${monthAtdCloseVar.lastAtdClose}"> -->
+					</td>
+					<td>
+					
+					<a class="link" href="javascript:void(0)"
+						data-toggle="modal" data-target="#deanSelMonthCampusPopupId"
+						th:onclick="${'javascript:getDeanSelMonthAndCampusPopup(' + monthAtdCloseVar.campusId +',' + monthAtdCloseVar.monthVal+')'}">
+						Monthly Close
+						</a>
+					</td>
+					
+				</tr>
+		</tbody>
+	</table></div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		var table = $('#deanAtdCloseMonthReportWiseId').DataTable({
+			scrollY : "300px",
+			scrollX : true,
+			scrollCollapse : true,
+			paging : true,
+			autoWidth: false
+		});
+	});
+</script>
+</html>

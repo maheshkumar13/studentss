@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+
+
+	<script>
+	
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+			   $($.fn.dataTable.tables(true)).DataTable()
+			      .columns.adjust();
+			});
+		$(document).ready(function() {
+			$('#sample_7').DataTable( {
+			 
+				pageLength: 10,
+			
+		        dom: 'Bfrtip',
+		        buttons: ['copy', 'csv', 'excel', 'pdf', 'print' ]
+		    } );
+		});
+		
+		
+		
+		
+		
+		</script>
+</head>
+<body>
+	<!-- BEGIN PAGE BASE CONTENT -->
+		<div class="row">
+			<div class="col-md-12">
+
+
+						<div class="row">
+							<div class="col-md-12">
+								<!-- BEGIN EXAMPLE TABLE PORTLET-->
+								<div class="portlet box green">
+									
+									<div class="portlet-title">
+									<div class="caption">
+										<i class="fa fa-globe"></i>Campus Test Details
+									</div>
+									<div class="tools"></div>
+								</div>
+									<div class="portlet-body" style="width: 100%;">
+										<table class="table table-striped table-bordered table-hover"
+											id="sample_7" style="overflow-x: auto;overflow-y: hidden;">
+
+											<thead>
+												<tr align="center">
+												<th  nowrap="nowrap">Adm No</th>
+												<th  nowrap="nowrap">Study Class</th>
+													<th  nowrap="nowrap">Test Code</th>
+													
+												</tr>
+											</thead>
+
+
+
+											<tbody>
+												 
+														<tr align="center"  th:each="enggMarksUploadSelVal:${enggMarksUploadSelList}">
+														
+														<td th:text="${enggMarksUploadSelVal.admNo}">
+													</td>
+													<td th:text="${enggMarksUploadSelVal.studyClass.displayName}">
+													</td>
+													
+													<td th:text="${enggMarksUploadSelVal.exam.testCode}">
+													</td>
+															
+															</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- END EXAMPLE TABLE PORTLET-->
+
+							</div>
+						</div>
+
+			</div>
+		</div>
+<div id="selTestAnlysisStatusId"></div>
+
+
+
+
+</body>
+</html>

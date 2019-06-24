@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<script type="text/javascript">
+	$(document).ready(
+			function() {
+				$("#searchTxtId").on(
+						"keyup",
+						function() {
+							var value = $(this).val().toLowerCase();
+							$("#myList li").filter(
+									function() {
+										$(this).toggle(
+												$(this).text().toLowerCase()
+														.indexOf(value) > -1)
+									});
+						});
+			});
+</script>
+<style>
+.m-t-md {
+	margin-top: 0;
+}
+</style>
+<div th:if="${empLeaveRequests!=null && empLeaveRequests.size()>0}">
+	<br>
+	<div class="row">
+		<div class="col-lg-3">
+			<input class="form-control" id="searchTxtId" type="text"
+				placeholder="Search..">
+		</div>
+	</div>
+	<br>
+	<div class="row" style="height: 480px; overflow-y: scroll;">
+		<ul class="list-group" id="myList">
+			<div th:each="itrVar,itrStatus:${empLeaveRequests}">
+				<li style="list-style: none;">
+					<div class="col-lg-3">
+						<div class="contact-box center-version">
+							<a> <img alt="image" class="img-circle"
+							th:src="'http://scaits.info/attachment/empImage/'+${itrVar.employee.employeeDetails[0].tempPayroll}+'_Photo.jpg'">
+								<p class="h6 m-b-xs">
+									<strong>
+									<span th:text="${itrVar.employee.userName}"></span>
+									<br>
+									<span th:text="${itrVar.employee.payRollId}"></span>
+									</strong>
+								</p>
+								<div>
+								<span th:text="${itrVar.employee.designation}"></span>
+								</div>
+								<div class="m-t-md">
+									<strong style="color: orange;">
+									<span th:text="${itrVar.leaveType.leaveType}"></span>
+									( <s:property
+											value="%{status}" /> ) </strong><br> <span
+										style="font-size: 12px; white-space: nowrap;"> <strong
+										style="color: #1ab394;">
+										<span th:text="${#dates.format(itrVar.fromDate, 'dd-MM-yyyy')}"></span>
+										</strong> 
+										<div th:if="${fromDate!=toDate}">			
+												to <strong style="color: #1ab394;">
+												<span th:text="${#dates.format(itrVar.toDate, 'dd-MM-yyyy')}"></span>
+												 </strong>
+										</div> ( <strong style="color: #1c84c6">
+										<span th:text="${itrVar.totalDuration}"></span>
+										</strong> Day(s) )
+									</span><br>
+									<div th:if="${itrVar.reason.length()>20}">
+									
+										<span th:title="${itrVar.reason}">
+										<span th:text="${itrVar.reason.substring(0,20)+'...'}"></span>
+										</span>
+									</div>
+									<div th:if="${!(itrVar.reason.length()>20)}">
+										<span th:text="${itrVar.reason}"></span>&nbsp;
+									</div>
+									<br>
+									<div th:if="${itrVar.comments!=null && itrVar.comments.length()>20}">
+										<span th:title="${itrVar.comments}">
+										<span th:text="${itrVar.comments.substring(0,20)+'...'}"></span>
+										</span>
+									</div>
+									<div th:if="${!(itrVar.comments!=null && itrVar.comments.length()>20)}">
+										<span style="color: orangered"><span th:text="${itrVar.comments}"></span>&nbsp;</span>
+									</div>
+								</div>
+							</a>
+							<div class="contact-box-footer">
+								<div class="m-t-xs btn-group">
+									<a class="btn btn-xs btn-white" href="javascript:void(0)"
+										data-toggle="modal" data-target="#leaveCancelPopupId"
+										th:onclick="${'javascript:getLeaveUpdatePopup(' + itrVar.leaveId +',false)'}"
+										><i
+										class="fa fa-eye"></i> View </a>
+									<div th:if='${itrVar.status.equals("REQUESTED")}'>
+										<a class="btn btn-xs btn-white" href="javascript:void(0)"
+											data-toggle="modal" data-target="#leaveCancelPopupId"
+											th:onclick="${'javascript:getLeaveUpdatePopup(' + itrVar.leaveId +',true)'}"
+											><i
+											class="fa fa-times"></i> Cancel</a>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</li>
+			</div>
+		</ul>
+	</div>
+</div>
+<div th:if="${!(empLeaveRequests!=null && empLeaveRequests.size()>0)}">
+	<p align="center">
+		<strong>No Records Found.</strong>
+	</p>
+</div>

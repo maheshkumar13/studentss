@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<style type="text/css">
+.student-thum {
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.13), 0 2px 4px rgba(0, 0, 0, 0.18);
+	cursor: pointer;
+	background: #f9f9f9;
+	border-radius: 6px;
+	display: block;
+	overflow: hidden;
+	height: auto;
+	position: relative;
+	width: auto;
+	padding: 0;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+.student-table {
+	width: 100%
+}
+
+.student-table td {
+	padding: 10px 3px;
+	border-bottom: 1px dotted #999;
+}
+
+.student-table td:last-line {
+	padding: 10px 3px;
+	border-bottom: none;
+}
+
+.t-12 {
+	font-size: 12px;
+}
+
+.font-orange {
+	color: #ff6f61;
+}
+
+.student-thum img {
+	display: block;
+	text-align: center;
+	margin: auto;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	border: 3px solid #cccccc
+}
+</style>
+<script th:inline="javascript">
+
+      /*<![CDATA[*/
+	    
+         var appAcademic= /*[[${appVal.academic.id}]]*/;
+         var studyclass=/*[[${appVal.joinClass.id}]]*/;
+    	 var studyclassName=/*[[${appVal.joinClass.displayName}]]*/;
+         
+
+       /*]]>*/
+</script>
+<script type="text/javascript">
+
+function getJoinyear() {
+	
+	
+	
+	if(document.getElementById("ddlJoinedClass").selectedIndex == 0){
+		document.getElementById("ddlJoinYear").selectedIndex = 0;
+	}else{
+		
+		
+		$.ajax({
+			type : "GET",
+			url : "/application/getActiveAcademicClassWise",
+			data : {
+				studyClass : document.getElementById("ddlJoinedClass").value,
+				academic : appAcademic
+			},
+			success : function(data) {
+				var select = $('#ddlJoinYear');
+				select.find('option').remove();
+				$.each(data, function(key, value) {
+					$('<option>').val(key).text(value).appendTo(select);
+				});
+				
+			}
+		});	
+	}
+	
+}
+function getStreams() {
+	
+	$.ajax({
+		type : "GET",
+		url : "/application/getStreams",
+		data : {
+			campus:document.getElementById("ddlcampusName").value,
+			joinInto : document.getElementById("ddlJoinedClass").value,
+			joinYear : appAcademic
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+			var select = $('#selStreamId');
+			select.find('option').remove();
+			$.each(data, function(key, value) {
+				$('<option>').val(key).text(value).appendTo(select);
+			});
+			
+		}
+	});	
+}
+function getPrograms() {
+	$.ajax({
+		type : "GET",
+		url : "/application/getPrograms",
+		data : {
+			campus:document.getElementById("ddlcampusName").value,
+			joinInto : document.getElementById("ddlJoinedClass").value,
+			stream : document.getElementById("selStreamId").value,
+			joinYear : appAcademic
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+			var select = $('#selProgramNameId');
+			select.find('option').remove();
+			$.each(data, function(key, value) {
+				$('<option>').val(key).text(value).appendTo(select);
+			});
+			
+		}
+	});
+	
+}
+function getCourses() {
+	$.ajax({
+		type : "GET",
+		url : "/application/getProgramCourses",
+		data : {
+			joinInto : document.getElementById("ddlJoinedClass").value,
+			campus:document.getElementById("ddlcampusName").value,
+			joinYear : appAcademic,
+			program : document.getElementById("selProgramNameId").value
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+			var select = $('#coursesListId');
+			select.find('option').remove();
+			$.each(data, function(key, value) {
+				$('<option>').val(key).text(value).appendTo(select);
+			});
+			
+		}
+	});
+	
+}
+function getCourseBatches() {
+	$.ajax({
+		type : "GET",
+		url : "/application/getBatches",
+		data : {
+			campus:document.getElementById("ddlcampusName").value,
+			studyClass : document.getElementById("ddlJoinedClass").value,
+			program : document.getElementById("selProgramNameId").value,
+			course : document.getElementById("coursesListId").value,
+			joinYear : appAcademic
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+			var select = $('#batchId');
+			select.find('option').remove();
+			$.each(data, function(key, value) {
+				$('<option>').val(key).text(value).appendTo(select);
+			});
+			
+		}
+	});
+}
+
+
+function getCourseFee() {
+	$.ajax({
+		type : "GET",
+		url : "/application/getCourseFee",
+		data : {
+			studyClass : document.getElementById("ddlJoinedClass").value,
+			campusTrack : document.getElementById("coursesListId").value,
+			academic : appAcademic,
+			courseBatch : document.getElementById("batchId").value
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+			document.getElementById('txtCourseFee').value=parseInt(data,10);
+			
+		}
+	});
+}
+
+
+function getBatchDates() {
+	$.ajax({
+		type : "GET",
+		url : "/application/getBatchStartDate",
+		data : {
+			courseBatch : document.getElementById("batchId").value
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+            if(data!=null){
+            	document.getElementById("courseBatchStartDateId").value=data;
+            	getBatchEndDate();
+            	loadSections();
+	}else{
+		document.getElementById("courseBatchStartDateId").value='';
+		document.getElementById("courseBatchEndDateId").value='';
+	}
+			
+		}
+	});
+}
+
+function getBatchEndDate() {
+	
+	$.ajax({
+		type : "GET",
+		url : "/application/getBatchEndDate",
+		data : {
+			courseBatch : document.getElementById("batchId").value
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+			var batchDateVal  = data;
+            if(batchDateVal!=null){
+            	document.getElementById("courseBatchEndDateId").value=data;
+	}else{
+		document.getElementById("courseBatchEndDateId").value='';
+	}
+			
+		}
+	});
+}
+function loadSections() {
+	
+	$.ajax({
+		type: "GET",
+		url: "/application/getSections",
+		data : {
+			campus:document.getElementById("ddlcampusName").value,
+			courseBatch:document.getElementById("batchId").value,
+			campusTrack : document.getElementById("coursesListId").value,
+			program : document.getElementById("selProgramNameId").value,
+			studyClass : document.getElementById("ddlJoinedClass").value,
+			selectedAcademic : appAcademic
+		},
+		dataType: 'text',
+		success: function (data) {
+			var prePopulate = JSON.parse(data);
+			var select = $('#sectionNameId');
+			select.find('option').remove();
+			$.each(prePopulate, function (key, value) {
+				$('<option>').val(key).text(value).appendTo(select);
+			});
+
+		}
+	});
+} 
+
+
+
+function Verify(){
+	 
+	 if(document.getElementById("ddlcampusName").selectedIndex==0){
+   	 alert("please select campus");
+   	 document.getElementById('ddlcampusName').focus();
+   	 return false;
+   	 
+    } else if(document.getElementById("txtavbStrength").value==0){
+   	 alert("Admisions are not available in this campus ("+ $("#ddlcampusName :selected").text().trim());
+   	 document.getElementById('ddlcampusName').focus();
+   	 return false;
+   	 
+    }
+	 else if (document.getElementById("ddlJoinedClass").selectedIndex== 0) {
+        alert("Please select join into.");
+        document.getElementById('ddlJoinedClass').focus();
+        return false;
+    }
+    else if (document.getElementById("ddlJoinYear").selectedIndex== 0) {
+        alert("Please select Join year");
+        document.getElementById('ddlJoinYear').focus();
+        return false;
+    } else if (document.getElementById("ddlJoinYear").value== 0) {
+        alert("Please select Join year");
+        document.getElementById('ddlJoinYear').focus();
+        return false;
+    }
+    else if (document.getElementById("ddlJoinedClass").value!=studyclass) {
+        alert("This student already selected  "+studyclassName+"  in application sales" );
+        document.getElementById('coursesListId').focus();
+        return false;
+    }
+    else if (document.getElementById("selStreamId").selectedIndex== 0) {
+        alert("Please select Stream Name");
+        document.getElementById('selStreamId').focus();
+        return false;
+    }  
+	 else if (document.getElementById("selProgramNameId").selectedIndex== 0) {
+        alert("Please select Program Name");
+        document.getElementById('selProgramNameId').focus();
+        return false;
+    } 
+    else if (document.getElementById("coursesListId").selectedIndex== 0) {
+        alert("Please select course name");
+        document.getElementById('coursesListId').focus();
+        return false;
+    } else if (document.getElementById("batchId").selectedIndex== 0) {
+        alert("Please select batch name");
+        document.getElementById('batchId').focus();
+        return false;
+    }
+    else if (document.getElementById("sectionNameId").selectedIndex== 0) {
+        alert("Please select section name");
+        document.getElementById('sectionNameId').focus();
+        return false;
+    } 
+    else if(confirm("Are you sure you want to confirmation an application")){
+   	 return submitForm();
+    }
+    else{
+   	 return false;
+    }
+}
+
+
+function submitForm() {
+	
+	$.ajax({
+		type : 'POST',
+		url : "/application/saveApplicationConfirmation",
+		data : $('#appConfirmFormId').serialize(),
+		success : function(data) {
+			
+			if(data.indexOf("ERROR-")!=-1) {
+				msg = data.substring(8,data.length);
+				alert(msg);
+			} else if(data.indexOf("FEEDBACK-1")!=-1) {
+				alert("Successfully Done!!!");
+				showPage('/scaits/interApplicationConfirmation');
+			}
+		},
+	error: function () {
+        alert('Unable to load details');
+    }
+	});
+	return false;
+}
+</script>
+</head>
+<body>
+
+
+		<form class="form-horizontal" th:action="@{/application/saveApplicationConfirmation}" method="post" id="appConfirmFormId" >
+		
+		
+		<input type="hidden" name="academic" th:value="${academic.id}">
+					<input type="hidden" name="form" th:value="${appVal.appNo}">
+					
+					
+	<div class="row">
+		<div class="col-md-12">
+			<div class="portlet light portlet-fit bordered calendar card-1">
+				<div class="portlet-title">
+					<div class="caption">
+						<span class="caption-subject">Application Confirmation</span>
+					</div>
+				</div>
+				<div class="portlet-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="student-thum">
+								<div class="row">
+									<div class="col-md-12">
+										<table class="student-table">
+											<tr>
+												<td colspan="2"><img src="assets/global/img/s2.jpg"
+													alt="" class="img-circle"></td>
+											</tr>
+											<tr>
+												<td colspan="2" class="font-orange bold"><span
+													th:text="${appVal!=null?appVal.studentName:''}"></span></td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">Gender :</td>
+												<td class="t-12 bold text-center"
+													th:text="${appVal!=null?appVal.gender:''}"></td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center" style="width: 50%">Parent
+													name :</td>
+												<td class="t-12 bold text-center" style="width: 40%"
+													th:text="${appVal!=null?appVal.parentName:''}"></td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">Application number :
+												</td>
+												<td class="t-12 bold text-center"
+													th:text="${appVal!=null?appVal.appNo:''}"></td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">Admission number :</td>
+												<td class="t-12 bold text-center"
+													th:text="${appVal!=null?appVal.appNo:''}"></td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">Application fee :</td>
+												<td class="t-12 bold text-center"
+													th:text="${appVal!=null?appVal.appFee:''}"></td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">Confirmation amt :</td>
+												<td class="t-12 bold text-center"
+													th:text="${appVal!=null?appVal.appFee:''}"></td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">1st year conc :</td>
+												<td class="t-12 bold text-center"
+													th:text="${(appVal!=null && appVal.applicationConcessions!=null && appVal.applicationConcessions.size()>0)?appVal.applicationConcessions[0].firstOrOthers:''}">
+												</td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">2nd year conc :</td>
+												<td class="t-12 bold text-center"
+													th:text="${(appVal!=null && appVal.applicationConcessions!=null && appVal.applicationConcessions.size()>0)?appVal.applicationConcessions[0].firstOrOthers:''}">
+												</td>
+											</tr>
+											<tr>
+												<td class="t-12 bold text-center">Reason for conc :</td>
+												<td class="t-12 bold text-center"
+													th:text="${(appVal!=null && appVal.applicationConcessions!=null && appVal.applicationConcessions.size()>0 && appVal.applicationConcessions[0].reason!=null)?appVal.applicationConcessions[0].reason.reason:''}">
+													-</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-9">
+							<div class="row">
+								<div class="col-md-12">
+									<ul class="nav nav-tabs custom-tab-active">
+										<li class="active"><a href="#tab_1_1" data-toggle="tab">
+												PRO information</a></li>
+										<li><a href="#tab_1_2" data-toggle="tab"> Admission
+												Fee information </a></li>
+									</ul>
+									<div class="tab-content">
+										<div class="tab-pane active in fade" id="tab_1_1"
+											style="height: 400px">
+											<div class="row">
+												<div class="col-md-3">
+													<label> Pro name</label> <input name="" type="text"
+														class="form-control"
+														th:value="${appVal.issueToPROEmpId.userName}" disabled>
+												</div>
+												<div class="col-md-3">
+													<label>Pro Mobile number</label> <input name="" type="text"
+														class="form-control" disabled
+														th:value="${appVal.issueToPROEmpId.mobile}">
+												</div>
+												<div class="col-md-3">
+													<label>Campus name</label> <select class="form-control"
+														name="proposedCampus" id="ddlcampusName"
+														onchange="getProposedCity()">
+														<option value="0">Select Join Into</option>
+														<option th:each="campus: ${campuses}"
+															th:value="${campus.id}"
+															th:selected="${appVal.proposedCampus!=null && appVal.proposedCampus.id==campus.id}"
+															th:text="${campus.campusName}"></option>
+													</select>
+												</div>
+												<div class="col-md-3">
+													<label>Available strength</label> <input name="" id="txtavbStrength"
+														type="text" class="form-control"
+														th:value="${availablestrength}" disabled>
+												</div>
+												<div class="col-md-3">
+													<label>Join into</label> <select class="form-control"
+														id="ddlJoinedClass" onchange="getJoinyear();"
+														name="studyClass">
+														<option value="0">Select Join Into</option>
+														<option th:each="studyClass: ${studyClassList}"
+															th:value="${studyClass.id}"
+															th:text="${studyClass.displayName}"></option>
+													</select>
+												</div>
+												<div class="col-md-3">
+													<label>Join year</label> <select class="form-control"
+														id="ddlJoinYear" onchange="getStreams();">
+														<option value="0">Select Join Year</option>
+														<option th:each="academicYear: ${academicYearList}"
+															th:value="${academicYear.id}"
+															th:text="${academicYear.joinYear}"></option>
+													</select>
+
+
+												</div>
+												<div class="col-md-3">
+													<label>Stream</label> <select class="form-control"
+														id="selStreamId" onchange="getPrograms();">
+														<option value="0">Select Stream</option>
+														<option th:each="stream: ${streamList}"
+															th:value="${stream.id}"
+															th:text="${streamList.streamName}"></option>
+													</select>
+
+
+												</div>
+
+												<div class="col-md-3">
+													<label>Program</label> <select class="form-control"
+														id="selProgramNameId" onchange="getCourses();">
+														<option value="0">Select Program Name</option>
+														<option th:each="programName: ${programNameList}"
+															th:value="${programName.id}"
+															th:text="${programName.programName}"></option>
+													</select>
+
+
+
+												</div>
+
+												<div class="col-md-3">
+													<label>Course name</label> <select class="form-control"
+														name="campusTrack" id="coursesListId"
+														onchange="getCourseBatches();">
+														<option value="0">Select Course</option>
+														<option th:each="course: ${coursesList}"
+															th:text="${course.courseTrack.courseTrackCode + '  (  '  +course.courseTrack.courseTrackName + '  /  '+course.courseTrack.groupName+ '  /  '+course.courseTrack.medium+ '  /  '+course.courseTrack.courseTrackCode+'  )  '}"
+															th:value="${course.campusTrackId}"></option>
+													</select>
+
+
+
+												</div>
+												<div class="col-md-3">
+													<label>Batch name</label> <select class="form-control"
+														id="batchId" onchange="getCourseFee();getBatchDates()" name="courseBatchVal">
+														<option value="0">Select Batch Name</option>
+														<option th:each="courseBatch: ${courseBatchList}"
+															th:value="${courseBatch.id}"
+															th:text="${courseBatch.batchName}"></option>
+													</select>
+												</div>
+												<div class="col-md-3">
+													<label>Start date</label> <input
+														name="courseBatchStartDate" type="text"
+														class="form-control" id="courseBatchStartDateId" disabled>
+
+												</div>
+												<div class="col-md-3">
+													<label>End date </label> <input name="courseBatchEndDate"
+														type="text" class="form-control" id="courseBatchEndDateId"
+														disabled>
+												</div>
+
+												<div class="col-md-3">
+													<label>Course fee</label> <input type="text"
+														id="txtCourseFee" class="form-control" disabled>
+												</div>
+
+												<div class="col-md-3">
+													<label>Section</label> <select class="form-control"
+														name="collegeSection" id="sectionNameId">
+														<option value="0">Select Section Name</option>
+														<option th:each="collegeSection: ${collegeSectionList}"
+															th:value="${collegeSection.id}"
+															th:text="${collegeSection.sectionName}"></option>
+													</select>
+
+
+
+
+												</div>
+
+											</div>
+										</div>
+										<div class="tab-pane fade" id="tab_1_2" style="height: 400px">
+											<div class="table-container">
+												<table
+													class="table table-striped table-bordered order-column nowrap leave-status-table dataTable">
+													<thead>
+														<tr>
+															<th>Heads</th>
+															<th>Fee amount</th>
+															<th>Receipts</th>
+															<th>Pay mode</th>
+															<th>Pay type</th>
+															<th>Pay date</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr th:each="applicationPayment: ${applicationPayments}">
+															<td><span th:text="${applicationPayment.Heads}"></span></td>
+															<td class="text-right"><span th:text="${applicationPayment.amount}"></span></td>
+															<td><span th:text="${applicationPayment.Receipt}"></span></td>
+															<td><span th:text="${applicationPayment.PayMode}"></span></td>
+															<td><span th:text="${applicationPayment.PayType}"></span></td>
+															<td><span th:text="${#dates.format(applicationPayment.PayDate, 'dd-MM-yyyy')}"></span></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-12"
+									style="border-top: 1px solid #ddd; padding-top: 15px">
+									<button type="button" class="btn btn-pri" onclick="return Verify();">Confirm</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--<div class="portlet-footer">                                  
+                                      <button type="button" class="btn btn-pri">Save</button>
+                                      <button type="button" class="btn btn-sec">Print</button>
+                                </div>-->
+			</div>
+		</div>
+	</div>
+	</form>
+</body>
+</html>

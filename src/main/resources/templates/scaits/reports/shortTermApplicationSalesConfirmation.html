@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+</head>
+<body>
+	<div class="portlet light portlet-fit bordered card-1">
+		<div class="portlet-title">
+			<div class="caption">Short Term  Application  sales Confirmation Deatils</div>
+		</div>
+	
+					
+		<div class="portlet-body">
+			<div class="custom-div">
+				<form class="form-horizontal" action="/scaits/shortTermApplicationSalesConfirmation" method="post" id="formId">
+					<div class="col-md-4">
+						<button type="button" class="btn btn-info" id="searchBtnId"
+							onclick="getshortData('confirmed');">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;Confirmed
+							Students
+						</button>
+					</div>
+
+					<div class="col-md-4">
+						<button type="button" class="btn btn-info" id="searchId"
+							onclick="getshortData('not confirmed');">
+							<span class="glyphicon glyphicon-search"></span>&nbsp;Not
+							Confirmed
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div id="studentDeatailsGridId"></div>
+            </div>                                                                           
+
+<script th:inline="javascript">
+function getshortData(status) {
+			$.ajax({
+			type : "GET",
+			url : "/scaits/shortTermApplicationSalesConfirmationDetailsData",
+			data : {
+				status  : status
+			},
+		dataType: 'text',
+			success : function(data) {
+				$('#studentDeatailsGridId').html('');
+				$('#studentDeatailsGridId').html(data);
+			},
+			error : function() {
+				alert('Error occured');
+			}
+		});
+	}
+	
+	
+
+</script>
+</body>
+</html>

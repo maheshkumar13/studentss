@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{student/studentDecorator}">
+<meta charset="utf-8">
+<title>Online Results</title>
+<head>
+<style type="text/css">
+.note {
+	padding: 0px;
+}
+</style>
+</head>
+<body>
+	<div layout:fragment="page_content">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="portlet light bordered" id="examsListDivId">
+					<div class="portlet-title">
+
+						<div class="caption caption-md">
+							<div class="font-green"
+								style="font-weight: bold; font-size: 21px;">Exam Schedule
+								Analysis</div>
+						</div>
+						<div class="actions">
+							<div class="btn-group btn-group-devided" data-toggle="buttons">
+								<label
+									class="btn btn-transparent btn-no-border blue-oleo btn-outline btn-circle btn-sm active"
+									onclick="getOnline();"> <input name="options"
+									class="toggle" id="option1" type="radio">Online
+								</label> <label
+									class="btn btn-transparent btn-no-border blue-oleo btn-outline btn-circle btn-sm"
+									onclick="getOffline();"> <input name="options"
+									class="toggle" id="option2" type="radio">Offline
+								</label>
+							</div>
+						</div>
+
+
+					</div>
+					<div class="portlet-body" style="display: block;" id="onlineId">
+						<table class="table table-striped table-bordered table-hover"
+							id="onlineResultsTable">
+							<thead>
+								<tr>
+									<th>Schedule No</th>
+									<th>Test Name</th>
+									<th>Test Date</th>
+									<th>Test Results</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="exam,status:${completedExams}">
+									<td th:text="${status.index+1}"></td>
+									<td th:text="${exam.schedule.examName}"></td>
+									<td
+										th:text="${#dates.format(exam.schedule.examStartTime, 'dd-MM-yyyy')}"></td>
+									<td style="white-space: nowrap;"><a
+										th:href="'javascript:results(2,'+${exam.id}+')'"
+										th:if="${@currentUser.getCurrentStudent().result}"
+										class="btn btn-success btn-xs">Results </a> <a
+										th:href="'javascript:summary('+${exam.id}+')'"
+										class="btn btn-primary btn-xs">Summary </a> <a
+										th:if="${@currentUser.getCurrentStudent().summary}"
+										class="btn btn-warning btn-xs"
+										th:onclick="${'javascript:getEndExamQuestions(' + exam.id + ',' + 1 + ','+  1 + ')'}">Answers
+									</a> <a class="btn btn-info btn-xs"
+										th:if="${@currentUser.getCurrentStudent().analysis}"
+										th:onclick="${'javascript:getExamPaper(' + exam.id + ')'}">Analysis</a>
+
+										<a class="btn btn-danger btn-xs"
+										th:if="${@currentUser.getCurrentStudent().paper}"
+										th:onclick="${'javascript:getPaper(' + exam.id + ')'}">Paper</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="portlet-body" style="display: none;" id="offlineId">
+						<table class="table table-striped table-bordered table-hover"
+							id="offlineResultsTable">
+							<thead>
+								<tr>
+									<th>Schedule No</th>
+									<th>Schedule</th>
+									<th>Test Name</th>
+									<th>Test Date</th>
+									<th>Test Results</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr
+									th:each="offlineTest,status:${offlineQuestionStudentSummarayList}">
+									<td th:text="${status.index+1}"></td>
+									<td th:text="${offlineTest.offlineExam.examName}"></td>
+									<td th:text="${offlineTest.offlineExam.testCode}"></td>
+									<td
+										th:text="${#dates.format(offlineTest.offlineExam.testDate, 'dd-MM-yyyy')}"></td>
+									<td style="white-space: nowrap;"><a
+										th:if="${@currentUser.getCurrentStudent().result}"
+										th:href="'javascript:offlineResults(offlineTest.id)'"
+										class="btn btn-success btn-xs">Results </a> <a
+										th:if="${@currentUser.getCurrentStudent().summary}"
+										th:href="${'javascript:offlineSummary(offlineTest.id)'}"
+										class="btn btn-primary btn-xs">Summary </a> <a
+										th:if="${@currentUser.getCurrentStudent().analysis}"
+										class="btn btn-info btn-xs"
+										th:onclick="${'javascript:offlineAnalysis(' +offlineTest.id +')'}">Analysis</a>
+										<a class="btn btn-danger btn-xs"
+										th:if="${@currentUser.getCurrentStudent().paper}"
+										th:onclick="${'javascript:offlinePaper(' +offlineTest.id+')'}">Paper</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div id="contentDivId"></div>
+				<!-- END EXAMPLE TABLE PORTLET-->
+			</div>
+		</div>
+		<div class="modal fade" id="endExamResultPopupSelId" tabindex="-1"
+			role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-full">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true"></button>
+						<h4 class="modal-title">Exam Result</h4>
+					</div>
+					<div class="modal-body" style="background-color: #f7f7f7">
+						<div id="endExamResultPopupId"></div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn dark btn-outline"
+							data-dismiss="modal">Close</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</div>
+
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$("#onlineResultsTable").DataTable();
+				$("#offlineResultsTable").DataTable();
+			});
+
+			function results(typeId, attemptId) {
+				$.ajax({
+					type : "GET",
+					url : "/student/exam/results",
+					data : {
+						typeId : typeId,
+						attemptId : attemptId
+					},
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+
+			function summary(attemptId) {
+				$.ajax({
+					type : "GET",
+					url : "/student/exam/summary",
+					data : {
+						attemptId : attemptId
+					},
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+
+			function getEndExamQuestions(examAttemptVal, tabNo, queSelId) {
+
+				var myWindow = window.open(
+						"/student/getEndExamResult?examAttempt="
+								+ examAttemptVal, '_blank',
+						'resizable,scrollbars', "status=0,toolbar=0");
+
+				/* $.ajax({
+					type : "GET",
+					url : "/student/getEndExamResult",
+					data : {
+						examAttempt : examAttemptVal
+					},
+					success : function(data) {
+
+						$('#endExamResultPopupId').html(data);
+
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				}); */
+			}
+
+			function getExamPaper(attemptId) {
+				$.ajax({
+					type : "GET",
+					url : "/student/onlineResults/getExamPaper?attempt="
+							+ attemptId,
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+			function getPaper(attemptId) {
+				$.ajax({
+					type : "GET",
+					url : "/student/onlineResults/getPaper?attempt="
+							+ attemptId,
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+
+			function backToExamsList() {
+				$("#examsListDivId").show();
+				$('#contentDivId').hide();
+			}
+
+			function getQuestionWise(examqNo, qNo) {
+				var queNo = qNo.split('QueVal')[1];
+				$.ajax({
+					type : "GET",
+					url : "/student/getQuestionDetails",
+					data : {
+						questionId : examqNo,
+						queNo : queNo
+					},
+					success : function(data) {
+						//$("[id^=QueViewId]").hide();
+						//$("#QueViewId"+qNo).show();
+						$("#QueViewId").html(data);
+						$("#timeSpentId").html($("#timeSpentHiddenId").val());
+						$("#questionNoId").html(
+								'Question : ' + $("#questionNoHiddenId").val()
+										+ ' Details');
+					},
+					error : function() {
+						alert('Error occured');
+					}
+				});
+			}
+
+			function getOnline() {
+				$("#onlineId").css("display", "block");
+				$("#offlineId").css("display", "none");
+			}
+			function getOffline() {
+				$("#onlineId").css("display", "none");
+				$("#offlineId").css("display", "block");
+			}
+
+			function offlineResults(offlineExamSummary) {
+				$.ajax({
+					type : "GET",
+					url : "/student/exam/offlineResults",
+					data : {
+						offlineExamSummary : offlineExamSummary
+					},
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+
+			function offlineSummary(offlineExamSummary) {
+				$.ajax({
+					type : "GET",
+					url : "/student/exam/offlineSummary",
+					data : {
+						offlineExamSummary : offlineExamSummary
+					},
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+
+			function offlineAnalysis(offlineExamSummary) {
+				$.ajax({
+					type : "GET",
+					url : "/student/exam/offlineAnalysis",
+					data : {
+						offlineExamSummary : offlineExamSummary
+					},
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+
+			function offlinePaper(offlineExamSummary) {
+				$.ajax({
+					type : "GET",
+					url : "/student/exam/offlinePaper",
+					data : {
+						offlineExamSummary : offlineExamSummary
+					},
+					success : function(data) {
+						$("#examsListDivId").hide();
+						$('#contentDivId').show();
+						$('#contentDivId').html(data);
+					},
+					error : function(jqXHR, exception, textStatus) {
+						if (jqXHR.status === 0) {
+							alert('Please Verify Network.');
+						} else if (jqXHR.status == 404) {
+							alert('Requested page not found. [404]');
+						} else if (jqXHR.status == 500) {
+							alert('Internal Server Error [500].');
+						} else if (exception === 'parsererror') {
+							alert('Requested JSON parse failed.');
+						} else if (exception === 'timeout') {
+							alert('Time out error.');
+						} else if (exception === 'abort') {
+							alert('Ajax request aborted.');
+						} else {
+							alert('Uncaught Error.\n' + jqXHR.responseText);
+						}
+
+					},
+				});
+			}
+		</script>
+	</th:block>
+</body>
+</html>

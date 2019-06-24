@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	>
+<head>
+</head>
+<body>
+				<div class="note note-info">
+					<div class="mt-comments">
+						<div class="mt-comment">
+							<div class="mt-comment-img">
+								<img src="../assets/pages/media/users/avatar1.jpg"></img>
+							</div>
+							<div class="mt-comment-body">
+								<div class="mt-comment-info">
+									<input type="hidden" id="admNoHidden"
+										th:value="${student.admNo}" /> <input type="hidden"
+										id="hiddenTestId" th:value="${offlineExamSummary!=null?offlineExamSummary.id:''}" /> <span
+										class="mt-comment-author"
+										th:text="${student.name+' | '+student.getParentName()+'  | '+student.collegeSection.shortName+ ' | '+student.campus.campusName +' | '}">
+									</span> <span class="caption-subject font-blue-sharp bold uppercase"
+										th:text="${student.admNo}"></span> <span
+										class="caption-subject font-blue-sharp bold uppercase"
+										th:text="${testSummaryId}"></span>
+										
+										
+										<div class="row">
+                                        <div class="col-md-12">
+                                            <div class="portlet box red">
+                                                <div class="portlet-title">
+                                                    <div class="caption">
+                                                        <i class="fa fa-gift"></i>Portlet </div>
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="active">
+                                                            <a href="#portlet_tab_1" data-toggle="tab">Student Details</a>
+                                                        </li>
+                                                         <li>
+                                                            <a href="#portlet_tab_2" data-toggle="tab"> Tab 2 </a>
+                                                        </li>
+                                                        
+                                                         <li>
+                                                            <a href="#portlet_tab_3" data-toggle="tab"> Tab 3 </a>
+                                                        </li>
+                                                        
+                                                    </ul>
+                                                </div>
+                                                <div class="portlet-body">
+                                                    <div class="tab-content">
+                                                        <div class="tab-pane active" id="portlet_tab_1">
+                                                        
+                                                        
+                                                           
+                                                        </div>
+                                                        <div class="tab-pane" id="portlet_tab_2">
+                                                            <p> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo
+                                                                dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+                                                                invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo. </p>
+                                                        </div>
+                                                        <div class="tab-pane" id="portlet_tab_3">
+                                                            <p> Ut wisi enim ad btn-smm veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit
+                                                                esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait
+                                                                nulla facilisi. </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+									<!-- <div class="actions pull-right">
+										<div class="clearfix">
+											<div class="btn-group btn-group-devided"
+												data-toggle="buttons" id="academicFiltersDiv">
+												<label
+													class="btn default btn-outline btn-circle btn-sm active"
+													title="Test"><i class="icon-layers"></i> <input
+													id="stuSearchTestRadioId" type="radio" name="options"
+													class="toggle"
+													th:onchange="${'javascript:getTestWiseData()'}" /></label> <label
+													title="Concept"
+													class="btn default btn-outline btn-circle btn-sm"><i
+													class="icon-bulb"></i><input type="radio" name="options"
+													class="toggle" id="stuSearchConceptRadioId"
+													th:onchange="${'javascript:getConceptWiseData('+offlineExamSummary.id+')'}" /></label>
+
+												<label class="btn default btn-outline btn-circle btn-sm"
+													title="Marks"><i class="fa fa-percent"></i> <input
+													type="radio" name="options" class="toggle"
+													id="stuSearchMarksRadioId"
+													th:onchange="${'javascript:getMarksWiseData()'}" /></label>
+
+											</div>
+											<div class="btn-group" data-toggle="buttons">
+												<label class="btn blue btn-outline active"> <input
+													class="toggle" type="radio" name="acaOrFinace"
+													value="academic" onchange="toggleAcademicFinance(this)">
+													Academic
+												</label> <label class="btn green btn-outline"> <input
+													class="toggle" type="radio" name="acaOrFinace"
+													value="finacial" onchange="toggleAcademicFinance(this)">
+													Financial
+												</label>
+											</div>
+										</div>
+									</div> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="studentAcademicDetailsId">
+				
+				</div>
+				<div id="studentFinancialDetailsId"></div>
+		<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			var admNo = $("#admNoHidden").val();
+
+			function toggleAcademicFinance(ele) {
+				if (ele.value == "academic") {
+					//getTestWiseData(admNo);
+					$("#academicFiltersDiv").show();
+					$("#studentAcademicDetailsId").show();
+					$("#studentFinancialDetailsId").hide();
+				}
+				if (ele.value == "finacial") {
+					$("#academicFiltersDiv").hide();
+					getStudentFinancialDetails();
+				}
+			}
+
+			function getTestWiseData() {
+				pageOverlay(0);
+				$.ajax({
+					url : '/qb/testWiseTestDetails?student=' + admNo,
+					type : 'GET',
+					success : function(data) {
+						$("#studentAcademicDetailsId").html(data);
+						pageOverlay(1);
+					},
+					error : function() {
+						alert("Unable to load details.");
+						pageOverlay(1);
+					}
+				});
+			}
+
+			function getConceptWiseData(offlineExamSummaryId) {
+				pageOverlay(0);
+				$.ajax({
+					url : '/qb/showStudentTest?testSummaryId='
+							+ offlineExamSummaryId,
+					type : 'GET',
+					success : function(data) {
+						$("#studentAcademicDetailsId").html(data);
+						pageOverlay(1);
+					},
+					error : function() {
+						alert("Unable to load details.");
+						pageOverlay(1);
+					}
+				});
+			}
+
+			function getMarksWiseData() {
+				pageOverlay(0);
+				$.ajax({
+					url : '/qb/marksWiseTestDetails?testId='
+							+ $("#hiddenTestId").val(),
+					type : 'GET',
+					success : function(data) {
+						$("#studentAcademicDetailsId").html(data);
+						pageOverlay(1);
+					},
+					error : function() {
+						alert("Unable to load details.");
+						pageOverlay(1);
+					}
+				});
+			}
+
+			function getStudentFinancialDetails() {
+				pageOverlay(0);
+				$.ajax({
+					url : '/qb/studentFinancialDetails?student=' + admNo,
+					type : 'GET',
+					success : function(data) {
+						$("#studentAcademicDetailsId").hide();
+						$("#studentFinancialDetailsId").html(data);
+						$("#studentFinancialDetailsId").show();
+						pageOverlay(1);
+					},
+					error : function() {
+						alert("Unable to load details.");
+						pageOverlay(1);
+					}
+				});
+			}
+			
+			function showConceptData() {
+				$("#conceptContentId").show();
+				$("#marksContentId").hide();
+
+				$("#conceptLabel1,#conceptLabel2").addClass("active");
+
+				$("#marksLabel1,#marksLabel2").removeClass("active");
+			}
+			function showMarksData() {
+				$("#marksContentId").show();
+				$('#questionWiseDetailsId').html('');
+				$("#conceptContentId").hide();
+
+				$("#marksLabel1,#marksLabel2").addClass("active");
+
+				$("#conceptLabel1,#conceptLabel2").removeClass("active");
+			}
+			
+			$(document).ready(function() {
+				$('#questionWiseDetailsId').html('');
+			});
+
+			function getTestSubTopicData(subTopicId, topicId, offExamId, admNo) {
+				$("#subTopicId").val(subTopicId);
+				$("#topicId").val(topicId);
+				$("#offExamId").val(offExamId);
+				$("#admNo").val(admNo);
+				pageOverlay(0);
+				$.ajax({
+					url : '/qb/getTestSubTopicData',
+					type : 'GET',
+					data : $("#getTestSubTopicDataId").serialize(),
+					success : function(data) {
+						$('#popupDivId').html(data);
+						pageOverlay(1);
+					},
+					error : function() {
+						alert("Unable to load details.");
+						pageOverlay(1);
+					}
+				});
+
+			}
+
+			$(".questionClass").click(function() {
+				$(".questionClass").css("border", "");
+				$(this).css("border", "2px solid green");
+			});
+		</script></th:block>
+</body>
+</html>

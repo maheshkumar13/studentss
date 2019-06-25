@@ -31,7 +31,7 @@ public class ExamBO implements Serializable {
 	@Column(name = "MATHEMATICS", length = 10)
 	private Double mathematics;
 	
-	@Column(name = "PHYSICS", length = 10)
+	@Column(name = "PHYSIC", length = 10)
 	private Double physics;
 	
 	@Column(name = "COMPUTER", length = 10)

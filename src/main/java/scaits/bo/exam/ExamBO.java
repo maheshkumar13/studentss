@@ -43,21 +43,6 @@ public class ExamBO implements Serializable {
 	@Column(name = "chemistry", length = 10)
 	private Double chemistry;
 	
-	@Column(name = "MAT_Per", length = 10)
-	private Double mathematics;
-	
-	@Column(name = "PHY_PER", length = 10)
-	private Double physics;
-	
-	@Column(name = "COMPUTER", length = 10)
-	private Double computer;
-	
-	@Column(name = "HINDI", length = 10)
-	private Double hindi;
-	
-	@Column(name = "chemistry", length = 10)
-	private Double chemistry;
-	
 	@Column(name = "CREATED_ON")
 	private Date createdOn;
 
